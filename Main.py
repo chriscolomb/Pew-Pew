@@ -34,6 +34,27 @@ if conn.is_connected():
     print('Connected to MySQL database')
 cursor = conn.cursor()
 
+user = 'DamagedTwitch'
+wins = 1
+losses = 5
+value = round(wins / (wins + losses), 4)
+
+conn_cursor = conn.cursor()
+conn_query = (
+    "INSERT INTO Profile ('User', 'Value', 'Wins', 'Losses')"
+    "VALUES (%(User)s, %(Value)s, %(Wins)s, %(Losses)s)")
+profile_data = {
+    'User': user,
+    'Value': value,
+    'Wins': wins,
+    'Losses': losses,
+}
+cursor.execute(conn_query, profile_data)
+conn.commit()
+
+cursor.close()
+conn.close()
+
 
 def add_table(cursor):
     DB_NAME = 'PewPew'
@@ -67,25 +88,3 @@ def add_table(cursor):
         except mysql.connector.Error as err:
             print("Failed creating database: {}".format(err))
             exit(1)
-
-
-user = 'DamagedTwitch'
-wins = 1
-losses = 5
-value = round(wins / (wins + losses), 4)
-
-conn_cursor = conn.cursor()
-conn_query = (
-    "INSERT INTO Profile ('User', 'Value', 'Wins', 'Losses')"
-    "VALUES (%(User)s, %(Value)s, %(Wins)s, %(Losses)s)")
-profile_data = {
-    'User': user,
-    'Value': value,
-    'Wins': wins,
-    'Losses': losses,
-}
-cursor.execute(conn_query, profile_data)
-conn.commit()
-
-cursor.close()
-conn.close()
