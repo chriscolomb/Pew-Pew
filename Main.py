@@ -4,47 +4,88 @@
 import os
 import discord
 from dotenv import load_dotenv
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
-load_dotenv()
-# bot token.
-TOKEN = os.getenv('BOT_TOKEN')
-# discord server, insert method here to get servers; this is for future reference.
-guildName = os.getenv('SERVER_TOKEN')
-profiles = os.getenv('PROFILES')
-client = discord.Client()
-
-# Accessing google spreadsheet
-scope = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapis.com/auth/drive",
-         "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name('SpreadClientSecret.json', scope)
-spreadClient = gspread.authorize(credentials)
-sheetProfiles = spreadClient.open('Profiles').sheet1
+import mysql.connector
+from mysql.connector import errorcode
+import pymysql
 
 
-@client.event
-async def on_ready():
-    for guild in client.guilds:
-        if guild.name == guildName:
-            break
+def main():
+    # connect to discord bot
+    load_dotenv()
+    # bot token.
+    TOKEN = os.getenv('BOT_TOKEN')
+    # discord server, insert method here to get servers; this is for future reference.
+    guildName = os.getenv('SERVER_TOKEN')
+    profiles = os.getenv('PROFILES')
+    client = discord.Client()
 
-    print(f'{client.user} has connected to Discord!')
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    resp = 'hello world'
-
-    if message.content == 'hello':
-        await message.channel.send(resp)
+    # connect to database
+    con_botSQL = mysql.connector.connect(host='34.84.228.251', user='root', port='3306', password='iI5knykhgxA0JfKw',
+                                         db='PewPew', cursorclass=pymysql.cursors.DictCursor, autocommit=True)
 
 
-client.run(TOKEN)
+conn = None
+conn = mysql.connector.connect(
+    host='34.84.228.251',
+    user='root',
+    password='iI5knykhgxA0JfKw',
+    database='PewPew')
+if conn.is_connected():
+    print('Connected to MySQL database')
+cursor = conn.cursor()
+
+
+def add_table(cursor):
+    DB_NAME = 'PewPew'
+    TABLES = {}
+
+    TABLES['Profile'] = (
+        "CREATE TABLE `Profile` ("
+        "  `User` varchar(37) NOT NULL,"
+        "  `Value` float(20) NOT NULL,"
+        "  `Wins` int(11) NOT NULL,"
+        "  `Losses` int(11) NOT NULL,"
+        "  PRIMARY KEY (`User`)"
+        ") ENGINE=InnoDB")
+
+    for table_name in TABLES:
+        table_description = TABLES[table_name]
+        try:
+            print("Creating table {}: ".format(table_name), end='')
+            cursor.execute(table_description)
+        except mysql.connector.Error as err:
+            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+                print("already exists.")
+            else:
+                print(err.msg)
+        else:
+            print("OK")
+
+        try:
+            cursor.execute(
+                "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
+        except mysql.connector.Error as err:
+            print("Failed creating database: {}".format(err))
+            exit(1)
+
+
+user = 'DamagedTwitch'
+wins = 1
+losses = 5
+value = round(wins / (wins + losses), 4)
+
+conn_cursor = conn.cursor()
+conn_query = (
+    "INSERT INTO Profile ('User', 'Value', 'Wins', 'Losses')"
+    "VALUES (%(User)s, %(Value)s, %(Wins)s, %(Losses)s)")
+profile_data = {
+    'User': user,
+    'Value': value,
+    'Wins': wins,
+    'Losses': losses,
+}
+cursor.execute(conn_query, profile_data)
+conn.commit()
+
+cursor.close()
+conn.close()
