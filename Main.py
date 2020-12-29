@@ -20,8 +20,10 @@ def main():
     client = discord.Client()
 
     # connect to database
-    con_botSQL = mysql.connector.connect(host='34.84.228.251', user='root', port='3306', password='iI5knykhgxA0JfKw',
-                                         db='PewPew', cursorclass=pymysql.cursors.DictCursor, autocommit=True)
+    hostID = os.getenv('host')
+    userID = os.getenv('user')
+    passID = os.getenv('password')
+    db = os.getenv('database')
 
 
 conn = None
@@ -29,7 +31,8 @@ conn = mysql.connector.connect(
     host='34.84.228.251',
     user='root',
     password='iI5knykhgxA0JfKw',
-    database='PewPew')
+    database='PewPew'
+)
 if conn.is_connected():
     print('Connected to MySQL database')
 cursor = conn.cursor()
@@ -41,7 +44,7 @@ value = round(wins / (wins + losses), 4)
 
 conn_cursor = conn.cursor()
 conn_query = (
-    "INSERT INTO Profile ('User', 'Value', 'Wins', 'Losses')"
+    "INSERT INTO `Profile` (`User`, `Value`, `Wins`, `Losses`)"
     "VALUES (%(User)s, %(Value)s, %(Wins)s, %(Losses)s)")
 profile_data = {
     'User': user,
