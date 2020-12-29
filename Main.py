@@ -20,43 +20,51 @@ def main():
     client = discord.Client()
 
     # connect to database
-    hostID = os.getenv('host')
-    userID = os.getenv('user')
-    passID = os.getenv('password')
-    db = os.getenv('database')
+    conn = None
+    conn = mysql.connector.connect(
+        host='34.84.228.251',
+        user='root',
+        password='iI5knykhgxA0JfKw',
+        database='PewPew'
+    )
+
+    if conn.is_connected():
+        print('Connected to MySQL database')
+    cursor = conn.cursor()
+
+    # add entries
+    user = 'TeamDuck'
+    wins = 4
+    losses = 125
+    value = round(wins / (wins + losses), 4)
+
+    conn_query = (
+        "INSERT INTO `Profile` (`User`, `Value`, `Wins`, `Losses`)"
+        "VALUES (%(User)s, %(Value)s, %(Wins)s, %(Losses)s)")
+    profile_data = {
+        'User': user,
+        'Value': value,
+        'Wins': wins,
+        'Losses': losses,
+    }
+
+    # re-format this to cover other.
+    try:
+        cursor.execute(conn_query, profile_data)
+    except mysql.connector.errors.IntegrityError:
+        # other errors can happen but not to figure out this try except statement.
+        print('The user already exist')
+
+    conn.commit()
+
+    # modify entries
+    edit_wins = ()
+
+    cursor.close()
+    conn.close()
 
 
-conn = None
-conn = mysql.connector.connect(
-    host='34.84.228.251',
-    user='root',
-    password='iI5knykhgxA0JfKw',
-    database='PewPew'
-)
-if conn.is_connected():
-    print('Connected to MySQL database')
-cursor = conn.cursor()
-
-user = 'DamagedTwitch'
-wins = 1
-losses = 5
-value = round(wins / (wins + losses), 4)
-
-conn_cursor = conn.cursor()
-conn_query = (
-    "INSERT INTO `Profile` (`User`, `Value`, `Wins`, `Losses`)"
-    "VALUES (%(User)s, %(Value)s, %(Wins)s, %(Losses)s)")
-profile_data = {
-    'User': user,
-    'Value': value,
-    'Wins': wins,
-    'Losses': losses,
-}
-cursor.execute(conn_query, profile_data)
-conn.commit()
-
-cursor.close()
-conn.close()
+main()
 
 
 def add_table(cursor):
