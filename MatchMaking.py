@@ -23,17 +23,3 @@ async def on_message(message):
         await message.channel.send(resp)
 
 
-client.run(TOKEN)
-
-
-# add user
-total = 0
-add_player_label = ("INSERT INTO PewPew"
-                    "(User, Win, Losses, Value) "
-                    "VALUES (%s, %s, %s, %s)")
-
-add_player = ('DamagedTwitch',float (10.0), float(3.0), total)
-
-db_cursor.execute(add_player)
-
-conSQL.commit()
