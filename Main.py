@@ -6,6 +6,7 @@ import discord
 from dotenv import load_dotenv
 import mysql.connector
 from mysql.connector import errorcode
+import PewPewBot
 
 import PewPewDatabaseAccess
 
@@ -16,25 +17,21 @@ def main():
     # bot token.
     TOKEN = os.getenv('BOT_TOKEN')
     # discord server, insert method here to get servers; this is for future reference.
-    password = os.getenv('SERVER_PASSWORD')
-
     client = discord.Client()
     # connect to database
     conn = None
     conn = mysql.connector.connect(
         host='34.84.228.251',
         user='root',
-        password=password,
+        password='iI5knykhgxA0JfKw',
         database='PewPew'
     )
 
     if conn.is_connected():
         print('Connected to MySQL database')
-    # changed buffer = True 12.29.2020
     cursor = conn.cursor(buffered=True)
 
-
-
+    PewPewBot.pew_bot_start(conn, cursor, client)
     client.run(TOKEN)
     cursor.close()
     conn.close()
