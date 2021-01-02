@@ -72,34 +72,17 @@ def add_primary_key(username, connection_name, cursor_name):
 def update_values_columns(username, connection_name, cursor_name, WorL):
     # modify entries
     user = username
-    result = 0
+    result = ()
+
     if WorL == 'w':
         result = ("UPDATE Profile set Wins = Wins + 1 "
-                  "where user = %s")
+                  "where user = user")
     elif WorL == 'l':
-        result = ("UPDATE Profile set Wins + 1 = %s "
-                  "where user = %s")
+        result = ("UPDATE Profile set Losses = Losses + 1 "
+                  "where user = user")
     else:
         print("there is something wrong, error")
 
-
-    # wins = 10
-    # losses = 5
-    # value = round(wins / (wins + losses), 4)
-
-    #profile_data = {
-    #    'User': user,
-        #    'Value': value,
-        #    'Wins': wins,
-        #    'Losses': losses,
-    #}
-    # update_user_wins = ("UPDATE Profile set Wins = %s "
-    #                    "where user = %s")
-    # update_user_value = ("UPDATE Profile set Value = %s "
-    #                     "where user = %s")
-
-    # cursor.execute(update_user_wins, (wins, user))
-    # cursor.execute(update_user_value, (value, user))
     cursor_name.execute(result, user)
     connection_name.commit()
     cursor_name.close()

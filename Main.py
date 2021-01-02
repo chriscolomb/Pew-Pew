@@ -19,7 +19,6 @@ def main():
     guildName = os.getenv('SERVER_TOKEN')
     profiles = os.getenv('PROFILES')
     client = discord.Client()
-    client.run(TOKEN)
     # connect to database
     conn = None
     conn = mysql.connector.connect(
@@ -33,40 +32,15 @@ def main():
         print('Connected to MySQL database')
     # changed buffer = True 12.29.2020
     cursor = conn.cursor(buffered=True)
-    wol = 'w'
+    wol = 'l'
     user = "DamagedTwitch"
 
     PewPewDatabaseAccess.update_values_columns(user, conn, cursor, wol)
 
+    client.run(TOKEN)
     cursor.close()
     conn.close()
     client.close()
 
+
 main()
-
-def database_entries():
-    # insert method for table entry method
-
-    # modify entries
-    user = 'DamagedTwitch'
-    wins = 10
-    losses = 5
-    value = round(wins / (wins + losses), 4)
-
-    profile_data = {
-        'User': user,
-        'Value': value,
-        'Wins': wins,
-        'Losses': losses,
-    }
-    update_user_wins = ("UPDATE Profile set Wins = %s "
-                        "where user = %s")
-    update_user_value = ("UPDATE Profile set Value = %s "
-                         "where user = %s")
-
-    cursor.execute(update_user_wins, (wins, user))
-    cursor.execute(update_user_value, (value, user))
-    conn.commit()
-
-
-
