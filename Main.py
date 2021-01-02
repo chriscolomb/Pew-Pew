@@ -16,15 +16,15 @@ def main():
     # bot token.
     TOKEN = os.getenv('BOT_TOKEN')
     # discord server, insert method here to get servers; this is for future reference.
-    guildName = os.getenv('SERVER_TOKEN')
-    profiles = os.getenv('PROFILES')
+    password = os.getenv('SERVER_PASSWORD')
+
     client = discord.Client()
     # connect to database
     conn = None
     conn = mysql.connector.connect(
         host='34.84.228.251',
         user='root',
-        password='iI5knykhgxA0JfKw',
+        password=password,
         database='PewPew'
     )
 
@@ -32,10 +32,8 @@ def main():
         print('Connected to MySQL database')
     # changed buffer = True 12.29.2020
     cursor = conn.cursor(buffered=True)
-    wol = 'l'
-    user = "DamagedTwitch"
 
-    PewPewDatabaseAccess.update_values_columns(user, conn, cursor, wol)
+
 
     client.run(TOKEN)
     cursor.close()
