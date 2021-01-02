@@ -2,7 +2,8 @@ import mysql.connector
 from mysql.connector import errorcode
 
 
-def create_table(cursor_name, connection_name):
+def create_table(cursor_name, connection_name, table_name):
+    # creates table
     DB_NAME = 'PewPew'
     TABLES = {}
 
@@ -87,3 +88,8 @@ def update_values_columns(username, connection_name, cursor_name, WorL):
     connection_name.commit()
     cursor_name.close()
     connection_name.close()
+
+
+def get_user_value(username, connection_name, cursor_name):
+    print('function for getting value of username, wins loses')
+    # returns a value that can be turned into percent.
