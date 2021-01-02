@@ -5,11 +5,7 @@ import os
 import discord
 from dotenv import load_dotenv
 import mysql.connector
-from mysql.connector import errorcode
 import PewPewBot
-
-import PewPewDatabaseAccess
-
 
 def main():
     # connect to discord bot
