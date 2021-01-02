@@ -33,6 +33,6 @@ def pew_bot_start(connection, cursor_name, client):
             try:
                 reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
             except asyncio.TimeoutError:
-                await channel.send('👎')
+                await channel.send('Sorry, user did not respond in time. Request cancelled')
             else:
                 await channel.send(dragon)
