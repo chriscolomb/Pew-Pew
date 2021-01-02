@@ -6,7 +6,7 @@ import PewPewDatabaseAccess
 
 def pew_bot_start(connection, cursor_name, client):
     # image for confirming fight matchmaking
-    fight_image = 'PewPewBot_FinishHim.jpg'
+    fight_image = 'PewPewBot_StartFight.jpg'
 
     @client.event
     async def on_message(message):
@@ -27,7 +27,7 @@ def pew_bot_start(connection, cursor_name, client):
                                file=discord.File(fight_image))
 
             def check(reaction, user):
-                # without custom, can do str(reaction.emoji)=='👎'
+                # without custom, can do, "str(reaction.emoji)=='👎'"
                 return user == message.author and reaction.emoji == dragon
 
             try:
