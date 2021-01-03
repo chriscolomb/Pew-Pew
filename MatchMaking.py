@@ -1,4 +1,5 @@
 # This class will handle events regarding matches, reacts, messages
+# useful methods and such for right now.
 @client.event
 async def on_ready():
     for guild in client.guilds:
@@ -10,16 +11,3 @@ async def on_ready():
         f'{client.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    resp = 'hello world'
-
-    if message.content == 'hello':
-        await message.channel.send(resp)
-
-
