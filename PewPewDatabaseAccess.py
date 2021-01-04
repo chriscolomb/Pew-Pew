@@ -1,9 +1,20 @@
 import mysql.connector
 from mysql.connector import errorcode
 
+def create_table(table_name):
+    # connect to database
+    conn = None
+    conn = mysql.connector.connect(
+        host='130.211.119.74',
+        user='root',
+        password='togcow-nuvgyQ-7fydme',
+        database='PewPew'
+    )
+    if conn.is_connected():
+        print('Connected to MySQL database')
+    cursor = conn.cursor(buffered=True)
 
-def create_table(cursor_name, connection_name, table_name):
-    # creates table
+# creates table
     DB_NAME = 'PewPew'
     TABLES = {}
 
@@ -20,7 +31,7 @@ def create_table(cursor_name, connection_name, table_name):
         table_description = TABLES[table_name]
         try:
             print("Creating table {}: ".format(table_name), end='')
-            cursor_name.execute(table_description)
+            cursor.execute(table_description)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
                 print("already exists.")
@@ -30,17 +41,30 @@ def create_table(cursor_name, connection_name, table_name):
             print("OK")
 
         try:
-            cursor_name.execute(
+            cursor.execute(
                 "CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
         except mysql.connector.Error as err:
             print("Failed creating database: {}".format(err))
             exit(1)
 
-    cursor_name.close()
-    connection_name.close()
+    cursor.close()
+    conn.close()
 
 
-def add_primary_key(username, connection_name, cursor_name):
+def add_primary_key(username):
+    # connect to database
+    conn = None
+    conn = mysql.connector.connect(
+        host='130.211.119.74',
+        user='root',
+        password='togcow-nuvgyQ-7fydme',
+        database='PewPew'
+    )
+    if conn.is_connected():
+        print('Connected to MySQL database')
+    cursor = conn.cursor(buffered=True)
+
+
     # add table entry
     user = username
     wins = 0
@@ -59,18 +83,30 @@ def add_primary_key(username, connection_name, cursor_name):
 
     # re-format this to cover other other error messages.
     try:
-        cursor_name.execute(conn_query, profile_data)
+        cursor.execute(conn_query, profile_data)
     except mysql.connector.errors.IntegrityError:
         # other errors can happen but not to figure out this try except statement.
         print('The user already exist')
 
-    connection_name.commit()
+    conn.commit()
 
-    cursor_name.close()
-    connection_name.close()
+    cursor.close()
+    conn.close()
 
 
-def update_values_columns(username, connection_name, cursor_name, WorL):
+def update_values_columns(username, WorL):
+    # connect to database
+    conn = None
+    conn = mysql.connector.connect(
+        host='130.211.119.74',
+        user='root',
+        password='togcow-nuvgyQ-7fydme',
+        database='PewPew'
+    )
+    if conn.is_connected():
+        print('Connected to MySQL database')
+    cursor = conn.cursor(buffered=True)
+
     # modify entries
     user = username
     result = ()
@@ -84,12 +120,12 @@ def update_values_columns(username, connection_name, cursor_name, WorL):
     else:
         print("there is something wrong, error")
 
-    cursor_name.execute(result, user)
-    connection_name.commit()
-    cursor_name.close()
-    connection_name.close()
+    cursor.execute(result, user)
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
-def get_user_value(username, connection_name, cursor_name):
+def get_user_value(username):
     print('function for getting value of username, wins loses')
     # returns a value that can be turned into percent.

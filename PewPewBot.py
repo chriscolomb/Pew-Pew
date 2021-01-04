@@ -1,10 +1,24 @@
 import asyncio
-
-import discord
+import mysql.connector
 import PewPewDatabaseAccess
+import os
+import discord
+from dotenv import load_dotenv
+
+# connect to database
+conn = None
+conn = mysql.connector.connect(
+    host='130.211.119.74',
+    user='root',
+    password='togcow-nuvgyQ-7fydme',
+    database='PewPew'
+)
+if conn.is_connected():
+    print('Connected to MySQL database')
+cursor = conn.cursor(buffered=True)
 
 
-def pew_bot_start(connection, cursor_name, client):
+def pew_bot_start(client):
     # image for confirming fight matchmaking
     fight_image = 'PewPewBot_StartFight.jpg'
 
@@ -14,9 +28,9 @@ def pew_bot_start(connection, cursor_name, client):
             return
 
         if message.content.startswith('!add'):
+            channel = message.channel
             await message.channel.send('added wins to user')
-            PewPewDatabaseAccess.update_values_columns('DamagedTwitch', connection, cursor_name, 'w')
-
+            PewPewDatabaseAccess.update_values_columns('DamagedTwitch', 'w')
 
     @client.event
     async def on_message(message):
