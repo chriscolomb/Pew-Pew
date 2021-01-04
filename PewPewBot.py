@@ -17,6 +17,7 @@ def pew_bot_start(connection, cursor_name, client):
             await message.channel.send('added wins to user')
             PewPewDatabaseAccess.update_values_columns('DamagedTwitch', connection, cursor_name, 'w')
 
+
     @client.event
     async def on_message(message):
         dragon = client.get_emoji(794999307048321044)

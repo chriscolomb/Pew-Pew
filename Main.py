@@ -48,6 +48,9 @@ def main():
     cursor.close()
     conn.close()
     client.close()
-
+    if conn.is_connected():
+        print('Connected to MySQL database')
+    else:
+        print("isn't connected")
 
 main()
