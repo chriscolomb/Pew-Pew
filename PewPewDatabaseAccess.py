@@ -1,6 +1,11 @@
 import mysql.connector
 from mysql.connector import errorcode
 
+
+# access to SQL database, can update this later to include other fights (new table)
+# can create a new table for different fights and make a change in the DB, maybe DB name should
+# be passed to the methods.
+
 def create_table(table_name):
     # connect to database
     conn = None
@@ -14,7 +19,7 @@ def create_table(table_name):
         print('Connected to MySQL database')
     cursor = conn.cursor(buffered=True)
 
-# creates table
+    # creates table
     DB_NAME = 'PewPew'
     TABLES = {}
 
@@ -64,7 +69,6 @@ def add_primary_key(username):
         print('Connected to MySQL database')
     cursor = conn.cursor(buffered=True)
 
-
     # add table entry
     user = username
     wins = 0
@@ -110,18 +114,30 @@ def update_values_columns(username, WorL):
     # modify entries
     user = username
     result = ()
+    location = """select * from Profile where user = %s"""
 
     if WorL == 'w':
         result = ("UPDATE Profile set Wins = Wins + 1 "
-                  "where user = user")
+                  "where user = %s")
     elif WorL == 'l':
         result = ("UPDATE Profile set Losses = Losses + 1 "
-                  "where user = user")
+                  "where user = %s")
     else:
         print("there is something wrong, error")
 
-    cursor.execute(result, user)
+    cursor.execute(location, (user,))
+    cursor.execute(result, (user,))
     conn.commit()
+
+    # prints the user updated and the row of the user (primary key, I think it's called)
+    cursor.execute(location, (user,))
+    results = cursor.fetchall()
+    if cursor.rowcount > 0:
+        print(cursor.rowcount, "record(s) affected")
+        for x in results:
+            print(x)
+    else:
+        print('no records affected')
     cursor.close()
     conn.close()
 

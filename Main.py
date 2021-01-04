@@ -28,7 +28,8 @@ async def on_ready():
         f'{client.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
-
+# starts the bot commands
 PewPewBot.pew_bot_start(client)
+# runs the token/makes bot active. anything after this doesn't run until the client is terminated/closed
 client.run(TOKEN)
-
+client.close()
