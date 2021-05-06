@@ -18,6 +18,8 @@ import sqlite3
 
 player1 = DatabaseAccess.Database("Test Player", 0)
 player1.addUser()
+player1.retrieveUser("Test Player")
+player1.editUser(100)
 
 # checks status of discord
 # @client.event
