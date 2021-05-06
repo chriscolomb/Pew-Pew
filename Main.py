@@ -16,10 +16,10 @@ import sqlite3
 # client = discord.Client()
 # GUILD = os.getenv('SERVER_TOKEN')
 
-player1 = DatabaseAccess.Database("Test Player", 0)
-player1.addUser()
-player1.retrieveUser("Test Player")
-player1.editUser(100)
+player3 = DatabaseAccess.Database("Test25", 15)
+player3.addUser()
+player3.editUser(300)
+player3.retrieveUser("test25")
 
 # checks status of discord
 # @client.event

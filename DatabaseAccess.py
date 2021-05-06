@@ -1,10 +1,7 @@
 import sqlite3
 
 
-class Database():
-    # conn = sqlite3.connect('players.db')
-    # c = conn.cursor()
-
+class Database:
     def __init__(self, player, score):
         self.player = player
         self.score = score
@@ -33,24 +30,17 @@ class Database():
 
     def editUser(self,newScore):
         self.score = newScore
+        print(self.score)
         conn = sqlite3.connect('players.db')
         c = conn.cursor()
-        # c.execute("""
-        # SELECT *
-        # FROM
-        #     players
-        # WHERE
-        #     player= (:player)
-        #     """, {'player': self.player})
-
         c.execute("""
         UPDATE
             players
-        SET 
-            ranking = (:ranking)
+        SET
+            ranking = ?
         WHERE
-            player = (:player)
-            """, {'ranking': self.score,'player' = self.player})
+            player = ?
+            """, (self.score, self.player))
 
         c.fetchall()
         return 0
