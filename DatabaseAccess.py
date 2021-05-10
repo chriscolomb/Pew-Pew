@@ -102,23 +102,70 @@ def create_milestone_table(conn_m, milestone_table):
     :return:
     """
     try:
-        c = conn_m.cursor()
-        c.execute(milestone_table)
+        c_m = conn_m.cursor()
+        c_m.execute(milestone_table)
     except Error as e:
         print(e)
 
 
-# add usernames to tables
+# add usernames to tables and other add (insert) methods that follow
 def add_username(conn, placeholder):
-    sql = '''INSERT INTO players(username,ranking, last_update,report_points, win_streak,lose_streak, start_season_rank, 
+    """ Adds username into the players table
+    :param conn: the conn object for players database
+    :param placeholder: the tuple for username plus stats
+    :return:
+    """
+    insert_user = '''INSERT INTO players(username,ranking, last_update,report_points, win_streak,lose_streak, start_season_rank, 
                                  end_season_rank) VALUES(?,?,?,?,?,?,?,?)'''
 
     c = conn.cursor()
-    c.executemany(sql, (placeholder,))
+    c.executemany(insert_user, (placeholder,))
     conn.commit()
 
 
-# updates the usernames database columns
+def add_milestone_user(conn_m, placholder_m):
+    """Add a user to the milestone table
+    :param conn_m: the connection object for milestones database
+    :param placholder_m:
+    :return:
+    """
+    insert_user = '''INSERT INTO milestones (username, wins, losses, win_percentage, biggest_win, 
+                     reverse_3_stock_count, highest_rank, highest_win_streak) VALUES (?,?,?,?,?,?,?,?)'''
+
+    c_m = conn_m.cursor()
+    c_m.executemany(insert_user, (placholder_m,))
+
+
+def add_fake_admin(conn_p, username):
+    """ the function that gives 'mod admin' to owners of other servers
+    :param conn_p: the permissions database object
+    :param username: the user to be added to the database, permissions
+    :return:
+    """
+    fake_admin = 1
+    row = '''   INSERT INTO permissions(username,permission)
+                    VALUES(?, ?)'''
+    c_p = conn_p.cursor()
+    c_p.execute(row, (username, fake_admin))
+    conn_p.commit()
+
+
+def add_wins(conn_m, username):
+    """ adds a win to user
+    :param conn_m:
+    :param username:
+    :return:
+    """
+
+
+def add_loss(conn_m, username):
+    """add's a loss to a user
+    :param conn_m:
+    :param username:
+    :return:
+    """
+
+# updates the usernames database columns and other update column methods that follow
 def edit_username_score(conn, username, score):
     """edit the usernames score
     :param: conn: connection object
@@ -182,7 +229,29 @@ def edit_permissions(conn_p, username, add):
     c_p.execute(update_permissions, (username_permission, username))
 
 
-def view_permission(conn_p, username):
+def edit_win_percentage(conn_m, username):
+    """calculates the win percentage
+    :param conn_m: the connection object of the milestones table
+    :param username: the user that needs the win percentage calculated
+    :return: the calculated win percentage
+    """
+    c_m = conn_m.cursor()
+    win_percentage_statement = '''UPDATE milestones
+                               SET win_percentage = ?
+                               WHERE username = ?'''
+    wins = get_wins(conn_m, username)
+    losses = get_losses(conn_m, username)
+    calculate_win_percentage = round((wins/(wins+losses))*100, 4)
+    c_m.execute(win_percentage_statement, (calculate_win_percentage,username))
+
+
+# start of get/view methods
+def get_permission(conn_p, username):
+    """ returns the permission of the username
+    :param conn_p: the connection object of the permissions table
+    :param username: the user that needs the permission returned
+    :return: the user's permission
+    """
     select_statement = '''SELECT permission 
                           FROM permissions
                           WHERE username =?
@@ -194,7 +263,6 @@ def view_permission(conn_p, username):
     return permission_int
 
 
-# may change this to view and add a table and column parameter
 def rank(conn, username):
     """returns the player's rank
     :param: conn: connection object
@@ -214,21 +282,39 @@ def rank(conn, username):
     return int(the_ranking_int)
 
 
-# other view files would go hear, ones the retrieve milestone stats and such
-
-
-def add_fake_admin(conn_p, username):
-    """ the function that gives 'mod admin' to owners of other servers
-    :param conn_p: the permissions database object
-    :param username: the user to be added to the database, permissions
+# other view/get files would go hear, ones the retrieve milestone stats and such
+def get_wins(conn_m, username):
+    """ returns the number of wins of a user
+    :param conn_m: the connection object of the milestones database
+    :param username: the username that needs the wins returned
     :return:
     """
-    fake_admin = 1
-    row = '''   INSERT INTO permissions(username,permission)
-                    VALUES(?, ?)'''
-    c_p = conn_p.cursor()
-    c_p.execute(row, (username, fake_admin))
-    conn_p.commit()
+    select_statement = '''SELECT wins 
+                          FROM milestones
+                          WHERE username =?
+                          '''
+    c_m = conn_m.cursor()
+    c_m.execute(select_statement, (username,))
+    the_wins = c_m.fetchone()
+    num_of_wins = functools.reduce(lambda sub, ele: sub * 10 + ele, the_wins)
+    return float(num_of_wins)
+
+
+def get_losses(conn_m, username):
+    """ returns the number of wins of a user
+    :param conn_m: the connection object of the milestones database
+    :param username: the username that needs the losses returned
+    :return:
+    """
+    select_statement = '''SELECT losses 
+                              FROM milestones
+                              WHERE username =?
+                              '''
+    c_m = conn_m.cursor()
+    c_m.execute(select_statement, (username,))
+    the_losses = c_m.fetchone()
+    num_of_losses = functools.reduce(lambda sub, ele: sub * 10 + ele, the_losses)
+    return float(num_of_losses)
 
 
 # admin only methods,  maybe add a edit column and row methods for admins
@@ -236,7 +322,7 @@ def delete_username(conn, conn_p, username, to_delete):
     """deletes user from database
     :param: conn: connection object
     :param: username: the player/username that needs the rank retrieved"""
-    username_permission = view_permission(conn_p, username)
+    username_permission = get_permission(conn_p, username)
     if username_permission == 0:
         delete_statement = '''DELETE FROM players
                               WHERE username = ?'''
@@ -250,7 +336,7 @@ def insert_admins(conn_p, username, to_add, admin):
     :param: conn_p: the permissions
     :param: username: the username that's the admin
     :param: to_add: the username that is to be added as an admin"""
-    username_permission = view_permission(conn_p, username)
+    username_permission = get_permission(conn_p, username)
     if username_permission == 0:
         row = '''   INSERT INTO permissions(username,permission)
                     VALUES(?, ?)'''
@@ -265,7 +351,7 @@ def delete_admin(conn_p, username, to_delete):
     :param: conn: connection object
     :param: yo_delete: the player/username that needs to be deleted
     :param: username: the player/username that is trying to delete"""
-    username_permission = view_permission(conn_p, username)
+    username_permission = get_permission(conn_p, username)
     if username_permission == 0:
         delete_statement = '''DELETE FROM permissions
                            WHERE username = ?'''
@@ -280,7 +366,7 @@ def add_permissions_username(conn_p, username, add_user, mod_number):
     :param: username: the username adding mod privilege
     :param: add_user: the username to be added to mod
     :param: mod_number: the number that represents server admin (not main server)"""
-    permissions = view_permission(conn_p, username)
+    permissions = get_permission(conn_p, username)
     if permissions < 1:
         row = '''   INSERT INTO permissions(username,permission)
                     VALUES(?, ?)'''
@@ -294,15 +380,18 @@ def delete_mod(conn_p, username, to_delete):
     :param: conn_p: connection object
     :param: yo_delete: the player/username that needs to be deleted
     :param: username: the player/username that is trying to delete"""
-    test_if_admin = view_permission(conn_p, to_delete)
-    username_permission = view_permission(conn_p, username)
+    test_if_admin = get_permission(conn_p, to_delete)
+    username_permission = get_permission(conn_p, username)
     if username_permission < test_if_admin:
         delete_statement = '''DELETE FROM permissions
                            WHERE username = ?'''
         c_p = conn_p.cursor()
         c_p.execute(delete_statement, (to_delete,))
 
-
+# Have to incorporate undo wins/loses too
+# This will see if last_update is negative or positive and revert the loss or win
+#
+#
 def undo_last_ranking(conn, conn_p, username, undo_user):
     """the score received from ELO is given back to the users, if there is a mistake, the last_update will be recorded
     only if the users report the game. A mod can review and then use this method.
@@ -311,7 +400,7 @@ def undo_last_ranking(conn, conn_p, username, undo_user):
     :param: username: the username that is initiating the undo
     :param: undo_user: the username that needs the points undone"""
 
-    if 0 <= view_permission(conn_p, username) < 3:
+    if 0 <= get_permission(conn_p, username) < 3:
         select_statement = '''SELECT report_points 
                               FROM players
                               WHERE username =?
@@ -344,6 +433,14 @@ def get_players_table(conn):
     print(c.fetchall())
 
 
+def get_milestones_table(conn_m):
+    sql = '''   SELECT * 
+                FROM milestones'''
+    c_m = conn_m.cursor()
+    c_m.execute(sql)
+    print(c_m.fetchall())
+
+
 # might be good to make a table for a string variable, for similar methods. instead of having multiple methods.
 # a SELECT variable
 # a FROM variable
@@ -354,8 +451,7 @@ def get_players_table(conn):
 def main():
     db_file = ':memory:'
     permissions_db_file = ':memory:'
-    # future use
-    milestone_db_file = ''
+    milestone_db_file = ':memory:'
 
     players_table = """ CREATE TABLE IF NOT EXISTS players (
                         username text PRIMARY KEY,
@@ -369,22 +465,24 @@ def main():
                         ); """
 
     permissions_table = """ CREATE TABLE IF NOT EXISTS permissions (
+                            username text PRIMARY KEY,
+                            permission integer NOT NULL
+                            ); """
+    milestone_table = '''CREATE TABLE IF NOT EXISTS milestones (
                         username text PRIMARY KEY,
-                        permission integer NOT NULL
-                        ); """
-    # future use: milestone_table = '''Create TABLE IF NOT EXISTS milestones
-    #                               wins
-    #                               loses
-    #                               win percentage
-    #                               biggest win
-    #                               reverse 3 stock count
-    #                               highest rank
-    #                               highest win streak'''
+                        wins real NOT NULL,
+                        losses real NOT NULL,
+                        win_percentage real NOT NULL,
+                        biggest_win integer NOT NULL,
+                        reverse_3_stock_count integer NOT NULL,
+                        highest_rank integer NOT NULL,
+                        highest_win_streak integer NOT NULL
+                        );'''
 
     # create db connection
     conn = create_connection(db_file)
     conn_p = create_permissions_connection(permissions_db_file)
-    # future use: conn_m = create_milestones_connection(milestone_db_file):
+    conn_m = create_milestones_connection(milestone_db_file)
 
     # create table (if needed)
     if conn is not None:
@@ -402,7 +500,6 @@ def main():
         the_rank = rank(conn, test_player)
         print('rank of TeamDuck {rnk}'.format(rnk=the_rank))
 
-        # get_players_table(conn)
     else:
         print('There was an error establishing database connection.')
 
@@ -417,7 +514,7 @@ def main():
         admin_test = "godly"
 
         # permissions TESTS
-        per = view_permission(conn_p, 'TeamDuck#0876')
+        per = get_permission(conn_p, 'TeamDuck#0876')
         print('permissions of TeamDuck is {per}'.format(per=per))
         add_permissions_username(conn_p, 'TeamDuck#0876', test_user, moder_number)
         add_permissions_username(conn_p, 'TeamDuck#0876', test_server_admin, moder_lead_number)
@@ -428,10 +525,20 @@ def main():
         # delete_admin(conn_p, 'TeamDuck#0876', 'DamagedTwitch#9044')
         add_fake_admin(conn_p, 'dingle')
 
-        get_permissions_table(conn_p)
-        get_players_table(conn)
+
     else:
         print("there is an error establishing the permissions database")
+
+    if conn_m is not None:
+        create_milestone_table(conn_m, milestone_table)
+        test_user = 'DamagedTwitch#9044'
+        tuple_user = (test_user, 1.0, 2.0, 0.0, 4, 5, 6, 7)
+        add_milestone_user(conn_m, tuple_user)
+        edit_win_percentage(conn_m, test_user)
+
+        get_milestones_table(conn_m)
+        get_permissions_table(conn_p)
+        get_players_table(conn)
 
 
 if __name__ == '__main__':

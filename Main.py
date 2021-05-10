@@ -37,3 +37,4 @@ import sqlite3
 # runs the token/makes bot active. anything after this doesn't run until the client is terminated/closed
 # client.run(TOKEN)
 # client.close()
+DatabaseAccess.get_permission(conn_p, 'TeamDuck')
