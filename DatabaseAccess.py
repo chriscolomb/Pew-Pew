@@ -350,6 +350,7 @@ def get_players_table(conn):
 # a SET variable
 # a table variable, to possibly clean up code but could get confusing with method names. but delete username and insert
 # may be able to be combined
+# not sure if this is even possible...
 def main():
     db_file = ':memory:'
     permissions_db_file = ':memory:'
