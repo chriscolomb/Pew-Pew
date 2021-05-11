@@ -37,4 +37,20 @@ import sqlite3
 # runs the token/makes bot active. anything after this doesn't run until the client is terminated/closed
 # client.run(TOKEN)
 # client.close()
-DatabaseAccess.get_permission(conn_p, 'TeamDuck')
+def rank(conn, username, column, table):
+    """returns the player's rank
+    :param: conn: connection object
+    :param: username: the player/username that needs the rank retrieved"""
+    select_statement = 'SELECT ' + column + ''' 
+                          FROM ''' + table + '''
+                          WHERE username =?
+                          '''
+    # looks through database.
+    # gets the ranking of the player but will be a tuple.
+    # changes tuple to int.
+
+    c = conn.cursor()
+    c.execute(select_statement, (username,))
+    the_ranking = c.fetchone()
+    the_ranking_int = functools.reduce(lambda sub, ele: sub * 10 + ele, the_ranking)
+    return int(the_ranking_int)
