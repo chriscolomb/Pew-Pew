@@ -54,10 +54,6 @@ def create_milestones_connection(db_file_m):
 
     return conn
 
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------
-
 # create all tables
 def create_table(conn, create_table_sql):
     """ create a table from the create_table_sql statement
@@ -70,7 +66,6 @@ def create_table(conn, create_table_sql):
         c.execute(create_table_sql)
     except Error as e:
         print(e)
-
 
 def create_permissions_table(conn_p, permissions_table):
     """ create a permission table from the permission_table statement
@@ -97,7 +92,6 @@ def create_permissions_table(conn_p, permissions_table):
         c_p.execute(row, (admin_username1, admin))
         c_p.execute(row, (admin_username2, admin))
 
-
 def create_milestone_table(conn_m, milestone_table):
     """ create a milestone table from the milestone_table statement
     :param milestone_table: a permissions, CREATE TABLE statement
@@ -110,15 +104,12 @@ def create_milestone_table(conn_m, milestone_table):
     except Error as e:
         print(e)
 
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------
-
 # add usernames to tables and other add (insert) methods that follow
-def add_username(conn, placeholder):
+def add_username(conn, placeholder, num_of_columns):
     """ Adds username into the players table
     :param conn: the conn object for players database
     :param placeholder: the tuple for username plus stats
+    :param num_of_columns: the number of columns to add
     :return:
     """
     insert_user = '''INSERT INTO players(username,ranking, last_update,report_points, win_streak,lose_streak, start_season_rank, 
@@ -127,7 +118,6 @@ def add_username(conn, placeholder):
     c = conn.cursor()
     c.executemany(insert_user, (placeholder,))
     conn.commit()
-
 
 def add_milestone_user(conn_m, placholder_m):
     """Add a user to the milestone table
@@ -141,45 +131,72 @@ def add_milestone_user(conn_m, placholder_m):
     c_m = conn_m.cursor()
     c_m.executemany(insert_user, (placholder_m,))
 
-
-def add_fake_admin(conn_p, username):
+def add_fake_admin(conn, username, column, table, key):
     """ the function that gives 'mod admin' to owners of other servers
-    :param conn_p: the permissions database object
+    :param conn: the permissions database object
     :param username: the user to be added to the database, permissions
+    :param column: the column in permissions
+    :param table: the table that is permissions
+    :param key: the primary key of the table
     :return:
     """
+    'username should be primary key'
     fake_admin = 1
-    row = '''   INSERT INTO permissions(username,permission)
+    row = '''   INSERT OR IGNORE INTO ''' + table + '(' + key + ',' + column + ''')
                     VALUES(?, ?)'''
-    c_p = conn_p.cursor()
-    c_p.execute(row, (username, fake_admin))
-    conn_p.commit()
-
-
+    c = conn.cursor()
+    c.execute(row, (username, fake_admin))
+    conn.commit()
 # ---------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+# --------------------------------------lines above this can be in conn class-------------------------------------------
+# -----can use loops, setters and such to set table, add columns to existing, set up database connection, plus more-----
 
-def add_wins(conn_m, username, negative):
+
+def add_wins(conn, username, negative, column, table):
     """ adds a win to user
-    :param conn_m: connection object to the milestones table
+    :param conn: connection object to the milestones table
     :param username: the username to add wins
     :param negative: a boolean the dictates if the value will be subtracted or added
-    :return:
+    :param column: the column in milestones to add wins too
+    :param table: the table for milestones
+    :return: none
     """
+    wins = None
+    if not negative:
+        wins = get_column_value(conn, username, column, table)
+        wins = wins + 1
+        update_column(conn, username, column, table, wins)
+    else:
+        wins = get_column_value(conn, username, column, table)
+        wins = wins - 1
+        update_column(conn, username, column, table, wins)
 
 
-def add_loss(conn_m, username, negative):
-    """add's a loss to a user
-    :param conn_m: connection object to the milestones table
-    :param username: the username to add a loss
+def add_loss(conn, username, negative, column, table):
+    """ adds a losses to user
+    :param conn: connection object to the milestones table
+    :param username: the username to add wins
     :param negative: a boolean the dictates if the value will be subtracted or added
-    :return:
+    :param column: the column in milestones to add wins too
+    :param table: the table for milestones
+    :return: none
     """
+    losses = None
+    if not negative:
+        losses = get_column_value(conn, username, column, table)
+        losses = losses + 1
+        update_column(conn, username, column, table, losses)
+    else:
+        losses = get_column_value(conn, username, column, table)
+        losses = losses - 1
+        update_column(conn, username, column, table, losses)
 
 
-# ---------------------------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------------------------
-
+# update win percentage when the user request for win percentage
 def update_win_percentage(conn_m, username, column_w, column_l, column, table):
     """calculates the win percentage and updates the win percentage
     :param table: the table that the columns are in
@@ -199,9 +216,6 @@ def update_win_percentage(conn_m, username, column_w, column_l, column, table):
     calculate_win_percentage = round((wins / (wins + losses)) * 100, 4)
     c_m.execute(win_percentage_statement, (calculate_win_percentage, username))
 
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------
 
 def update_column(conn, username, column, table, value):
     """ updates the column given with the value
@@ -241,11 +255,28 @@ def get_column_value(conn, username, column, table):
     return int(column_value)
 
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------
+def check_in_table(conn, username, table):
+    """
+    :param conn: the connection object
+    :param username: the username to check
+    :param table:
+    :return: returns true if username is in table, false otherwise
+    """
+    select_statement = '''SELECT 1
+                          FROM  ''' + table + '''
+                          WHERE username =?
+                          '''
+    c = conn.cursor()
+    if c.execute(select_statement, (username,)).fetchone():
+        check = True
+    else:
+        check = False
+
+    return check
+
 
 # admin only methods,  maybe add a edit column and row methods for admins
-def delete_username(conn, conn_p, username, to_delete, table, column_permissions, table_permissions,):
+def delete_username(conn, conn_p, username, to_delete, table, column_permissions, table_permissions, ):
     """deletes user from database
     :param conn: connection object
     :param conn_p:
@@ -254,87 +285,142 @@ def delete_username(conn, conn_p, username, to_delete, table, column_permissions
     :param table: the players table
     :param column_permissions: the column in permissions
     :param table_permissions:  the table for permissions
-    :return: none
+    :return: false, if permissions are denied
     """
-    """
-    :param: conn: 
-    :param: username: the player/username that needs the rank retrieved"""
-    username_permission = get_column_value(conn_p, username, column_permissions, table_permissions)
+    check = True
+    username_permission = 7
+    check_username = check_in_table(conn, username, table_permissions)
+    if check_username:
+        username_permission = get_column_value(conn_p, username, column_permissions, table_permissions)
+    else:
+        check = False
     if username_permission == 0:
         delete_statement = '''DELETE FROM ''' + table + '''
                               WHERE username = ?'''
         c = conn.cursor()
         c.execute(delete_statement, (to_delete,))
+    else:
+        check = False
 
 
-# not sure if we should add this
-def insert_admins(conn_p, username, to_add, admin):
+def insert_admins(conn, username, to_add, column_permissions, table_permissions, key):
     """deletes admins from admin list, only admin can access this
-    :param: conn_p: the permissions
-    :param: username: the username that's the admin
-    :param: to_add: the username that is to be added as an admin"""
-    username_permission = get_permission(conn_p, username)
-    if username_permission == 0:
-        row = '''   INSERT OR IGNORE INTO permissions(username,permission)
+    :param conn: the permissions object
+    :param username: the username that's the admin
+    :param to_add: the username that is to be added as an admin
+    :param column_permissions: the column in permissions
+    :param table_permissions:  the table for permissions
+    :param key: the primary key of the table
+    :return 0 if admin, 1 if fake admin and 2 if moderator, 3 if permissions failed"""
+
+    admin = 0
+    fake_admin = 1
+    moderator = 2
+    normal = 3
+    username_permission = 25
+
+    check_username = check_in_table(conn, username, table_permissions)
+    if check_username:
+        username_permission = get_column_value(conn, username, column_permissions, table_permissions)
+    else:
+        username_permission = normal
+    if username_permission == admin:
+        row = '''   INSERT OR IGNORE INTO ''' + table_permissions + '(' + key + ',' + column_permissions + ''')
                     VALUES(?, ?)'''
-        c_p = conn_p.cursor()
-        c_p.execute(row, (to_add, admin))
-        conn_p.commit()
+        c = conn.cursor()
+        c.execute(row, (to_add, moderator))
+        conn.commit()
+
+    elif username_permission == fake_admin:
+        row = '''   INSERT OR IGNORE INTO ''' + table_permissions + '(' + key + ',' + column_permissions + ''')
+                    VALUES(?, ?)'''
+        c = conn.cursor()
+        c.execute(row, (to_add, moderator))
+        conn.commit()
+    elif username_permission == moderator:
+        username_permission = normal
+    else:
+        username_permission = normal
+
+    return username_permission
 
 
-# not sure if this method is actually needed, unless we decide to promote someone.
-def delete_admin(conn_p, username, to_delete):
-    """deletes admin from database
-    :param: conn: connection object
-    :param: yo_delete: the player/username that needs to be deleted
-    :param: username: the player/username that is trying to delete"""
-    username_permission = get_permission(conn_p, username)
+def delete_admin(conn, username, to_delete, column_permissions, table_permissions):
+    """ deletes admin/mods from database
+    :param conn: connection object
+    :param username: the username that is trying to delete admin
+    :param to_delete: the username that is being deleted
+    :param column_permissions: the column in permissions
+    :param table_permissions:  the table for permissions
+    :return: a boolean value, if the person has permission
+    """
+    to_delete_permission = 0
+    username_permission = 0
+    check = True
+    check_username = check_in_table(conn, username, table_permissions)
+    check_to_delete = check_in_table(conn, to_delete, table_permissions)
+    if check_username and check_to_delete:
+        username_permission = get_column_value(conn, username, column_permissions, table_permissions)
+        to_delete_permission = get_column_value(conn, to_delete, column_permissions, table_permissions)
+    else:
+        check = False
+
     if username_permission == 0:
-        delete_statement = '''DELETE FROM permissions
-                           WHERE username = ?'''
-        c_p = conn_p.cursor()
+        delete_statement = '''DELETE FROM ''' + table_permissions + '''
+                              WHERE username = ?'''
+        c_p = conn.cursor()
         c_p.execute(delete_statement, (to_delete,))
+    elif username_permission < to_delete_permission:
+        delete_statement = '''DELETE FROM ''' + table_permissions + '''
+                              WHERE username = ?'''
+        c_p = conn.cursor()
+        c_p.execute(delete_statement, (to_delete,))
+    else:
+        check = False
+
+    return check
 
 
 # mod and admin only methods below
-def add_permissions_username(conn_p, username, add_user, mod_number):
-    """adds user as mods to the table permissions
-    :param: conn_p: the permissions table object
-    :param: username: the username adding mod privilege
-    :param: add_user: the username to be added to mod
-    :param: mod_number: the number that represents server admin (not main server)"""
-    permissions = get_permission(conn_p, username)
-    if permissions < 1:
-        row = '''   INSERT OR IGNORE INTO permissions(username,permission)
-                    VALUES(?, ?)'''
-        c_p = conn_p.cursor()
-        c_p.execute(row, (add_user, mod_number))
-        conn_p.commit()
+
+# may change this to add permissions based off of current users
+# permission and the permission to be added same for delete
+def promote_username(conn, username, promotion, table, column, moderator_level):
+    """adds user as mods to the table permissions/ this could also be used to demote usernames
+    :param conn: the permissions table object
+    :param username: the username adding mod privilege
+    :param promotion: the username to be added to mod
+    :param table: the permissions table
+    :param column: the column to be updated, permission
+    :param moderator_level: the number that represents server admin (not main server)"""
+
+    check = True
+    check_username = check_in_table(conn, username, table)
+    check_promotion = check_in_table(conn, promotion, table)
+    if check_username:
+        username_permission = get_column_value(conn, username, column, table)
+    else:
+        check = False
+        return check
+    if check_promotion:
+        promotion_permission = get_column_value(conn, promotion, column, table)
+    else:
+        promotion_permission = 3
+
+    if username_permission < promotion_permission:
+        update_column(conn, promotion, column, table, moderator_level)
+    else:
+        check = False
 
 
-def delete_mod(conn_p, username, to_delete):
-    """deletes moderator from database
-    :param: conn_p: connection object
-    :param: yo_delete: the player/username that needs to be deleted
-    :param: username: the player/username that is trying to delete"""
-    test_if_admin = get_permission(conn_p, to_delete)
-    username_permission = get_permission(conn_p, username)
-    if username_permission < test_if_admin:
-        delete_statement = '''DELETE FROM permissions
-                           WHERE username = ?'''
-        c_p = conn_p.cursor()
-        c_p.execute(delete_statement, (to_delete,))
-
-
-# Have to incorporate undo wins/loses too
-# This will see if last_update is negative or positive and revert the loss or win
-#
-#
-
-
-def undo_last_ranking(conn, conn_p, conn_m, username, undo_user, column, table, column_players, table_players):
+def undo_last_ranking(conn, conn_p, conn_m, username, undo_user, column, table,
+                      column_players, table_players, column_milestones_wins, column_milestones_losses,
+                      table_milestones):
     """the score received from ELO is given back to the users, if there is a mistake, the last_update will be recorded
     only if the users report the game. A mod can review and then use this method.
+    :param column_milestones_losses: the column for losses
+    :param column_milestones_wins: the column wins for milestones
+    :param table_milestones: table for milestones
     :param table_players: the players table, to be updated
     :param column_players:  the username to be undone, column; in the table in "table_players"
     :param conn_m: database object for milestones
@@ -343,10 +429,29 @@ def undo_last_ranking(conn, conn_p, conn_m, username, undo_user, column, table, 
     :param conn: the object for players database
     :param conn_p: the object for permissions database
     :param username: the username that is initiating the undo
-    :param undo_user: the username that needs the points undone"""
+    :param undo_user: the username that needs the points undone
+    :return false if the user does not have permission to do so"""
     revert_wins = True
     revert_loss = True
-    if 0 <= get_column_value(conn_p, username, column, table) < 3:
+    username_permission = None
+    undo_user_permission = None
+    check = True
+
+    check_username = check_in_table(conn, username, table)
+    check_undo_user = check_in_table(conn, undo_user, table)
+
+    # returns here is username isn't in permissions
+    if check_username:
+        username_permission = get_column_value(conn_p, username, column, table)
+    else:
+        check = False
+        return check
+    if check_undo_user:
+        undo_user_permission = get_column_value(conn_p, undo_user, column, table)
+    else:
+        undo_user_permission = 3
+
+    if username_permission <= undo_user_permission:
         select_statement = '''SELECT ''' + column_players + '''
                               FROM ''' + table_players + '''
                               WHERE username =?
@@ -360,9 +465,9 @@ def undo_last_ranking(conn, conn_p, conn_m, username, undo_user, column, table, 
         update_column(conn, undo_user, column_players, table_players, updated_pts)
 
         if report_points < 0:
-            add_loss(conn_m, username, revert_loss)
+            add_loss(conn_m, username, revert_loss, column_milestones_wins, table_milestones)
         elif report_points > 0:
-            add_wins(conn_m, username, revert_wins)
+            add_wins(conn_m, username, revert_wins, column_milestones_losses, table_milestones)
         else:
             print('something went wrong with removing or adding wins')
 
@@ -376,14 +481,6 @@ def get_table(conn, table):
     c.execute(sql)
     print(c.fetchall())
 
-
-# might be good to make a table for a string variable, for similar methods. instead of having multiple methods.
-# a SELECT variable
-# a FROM variable
-# a SET variable
-# a table variable, to possibly clean up code but could get confusing with method names. but delete username and insert
-# may be able to be combined
-# not sure if this is even possible...
 
 # can create a database object for the stuff below
 def main():
@@ -422,6 +519,7 @@ def main():
     conn_p = create_permissions_connection(permissions_db_file)
     conn_m = create_milestones_connection(milestone_db_file)
 
+
     # create table (if needed)
     if conn is not None:
         create_table(conn, players_table)
@@ -432,11 +530,12 @@ def main():
         get_column = 'ranking'
         table = 'players'
         placeholder_players_tuple = (test_player, test_ranking, 0, 6, 0, 0, 0, 0)
-        add_username(conn, placeholder_players_tuple)
+        add_username(conn, placeholder_players_tuple, 3)
         get_table(conn, table)
-        update_column(conn, test_player, table, get_column, new_ranking)
+        update_column(conn, test_player, get_column, table, new_ranking)
         get_column_value(conn, test_player, get_column, table)
         get_table(conn, table)
+
 
 
     else:
@@ -444,12 +543,20 @@ def main():
 
     if conn_p is not None:
         create_permissions_table(conn_p, permissions_table)
+        c = conn_p.cursor()
         admin = 0
         fake_admin = 1
         moder_number = 2
         test_user = 'glabber'
         test_server_admin = 'I am demi-god'
         admin_test = "godly"
+        table = 'permissions'
+        admin_username1 = 'TeamDuck#0876'
+        admin_username2 = 'DamagedTwitch#9044'
+        delete_admin(conn_p, admin_username2, admin_username1, 'permission', table)
+        add_fake_admin(conn_p, admin_test, 'permission', table)
+        get_table(conn_p, table)
+        print(check_in_table(conn_p, test_user, table))
 
     else:
         print("there is an error establishing the permissions database")
