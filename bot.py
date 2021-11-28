@@ -1,99 +1,49 @@
-import os
-
 import discord
-import mysql.connector
-from dotenv import load_dotenv
-import mysql.connector
+import mongodb
+from player import Player
 
-load_dotenv()
-# Pew Pew bot token
-TOKEN = os.getenv('BOT_TOKEN')
-# Server token
-GUILD = os.getenv('SERVER_TOKEN')
+class MyClient(discord.Client):
+    async def on_ready(self):
+        print('Logged on as {0}!'.format(self.user.name))
 
-client = discord.Client()
+    async def on_message(self, message):
+        print('Message from {0.author}: {0.content}'.format(message))
+        if message.content == "!create":
+            print("test command received")
+            for id in mongodb.player_collection.find({},
+            {"_id": 1, "rating": 0, "win_count": 0, "lose_count": 0, "win_streak": 0, "best_win_streak": 0}):
+                for key in id:
+                    if id[key] == message.author.id:
+                        print("{0.author} is already in the database.".format(message))
+                        return
+            
+            p1 = Player(message.author.id)
+            p1_entry = {
+                "_id": p1.id, 
+                "rating": p1.rating, 
+                "win_count": p1.win_count, 
+                "lose_count": p1.lose_count, 
+                "win_streak": p1.win_streak, 
+                "best_win_streak": p1.best_win_streak
+                }
+            mongodb.player_collection.insert_one(p1_entry)
+            print("{0.author} entry for database created.".format(message))
+    
+        
+        elif message.content == "!delete":
+            for id in mongodb.player_collection.find({},
+            {"_id": 1, "rating": 0, "win_count": 0, "lose_count": 0, "win_streak": 0, "best_win_streak": 0}):
+                for key in id:
+                    if id[key] == message.author.id:
+                        delete_id = {"_id": message.author.id}
+                        mongodb.player_collection.delete_one(delete_id)
+                        print("Entry for {0.author} has been deleted.".format(message))
+                        return
+            
+            print("{0.author} is not in the database.".format(message))
+                    
+                        
 
-mydb = mysql.connector.connect(
-    host='34.84.228.251',
-    user='root',
-    password='iI5knykhgxA0JfKw',
-    database='PewPew'
-)
+client = MyClient()
+client.run('NzkwNzg0MzU0NTgxNzQxNTk5.X-FpUg.AfDsH6U1x5GNlE_1tjGwmjjuNVU')
 
-mycursor = mydb.cursor()
-
-sql = "INSERT INTO PewPew,PewPew (User, Value, Wins, Loses) VALUES (%s, %d, %d, %d)"
-val = ("TeamDuck#0876", 0.5, 2, 3)
-mycursor.execute(sql, val)
-
-mydb.commit()
-
-print(mycursor.rowcount, "record inserted.")
-
-# def connect():
-#     # Connect to MySQL database
-#     conn = None
-#     try:
-#         conn = mysql.connector.connect(
-#             host='34.84.228.251',
-#             user='root',
-#             password='iI5knykhgxA0JfKw',
-#             database='PewPew')
-#         if conn.is_connected():
-#             print('Connected to MySQL database')
-#
-#     except Error as e:
-#         print(e)
-#
-#     finally:
-#         if conn is not None and conn.is_connected():
-#             conn.close()
-#
-#
-# def insert_user(user):
-#     query = "INSERT INTO PewPew(user) " \
-#             "VALUES(%s)"
-#     args = user
-#
-#     try:
-#         db_config = read_db_config()
-#         conn = MySQLConnection(**db_config)
-#
-#         cursor = conn.cursor()
-#         cursor.execute(query, args)
-#
-#         if cursor.lastrowid:
-#             print('last insert id', cursor.lastrowid)
-#         else:
-#             print('last insert id not found')
-#
-#         conn.commit()
-#     except Error as error:
-#         print(error)
-#
-#     finally:
-#         cursor.close()
-#         conn.close()
-
-
-# Test connection with bot/guild and MySQL connection
-@client.event
-async def on_ready():
-    for guild in client.guilds:
-        if guild.name == GUILD:
-            break
-
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name} (id: {guild.id})'
-    )
-
-    members = '\n - '.join([member.name for member in guild.members])
-    print(f'Guild Members:\n - {members}')
-
-    # connect()
-    #
-    # insert_user('TeamDuck')
-
-
-client.run(TOKEN)
