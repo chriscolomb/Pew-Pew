@@ -1,2 +1,2 @@
 # pewpew
-Ranking bot for TeamDuck Discord Server.
+Ranking bot for TeamDuck nextcord Server.

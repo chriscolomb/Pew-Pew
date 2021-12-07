@@ -215,7 +215,7 @@ def edit_username_season_end(conn, username, end_season_rank):
 # ---------------------------------------------------------------------------------------------------------------------
 
 def edit_permissions(conn_p, username, add):
-    """edits the permissions of the username, this is for getting admins when bot joins discord
+    """edits the permissions of the username, this is for getting admins when bot joins nextcord
     :param: conn_p: the connections object of permission database
     :param: username: the username to be edited
     :param: add: the boolean expression, whether the user will be added or removed]
