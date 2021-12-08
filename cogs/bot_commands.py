@@ -71,6 +71,7 @@ class Bot_Commands(commands.Cog):
                         return
             else:
                 await ctx.channel.send("user {0} and {1} is not in the database".format(user.id,ctx.author.id))
+                #can implement later, adds one user or another int he database if not found.
                 
             
 

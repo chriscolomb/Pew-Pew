@@ -9,7 +9,7 @@ import mongodb
 from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose
-### this would be used for only admin in TTD server
+# this would be used for only admin in TTD server, need to implement this
 class Admin_Commands(commands.Cog):
     """Admin Commands"""
 
@@ -48,7 +48,7 @@ class Admin_Commands(commands.Cog):
             await ctx.channel.send("<@{0}> entry for database created.".format(user))
         else:
             await ctx.channel.send("no admin permissions")
-            
+
     @commands.command()
     async def deletePlayer(self,ctx, user: nextcord.Member):
         """deletes user from database"""
