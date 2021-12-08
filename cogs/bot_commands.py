@@ -15,6 +15,7 @@ class Bot_Commands(commands.Cog):
     
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member):
+        """This will reveal all stats for player"""
         for id in mongodb.player_collection.find():
             if id["_id"] == user.id:
                 title = "Stats for {0}".format(user)
@@ -62,13 +63,15 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
+        """initiates fight process"""
         #checks if both users are in the database, can add to the database (implement later)
         for id in mongodb.player_collection.find():
             if id["_id"] == user.id:
-                        await ctx.send("fight or no", view =AttackButtons())
+                        await ctx.channel.send("settle it in smash", view =AttackButtons())
                         return
             else:
                 await ctx.channel.send("user {0} and {1} is not in the database".format(user.id,ctx.author.id))
+                
             
 
 
