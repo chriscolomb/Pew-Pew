@@ -26,18 +26,28 @@ class WinorLose(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    #Where the magic will happen; the buttons will call the updateELO class from here
+    #Where the magic will happen; the buttons will call the updateELO class from here, also need to disable buttons here
     async def handle_win_or_lose(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         #placeholder, this is where the button will interact with the database
-        print("")
+        self.win_button.disabled == True
+        self.loss_button.disabled == True
 
     #button for winning
     @nextcord.ui.button(label= "win", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "Iwin01")
     async def win_button(self, button, interaction):
         get_user = interaction.user.id
         await interaction.response.send_message("Lucky you")
+        await self.handle_win_or_lose(button,interaction)
     #button for losing
     @nextcord.ui.button(label= "lose", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "Ilose01")
     async def loss_button(self, button, interaction):
         get_user = interaction.user.id
         await interaction.response.send_message("I'm sorry for your loss")
+    
+    #button for dispute
+    @nextcord.ui.button(label= "dispute", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "dispute01")
+    async def dispute_button(self, button, interaction):
+        get_user = interaction.user.id
+        await interaction.response.send_message("Will undo last battle")
+
+    
