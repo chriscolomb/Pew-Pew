@@ -77,7 +77,7 @@ class Bot_Commands(commands.Cog):
                         p2 = user.id
                         battle = Battle(p1,p2)
                         battle_entry = {
-                            "_id": battle.p1,
+                            "p1": battle.p1,
                             "p2": battle.p2,
                             "gained_rank": battle.gained_rank,                            
                             "lost_rank": battle.lost_rank,
