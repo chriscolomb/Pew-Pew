@@ -71,14 +71,6 @@ class MyClient(discord.Client):
             
             await message.channel.send("<@{0.author.id}> is not in the database.".format(message))
     
-        
-        
-
-        
-    
-                    
-                        
-
 client = MyClient()
 client.run('NzkwNzg0MzU0NTgxNzQxNTk5.X-FpUg.AfDsH6U1x5GNlE_1tjGwmjjuNVU')
 

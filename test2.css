@@ -1,0 +1,1703 @@
+html
+{
+	--viewport-width: 1920;
+	--viewport-height: calc(var(--viewport-width) * 0.5625);
+
+	--scene-out-transition: fade-out;
+	--scene-out-transition-time: 0.5;
+	--scene-in-transition: fade-in;
+	--scene-in-transition-time: var(--scene-out-transition-time);
+
+	--background-visibility: visible;
+	--background-image: url("https://streameta.com/users/ca91195ae612e23f2f0707baef07783e/images/Cinderbloc.png");
+	--background-top: 0;
+	--background-width: var(--viewport-width);
+	--background-left: calc(calc(var(--viewport-width) - var(--background-width)) / 2);
+	--background-height: var(--viewport-height);
+
+	--text-font: Calibri;
+	--text-size: calc(var(--viewport-height) * 0.0194);
+	--text-color: white;
+	--text-align: center;
+	--text-shadow: 2px 2px 4px #000000;
+
+	--tournament-visibility: hidden;
+	--tournament-top: calc(var(--background-top) + calc(var(--viewport-height) / 160));
+	--tournament-width: calc(var(--viewport-width) * 0.2385);
+	--tournament-left: calc(calc(var(--viewport-width) - var(--round-width)) / 2);
+	--tournament-text-font: var(--text-font);
+	--tournament-text-size: var(--text-size);
+	--tournament-text-color: var(--text-color);
+	--tournament-text-align: var(--text-align);
+	--tournament-name-display: inline;
+	--tournament-abbr-display: none;
+	--tournament-number-display: none;
+	--tournament-frequency-display: none;
+
+	--brackets-visibility: hidden;
+	--brackets-top: calc(var(--background-top) + calc(var(--viewport-height) / 160));
+	--brackets-width: calc(var(--viewport-width) * 0.2385);
+	--brackets-left: calc(calc(var(--viewport-width) - var(--round-width)) / 2);
+	--brackets-text-font: var(--text-font);
+	--brackets-text-size: var(--text-size);
+	--brackets-text-color: var(--text-color);
+	--brackets-text-align: var(--text-align);
+
+	--event-visibility: hidden;
+	--event-top: calc(var(--background-top) + calc(var(--viewport-height) / 160));
+	--event-width: calc(var(--viewport-width) * 0.2385);
+	--event-left: calc(calc(var(--viewport-width) - var(--round-width)) / 2);
+	--event-text-font: var(--text-font);
+	--event-text-size: var(--text-size);
+	--event-text-color: var(--text-color);
+	--event-text-align: var(--text-align);
+	--event-game-abbr-display: none;
+	--event-game-name-display: none;
+	--event-type-display: inline;
+
+	--round-visibility: hidden;
+	--round-top: calc(var(--background-top) + calc(var(--viewport-height) / 160));
+	--round-width: calc(var(--viewport-width) * 0.2385);
+	--round-left: calc(calc(var(--viewport-width) - var(--round-width)) / 2);
+	--round-text-font: var(--text-font);
+	--round-text-size: var(--text-size);
+	--round-text-color: var(--text-color);
+	--round-text-align: var(--text-align);
+	--round-bestof-display: none;
+	--round-timer-display: inline;
+	--round-timer-separator: " in ";
+
+	--player-visibility: hidden;
+	--player-width: calc(var(--viewport-width) * 0.135);
+	--player-text-font: var(--text-font);
+	--player-text-size: var(--text-size);
+	--player-separation: calc(var(--player-text-size) * 1.5);
+	--player-separator: "/";
+	--player-text-color: var(--text-color);
+	--player-1-top: calc(var(--background-top) + calc(var(--viewport-height) / 160));
+	--player-1-left: calc(var(--viewport-width) * 0.235);
+	--player-1-text-align: var(--text-align);
+	--player-2-top: var(--player-1-top);
+	--player-2-left: calc(var(--viewport-width) - var(--player-1-left) - var(--player-width));
+	--player-2-text-align: var(--text-align);
+	--player-list-display: none;
+	--player-single-width: auto;
+
+	--player-twitter-visibility: hidden;
+	--player-twitter-width: calc(var(--viewport-width) * 0.1604);
+	--player-twitter-separation: calc(var(--player-text-size) * 1.5);
+	--player-twitter-text-font: var(--text-font);
+	--player-twitter-text-size: calc(var(--text-size) * 0.85);
+	--player-twitter-text-color: var(--text-color);
+	--player-twitter-1-top: calc(var(--player-1-top) + var(--text-size) + calc(var(--viewport-height) / 54));
+	--player-twitter-1-left: calc(var(--viewport-width) * 0.2385);
+	--player-twitter-1-text-align: var(--text-align);
+	--player-twitter-2-top: var(--player-twitter-1-top);
+	--player-twitter-2-left: calc(var(--viewport-width) - var(--player-twitter-1-left) - var(--player-twitter-width));
+	--player-twitter-2-text-align: var(--text-align);
+
+	--crew-crew-display: inline;
+	--crew-sponsor-display: inline;
+	--crew-opacity: 0.75;
+	--crew-text-color: var(--player-text-color);
+	/*--crew-separator: " ";*/
+	--crew-separator-display: none;
+
+	--score-visibility: hidden;
+	--score-width: calc(var(--viewport-width) * 0.05);
+	--score-text-font: var(--text-font);
+	--score-text-size: calc(var(--text-size) * 1.2);
+	--score-text-color: var(--text-color);
+	--score-1-top: calc(var(--player-1-top) - calc(var(--viewport-height) / 400));
+	--score-1-left: calc(var(--player-1-left) - var(--score-width) - calc(var(--viewport-width) / 96));
+	--score-2-top: var(--score-1-top);
+	--score-2-left: calc(var(--viewport-width) - var(--score-1-left) - var(--score-width));
+
+	--losers-side-inline-display: inline;
+	--losers-side-separate-visibility: hidden;
+	--losers-side-width: var(--score-width);
+	--losers-side-opacity: 1;
+	--losers-side-text-font: var(--text-font);
+	/*--losers-side-text-size: calc(var(--score-text-size) * 0.95);*/
+	--losers-side-text-size: var(--player-text-size);
+	--losers-side-text-color: var(--player-text-color);
+	--losers-side-1-top: var(--score-1-top);
+	--losers-side-1-left: calc(var(--viewport-width) * 0.195);
+	--losers-side-2-top: var(--losers-side-1-top);
+	--losers-side-2-left: calc(var(--viewport-width) - var(--losers-side-1-left) - var(--losers-side-width));
+	--losers-side-brackets-display: inline;
+
+	--score-grid-visibility: hidden;
+	--score-grid-width: calc(var(--viewport-width) * 0.03125);
+	--score-grid-height: calc(var(--viewport-height) * 0.0324);
+	--score-grid-opacity: 0.75;
+	--score-grid-text-font: var(--text-font);
+	--score-grid-text-size: 0;
+	--score-grid-text-color: var(--text-color);
+	--score-grid-background-color: grey;
+	--score-grid-match-win-color: rgb(92, 172, 226);
+	--score-grid-set-win-color: rgb(241, 196, 15);
+	--score-grid-winners-side-color: rgb(231, 76, 60);
+	--score-grid-border-color: transparent;
+	--score-grid-1-top: calc(var(--background-top) + calc(var(--viewport-height) / 216));
+	--score-grid-1-left: calc(var(--viewport-width) * 0.1823);
+	--score-grid-1-skew-angle: 45;
+	--score-grid-2-top: var(--score-grid-1-top);
+	--score-grid-2-left: calc(var(--viewport-width) - var(--score-grid-1-left) - var(--score-grid-width));
+	--score-grid-2-skew-angle: calc(-1 * var(--score-grid-1-skew-angle));
+
+	--character-visibility: hidden;
+	--character-width: calc(var(--viewport-width) * 0.01875);
+	--character-separation: calc(var(--character-width) * 0.65);
+	--character-1-top: var(--player-1-top);
+	--character-1-left: calc(var(--viewport-width) * 0.22);
+	--character-2-top: var(--character-1-top);
+	--character-2-left: calc(var(--viewport-width) - var(--character-1-left) - var(--character-width));
+
+	--character-portrait-visibility: hidden;
+	--character-portrait-width: calc(var(--viewport-width) * 0.1);
+	--character-portrait-separation: calc(var(--character-portrait-width) * 0.65);
+	--character-portrait-1-top: var(--player-1-top);
+	--character-portrait-1-left: 0;
+	--character-portrait-2-top: var(--character-portrait-1-top);
+	--character-portrait-2-left: calc(var(--viewport-width) - var(--character-portrait-1-left) - var(--character-portrait-width));
+
+	--player-location-visibility: hidden;
+	--player-location-width: calc(var(--viewport-width) * 0.01875);
+	--player-location-separation: calc(var(--player-location-width) * 0.65);
+	--player-location-1-top: var(--character-1-top);
+	--player-location-1-left: calc(var(--viewport-width) * 0.37);
+	--player-location-2-top: var(--player-location-1-top);
+	--player-location-2-left: calc(var(--viewport-width) - var(--player-location-1-left) - var(--player-location-width));
+
+	--color-visibility: hidden;
+	--color-width: var(--character-width);
+	--color-height: var(--color-width);
+	--color-1-top: var(--character-1-top);
+	--color-1-left: var(--character-1-left);
+	--color-2-top: var(--color-1-top);
+	--color-2-left: calc(var(--viewport-width) - var(--color-1-left) - var(--color-width));
+
+	--team-name-visibility: hidden;
+	--team-name-width: var(--player-twitter-width);
+	--team-name-text-font: var(--text-font);
+	--team-name-text-size: var(--player-twitter-text-size);
+	--team-name-text-color: var(--text-color);
+	--team-name-1-top: var(--player-twitter-1-top);
+	--team-name-1-left: var(--player-twitter-1-left);
+	--team-name-1-text-align: var(--player-twitter-1-text-align);
+	--team-name-2-top: var(--player-twitter-2-top);
+	--team-name-2-left: var(--player-twitter-2-left);
+	--team-name-2-text-align: var(--player-twitter-2-text-align);
+
+	--commentator-visibility: hidden;
+	--commentator-width: var(--player-width);
+	--commentator-text-font: var(--text-font);
+	--commentator-text-size: var(--text-size);
+	--commentator-text-color: var(--text-color);
+	--commentator-1-top: calc(var(--viewport-height) * 0.9);
+	--commentator-1-left: var(--player-1-left);
+	--commentator-1-text-align: var(--text-align);
+	--commentator-2-top: var(--commentator-1-top);
+	--commentator-2-left: calc(var(--viewport-width) - var(--commentator-1-left) - var(--commentator-width));
+	--commentator-2-text-align: var(--text-align);
+	--commentator-3-top: var(--commentator-2-top);
+	--commentator-3-left: calc(var(--commentator-2-left) + var(--commentator-width));
+	--commentator-3-text-align: var(--text-align);
+	--commentator-4-top: var(--commentator-2-top);
+	--commentator-4-left: calc(var(--commentator-3-left) + var(--commentator-width));
+	--commentator-4-text-align: var(--text-align);
+
+	--commentator-twitter-visibility: hidden;
+	--commentator-twitter-width: var(--player-twitter-width);
+	--commentator-twitter-text-font: var(--player-twitter-text-font);
+	--commentator-twitter-text-size: var(--player-twitter-text-size);
+	--commentator-twitter-text-color: var(--player-twitter-text-color);
+	--commentator-twitter-1-top: calc(var(--commentator-1-top) + var(--text-size) + calc(var(--viewport-height) / 54));
+	--commentator-twitter-1-left: var(--commentator-1-left);
+	--commentator-twitter-1-text-align: var(--player-twitter-1-text-align);
+	--commentator-twitter-2-top: var(--commentator-twitter-1-top);
+	--commentator-twitter-2-left: var(--commentator-2-left);
+	--commentator-twitter-2-text-align: var(--player-twitter-1-text-align);
+	--commentator-twitter-3-top: var(--commentator-twitter-1-top);
+	--commentator-twitter-3-left: var(--commentator-3-left);
+	--commentator-twitter-3-text-align: var(--commentator-twitter-1-text-align);
+	--commentator-twitter-4-top: var(--commentator-twitter-1-top);
+	--commentator-twitter-4-left: var(--commentator-4-left);
+	--commentator-twitter-4-text-align: var(--commentator-twitter-1-text-align);
+
+	--maps-visibility: hidden;
+	--maps-top: calc(var(--viewport-height) * 0.08);
+	--maps-left: 0;
+	--maps-width: auto;
+	--maps-single-width: calc(var(--viewport-width) * 0.05625);
+	--maps-single-height: calc(var(--maps-single-width) * 0.83333); /*0.72*/
+	--maps-picked-color: #0f0;
+	--maps-banned-color: #f00;
+	--maps-icon-opacity: 0.9;
+	--maps-icon-size: calc(var(--maps-single-height) * 0.8);
+}
+
+*, *::before
+{
+	box-sizing: border-box;
+	overflow: visible;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	/*white-space: nowrap;*/
+}
+
+html
+{
+	--viewport-width-actual: 100vw;
+	--viewport-height-actual: calc(100vw * calc(var(--viewport-height) / var(--viewport-width)));
+	--ratio: calc(var(--viewport-width-actual) / var(--viewport-width));
+	text-font: Calibri;
+	font-family: Calibri;
+	font-size: calc(var(--text-size) * 125vw / var(--viewport-width));
+	font-weight: bold;
+	color: var(--text-color);
+}
+
+
+
+body
+{
+	text-align: var(--text-align);
+	margin: 0;
+	width: var(--viewport-width-actual);
+	height: var(--viewport-height-actual);
+	position: relative;
+	overflow: hidden;
+	text-font: Calibri;
+	src: url(Calibri.ttf);
+	text-shadow: 0px 1px 1px #000000;
+
+}
+
+
+
+html.transitionout body
+{
+	animation: var(--scene-out-transition) calc(var(--scene-out-transition-time) * 1s);
+	/*animation-timing-function: ease-out;*/
+}
+
+html.transitionin body
+{
+	animation: var(--scene-in-transition) calc(var(--scene-in-transition-time) * 1s);
+	/*animation-timing-function: ease-in;*/
+}
+
+body::before
+{
+	visibility: var(--background-visibility);
+	content: "";
+	position: absolute;
+	background-image: url("https://streameta.com/users/ca91195ae612e23f2f0707baef07783e/images/Cinderbloc.png");
+	top: calc(var(--background-top) * var(--ratio));
+	left: calc(var(--background-left) * var(--ratio));
+	width: calc(var(--background-width) * var(--ratio));
+	height: calc(var(--background-height) * var(--ratio));
+}
+
+[data-type="event"]>[data-type="start"],
+[data-type="collection"],
+[data-type="playlist"],
+[data-type="obs"],
+[data-type="defeated"],
+[data-type="crew"]>[data-type="sponsor"],
+[data-type="crew"]>[data-type="name"],/**/
+[data-type="color"] [data-type="port"],
+[data-type="color"] [data-type="name"],
+[data-type="twitch"],/**/
+[data-type="youtube"],/**/
+[data-type="character"]>[data-type="name"],
+[data-type="alt"],
+body>[data-type="location"],
+[data-type="commentators"] [data-type="location"],
+[data-event="Crews"] [data-type="bestof"],
+[data-event="Crews"] [data-type="grid"],
+[data-type="tournament"]>[data-type="location"],/**/
+[data-type="maplist"] [data-type="name"],
+[data-type="maplist"] [data-type="notes"],
+[data-type="maplist"] [data-type="status"],
+[data-type="maplist"] [data-type="counterpick"]
+{
+	display: none;
+}
+
+body>*:not([data-type="teams"]):not([data-type="commentators"])
+{
+	position: absolute;
+}
+
+.bounding:not(body),
+body.bounding::before
+{
+	outline: 1px dashed red;
+}
+
+
+
+[data-type="tournament"]
+{
+	visibility: var(--tournament-visibility);
+	top: calc(var(--tournament-top) * var(--ratio));
+	left: calc(var(--tournament-left) * var(--ratio));
+	width: calc(var(--tournament-width) * var(--ratio));
+	font-family: var(--tournament-text-font);
+	font-size: calc(1rem * var(--tournament-text-size) / var(--text-size));
+	color: var(--tournament-text-color);
+	text-align: var(--tournament-text-align);
+}
+
+[data-type="tournament"]>[data-type="name"],
+[data-type="tournament"]>[data-type="abbr"],
+[data-type="tournament"]>[data-type="number"],
+[data-type="tournament"]>[data-type="frequency"]
+{
+	margin-left: 0.15rem;
+	margin-right: 0.15rem;
+}
+
+[data-type="tournament"]>[data-type="name"]
+{
+	display: var(--tournament-name-display);
+}
+
+[data-type="tournament"]>[data-type="abbr"]
+{
+	display: var(--tournament-abbr-display);
+}
+
+[data-type="tournament"]>[data-type="number"]
+{
+	display: var(--tournament-number-display);
+}
+
+[data-type="tournament"]>[data-type="frequency"]
+{
+	display: var(--tournament-frequency-display);
+}
+
+
+
+[data-type="brackets"]
+{
+	display: block;
+	position: absolute;
+	visibility: var(--brackets-visibility);
+	top: calc(calc(var(--brackets-top) - var(--tournament-top)) * var(--ratio));
+	left: calc(calc(var(--brackets-left) - var(--tournament-left)) * var(--ratio));
+	width: calc(var(--brackets-width) * var(--ratio));
+	font-family: var(--brackets-text-font);
+	font-size: calc(1rem * var(--brackets-text-size) / var(--text-size));
+	color: var(--brackets-text-color);
+	text-align: var(--brackets-text-align);
+}
+
+
+
+[data-type="events"]
+{
+	visibility: var(--event-visibility);
+	top: calc(var(--event-top) * var(--ratio));
+	left: calc(var(--event-left) * var(--ratio));
+	width: calc(var(--event-width) * var(--ratio));
+	font-family: var(--event-text-font);
+	font-size: calc(1rem * var(--event-text-size) / var(--text-size));
+	color: var(--event-text-color);
+	text-align: var(--event-text-align);
+}
+
+[data-type="events"]>*>*
+{
+	display: inline;
+}
+
+[data-type="events"] [data-type="game"] [data-type="name"],
+[data-type="events"] [data-type="game"] [data-type="abbr"],
+[data-type="events"] [data-type="type"] [data-type="name"]
+{
+	margin-left: 0.15rem;
+	margin-right: 0.15rem;
+}
+
+[data-type="events"] [data-type="game"] [data-type="name"]
+{
+	display: var(--event-game-abbr-display);
+}
+
+[data-type="events"] [data-type="game"] [data-type="abbr"]
+{
+	display: var(--event-game-name-display);
+}
+
+[data-type="events"] [data-type="type"] [data-type="name"]
+{
+	display: var(--event-type-display);
+}
+
+
+
+[data-type="rounds"]
+{
+	visibility: var(--round-visibility);
+	top: calc(var(--round-top) * var(--ratio));
+	left: calc(var(--round-left) * var(--ratio));
+	width: calc(var(--round-width) * var(--ratio));
+	font-family: var(--round-text-font);
+	font-size: calc(1rem * var(--round-text-size) / var(--text-size));
+	color: var(--round-text-color);
+	text-align: var(--round-text-align);
+}
+
+[data-type="rounds"]>*>*,
+[data-type="rounds"]>*>*>*
+{
+	display: inline;
+}
+
+[data-type="bestof"]::before
+{
+	margin-left: 0.3rem;
+	content: "Bo";
+}
+
+[data-type="bestof"]
+{
+	display: var(--round-bestof-display);
+}
+
+[data-type="timer"]
+{
+	display: var(--round-timer-display);
+}
+
+[data-type="timer"]:not(:empty)::before
+{
+	content: var(--round-timer-separator);
+}
+
+
+
+[data-type="teams"] [data-type="person"],
+[data-event="Doubles"] [data-type="players"]>*:first-child::after
+{
+	visibility: var(--player-visibility);
+	font-family: var(--player-text-font);
+	font-size: calc(1rem * var(--player-text-size) / var(--text-size));
+	color: var(--player-text-color);
+}
+
+[data-type="players"]/*,
+[data-event="Doubles"] [data-type="teams"] [data-type="person"]*/
+{
+	position: absolute;
+	width: calc(var(--player-width) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="players"]
+{
+	top: calc(var(--player-1-top) * var(--ratio));
+	left: calc(var(--player-1-left) * var(--ratio));
+	text-align: var(--player-1-text-align);
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="players"]
+{
+	top: calc(var(--player-2-top) * var(--ratio));
+	left: calc(var(--player-2-left) * var(--ratio));
+	text-align: var(--player-2-text-align);
+}
+
+[data-event="Doubles"] [data-type="players"]>*,
+[data-event="Doubles"] [data-type="players"]>* [data-type="person"]
+{
+	display: inline-block;
+}
+
+[data-event="Doubles"] [data-type="players"]>* [data-type="person"]
+{
+	width: calc(var(--player-single-width) * var(--ratio));
+}
+
+[data-event="Doubles"] [data-type="players"]>*:first-child::after
+{
+	content: var(--player-separator);
+	display: inline-block;
+	margin-left: calc(var(--player-separation) * var(--ratio) / 2);
+	margin-right: calc(var(--player-separation) * var(--ratio) / 2);
+}
+
+/*[data-event="Doubles"] [data-type="players"]>*:nth-child(1) [data-type="person"]
+{
+	text-align: left;
+}
+
+[data-event="Doubles"] [data-type="players"]>*:nth-child(2) [data-type="person"]
+{
+	text-align: right;
+}*/
+
+html:not([data-event="Singles"]):not([data-event="Doubles"]) [data-type="teams"] [data-type="person"]
+{
+	margin-bottom: calc(var(--player-separation) * var(--ratio));
+}
+
+[data-event="Crews"] [data-type="players"]>*:nth-child(n+2)
+{
+	display: var(--player-list-display);
+}
+
+.defeated [data-type="person"]
+{
+	text-decoration: line-through;
+}
+
+/*[data-event="Crews"] [data-type="players"]>*:not(:first-child):not(.defeated) [data-type="character"]>[data-type="image"]
+{
+	display: none;
+}*/
+
+
+[data-type="team"]>[data-type="name"]
+{
+	visibility: var(--team-name-visibility);
+	position: absolute;
+	width: calc(var(--team-name-width) * var(--ratio));
+	font-family: var(--team-name-text-font);
+	font-size: calc(1rem * var(--team-name-text-size) / var(--text-size));
+	color: var(--team-name-text-color);
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="team"]>[data-type="name"]
+{
+	top: calc(var(--team-name-1-top) * var(--ratio));
+	left: calc(var(--team-name-1-left) * var(--ratio));
+	text-align: var(--team-name-1-text-align);
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="team"]>[data-type="name"]
+{
+	top: calc(var(--team-name-2-top) * var(--ratio));
+	left: calc(var(--team-name-2-left) * var(--ratio));
+	text-align: var(--team-name-2-text-align);
+}
+
+
+
+[data-type="person"]>[data-type="crew"],
+[data-type="person"]>[data-type="name"]
+{
+	/*display: inline-block;*/
+	display: inline;
+}
+
+[data-type="crew"]>[data-type="abbr"]:not(:empty)
+{
+	opacity: var(--crew-opacity);
+	color: var(--crew-text-color);
+	/*margin-right: calc(0.018vw * var(--player-text-size));*/
+	margin-right: 0.25em;
+}
+
+[data-type="crew"]>[data-type="sponsor"][data-value="0"]~[data-type="abbr"]:not(:empty)
+{
+	display: var(--crew-crew-display);
+}
+
+[data-type="crew"]>[data-type="sponsor"][data-value="1"]~[data-type="abbr"]:not(:empty)
+{
+	display: var(--crew-sponsor-display);
+}
+
+[data-type="crew"]>[data-type="abbr"]:empty::after
+{
+	display: none;
+	/*content: var(--crew-separator);*/
+}
+
+[data-type="crew"]>[data-type="abbr"]:not(:empty)::after
+{
+	content: " | ";
+	display: var(--crew-separator-display);
+	/*content: var(--crew-separator);*/
+}
+
+
+[data-type="score"] [data-type="number"]
+{
+	visibility: var(--score-visibility);
+	position: absolute;
+	z-index: 1;
+	font-family: var(--score-text-font);
+	font-size: calc(1rem * var(--score-text-size) / var(--text-size));
+	color: var(--score-text-color);
+	width: calc(var(--score-width) * var(--ratio));
+	/*height: calc(var(--score-height) * var(--ratio));*/
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="score"] [data-type="number"]
+{
+	top: calc(var(--score-1-top) * var(--ratio));
+	left: calc(var(--score-1-left) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="score"] [data-type="number"]
+{
+	top: calc(var(--score-2-top) * var(--ratio));
+	left: calc(var(--score-2-left) * var(--ratio));
+}
+
+
+
+[data-type="losers"]
+{
+	position: absolute;
+	display: block;
+	visibility: var(--losers-side-separate-visibility);
+	opacity: var(--losers-side-opacity);
+	z-index: 1;
+	font-family: var(--losers-side-text-font);
+	font-size: calc(1rem * var(--losers-side-text-size) / var(--text-size));
+	color: var(--losers-side-text-color);
+	width: calc(var(--losers-side-width) * var(--ratio));
+}
+
+[data-type="losers"]:empty::before
+{
+	display: none;
+}
+
+[data-type="losers"]:empty::after
+{
+	display: none;
+}
+
+[data-type="losers"]:not(:empty)::before
+{
+	display: var(--losers-side-brackets-display);
+	content: "[";
+	/*content: "(";*/
+}
+
+[data-type="losers"]:not(:empty)::after
+{
+	display: var(--losers-side-brackets-display);
+	content: "]";
+	/*content: ")";*/
+}
+
+/*[data-value="1"]*/
+/*[data-type="losers"]:not(:empty)::before
+{
+	content: var(--losers-side-open-bracket);
+}
+
+[data-type="losers"]:not(:empty)::after
+{
+	content: var(--losers-side-close-bracket);
+}*/
+
+[data-type="teams"]>*:nth-child(1) [data-type="losers"]
+{
+	top: calc(var(--losers-side-1-top) * var(--ratio));
+	left: calc(var(--losers-side-1-left) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="losers"]
+{
+	top: calc(var(--losers-side-2-top) * var(--ratio));
+	left: calc(var(--losers-side-2-left) * var(--ratio));
+}
+
+[data-event="Singles"] [data-losers] [data-type="players"]>*:last-child [data-type="person"]>[data-type="name"]::after,
+[data-event="Doubles"] [data-losers] [data-type="players"]>*:last-child [data-type="person"]>[data-type="name"]::after,
+[data-event="Teams"] [data-losers] [data-type="team"]>[data-type="name"]::after,
+[data-event="Crews"] [data-losers] [data-type="team"]>[data-type="name"]::after
+{
+	display: var(--losers-side-inline-display);
+	content: " [L]";
+	opacity: var(--losers-side-opacity);
+	font-family: var(--losers-side-text-font);
+	font-size: calc(1rem * var(--losers-side-text-size) / var(--text-size));
+	color: var(--losers-side-text-color);
+}
+
+
+
+[data-type="grid"]
+{
+	visibility: var(--score-grid-visibility);
+	opacity: var(--score-grid-opacity);
+	position: absolute;
+	display: flex;
+	font-family: var(--score-grid-text-font);
+	font-size: calc(1rem * var(--score-grid-text-size) / var(--text-size));
+	color: var(--score-grid-text-color);
+	width: calc(var(--score-grid-width) * var(--ratio));
+	height: calc(var(--score-grid-height) * var(--ratio));
+	flex-wrap: wrap;
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="grid"]
+{
+	top: calc(var(--score-grid-1-top) * var(--ratio));
+	left: calc(var(--score-grid-1-left) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="grid"]
+{
+	top: calc(var(--score-grid-2-top) * var(--ratio));
+	left: calc(var(--score-grid-2-left) * var(--ratio));
+}
+
+[data-type="unit"]
+{
+	margin: 0.5px;
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 0;
+	transition-duration: 0.5s;
+	transition-property: background-color;
+	background-color: var(--score-grid-background-color);
+	border: 1px solid var(--score-grid-border-color);
+}
+
+[data-type="unit"]>*
+{
+	height: 0;
+	line-height: 0;
+}
+
+/*[data-type="unit"]:not(.highlight)
+{
+	border: 1px solid var(--score-grid-border-color);
+}*/
+
+[data-type="teams"]>*:nth-child(1) [data-type="unit"]
+{
+	transform: skewX(calc(1deg * var(--score-grid-1-skew-angle)));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="unit"]
+{
+	transform: skewX(calc(1deg * var(--score-grid-2-skew-angle)));
+}
+
+/*[data-type="unit"]:first-child:nth-last-child(3),
+[data-type="unit"]:first-child:nth-last-child(3) ~ [data-type="unit"],
+[data-type="unit"]:first-child:nth-last-child(4),
+[data-type="unit"]:first-child:nth-last-child(4) ~ [data-type="unit"]
+{
+	padding-top: 25%;
+}*/
+
+[data-type="unit"].highlight
+{
+	background-color: var(--score-grid-match-win-color);
+	/*color: white;*/
+	transition-duration: 0.5s;
+	transition-property: background-color;
+}
+
+[data-type="unit"].highlight[data-value="W"], [data-type="unit"].highlight[data-value="L"]
+{
+	background-color: var(--score-grid-winners-side-color);
+}
+
+.winner [data-type="unit"].highlight:last-child
+{
+	background-color: var(--score-grid-set-win-color);
+}
+
+
+
+[data-type="characters"]
+{
+	display: inline-block;
+}
+
+html:not([data-event="Tag Team"]) [data-type="characters"]>*:not(:last-child)
+{
+	opacity: 0;
+}
+
+[data-game="SSB"] [data-type="character"]>[data-type="image"],
+/*[data-game="RoA"] [data-type="character"]>[data-type="image"],*/
+[data-game="SF33S"] [data-type="character"]>[data-type="image"]
+{
+	image-rendering: pixelated;
+}
+
+[data-type="teams"]>* [data-type="character"]>[data-type="image"]
+{
+	visibility: var(--character-visibility);
+	position: absolute;
+	width: calc(var(--character-width) * var(--ratio));
+	height: calc(var(--character-width) * var(--ratio));
+}
+
+[data-type="teams"]>* [data-type="character"]>[data-type="portrait"]
+{
+	visibility: var(--character-portrait-visibility);
+	position: absolute;
+	width: calc(var(--character-portrait-width) * var(--ratio));
+	height: calc(var(--character-portrait-width) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-1-top) - var(--player-1-top)) * var(--ratio));
+	left: calc(calc(var(--character-1-left) - var(--player-1-left)) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-2-top) - var(--player-2-top)) * var(--ratio));
+	left: calc(calc(var(--character-2-left) - var(--player-2-left)) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-1-top) - var(--player-1-top)) * var(--ratio));
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left)) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-2-top) - var(--player-2-top)) * var(--ratio));
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left)) * var(--ratio));
+}
+
+
+/*[data-event="Tag Team"] [data-type="teams"] [data-type="characters"]
+{
+	display: flex;
+	flex-direction: column-reverse;
+}*/
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(3) [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(2):nth-last-child(4) [data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) + var(--character-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(3):last-child [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(4):nth-last-child(2) [data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) - var(--character-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(4):last-child [data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) - calc(3 * var(--character-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(4) [data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) + calc(3 * var(--character-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(5):last-child [data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) - calc(2 * var(--character-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(5) [data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) + calc(2 * var(--character-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(2):last-child [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(3):nth-last-child(2) [data-type="image"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(1) [data-type="character"]>[data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) - calc(var(--character-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(2) [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(2):nth-last-child(3) [data-type="image"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="image"]
+{
+	left: calc(calc(var(--character-1-left) - var(--player-1-left) + calc(var(--character-separation) / 2)) * var(--ratio));
+}
+
+
+
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(3) [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(2):nth-last-child(4) [data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) - var(--character-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(3):last-child [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(4):nth-last-child(2) [data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) + var(--character-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(4):last-child [data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) + calc(3 * var(--character-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(4) [data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) - calc(3 * var(--character-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(5):last-child [data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) + calc(2 * var(--character-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(5) [data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) - calc(2 * var(--character-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(2):last-child [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(3):nth-last-child(2) [data-type="image"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) + calc(var(--character-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(2) [data-type="image"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(2):nth-last-child(3) [data-type="image"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(1) [data-type="character"]>[data-type="image"]
+{
+	left: calc(calc(var(--character-2-left) - var(--player-2-left) - calc(var(--character-separation) / 2)) * var(--ratio));
+}
+
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-1-top) + calc(1 * calc(var(--character-width) + var(--character-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(3) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-1-top) + calc(2 * calc(var(--character-width) + var(--character-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(4) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-1-top) + calc(3 * calc(var(--character-width) + var(--character-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(5) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-1-top) + calc(4 * calc(var(--character-width) + var(--character-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(6) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-1-top) + calc(5 * calc(var(--character-width) + var(--character-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-2-top) + calc(1 * calc(var(--character-width) + var(--character-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(3) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-2-top) + calc(2 * calc(var(--character-width) + var(--character-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(4) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-2-top) + calc(3 * calc(var(--character-width) + var(--character-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(5) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-2-top) + calc(4 * calc(var(--character-width) + var(--character-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(6) [data-type="character"]>[data-type="image"]
+{
+	top: calc(calc(var(--character-2-top) + calc(5 * calc(var(--character-width) + var(--character-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(3) [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(2):nth-last-child(4) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) + var(--character-portrait-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(3):last-child [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(4):nth-last-child(2) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) - var(--character-portrait-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(4):last-child [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) - calc(3 * var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(4) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) + calc(3 * var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(5):last-child [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) - calc(2 * var(--character-portrait-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(5) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) + calc(2 * var(--character-portrait-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(2):last-child [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(3):nth-last-child(2) [data-type="portrait"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(1) [data-type="character"]>[data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) - calc(var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:first-child:nth-last-child(2) [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(1) [data-type="characters"]>*:nth-child(2):nth-last-child(3) [data-type="portrait"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-1-left) - var(--player-1-left) + calc(var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+
+
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(3) [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(2):nth-last-child(4) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) - var(--character-portrait-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(3):last-child [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(4):nth-last-child(2) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) + var(--character-portrait-separation)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(4):last-child [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) + calc(3 * var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(4) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) - calc(3 * var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(5):last-child [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) + calc(2 * var(--character-portrait-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(5) [data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) - calc(2 * var(--character-portrait-separation))) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(2):last-child [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(3):nth-last-child(2) [data-type="portrait"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) + calc(var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:first-child:nth-last-child(2) [data-type="portrait"],
+[data-event="Tag Team"] [data-type="teams"]>*:nth-child(2) [data-type="characters"]>*:nth-child(2):nth-last-child(3) [data-type="portrait"],
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(1) [data-type="character"]>[data-type="portrait"]
+{
+	left: calc(calc(var(--character-portrait-2-left) - var(--player-2-left) - calc(var(--character-portrait-separation) / 2)) * var(--ratio));
+}
+
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-1-top) + calc(1 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(3) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-1-top) + calc(2 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(4) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-1-top) + calc(3 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(5) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-1-top) + calc(4 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(6) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-1-top) + calc(5 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-2-top) + calc(1 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(3) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-2-top) + calc(2 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(4) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-2-top) + calc(3 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(5) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-2-top) + calc(4 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(6) [data-type="character"]>[data-type="portrait"]
+{
+	top: calc(calc(var(--character-portrait-2-top) + calc(5 * calc(var(--character-portrait-width) + var(--character-portrait-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+
+
+
+[data-type="color"] [data-type="color"]
+{
+	visibility: var(--color-visibility);
+	position: absolute;
+	width: calc(var(--color-width) * var(--ratio));
+	height: calc(var(--color-height) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="color"] [data-type="color"]
+{
+	top: calc(var(--color-1-top) * var(--ratio));
+	left: calc(var(--color-1-left) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="color"] [data-type="color"]
+{
+	top: calc(var(--color-2-top) * var(--ratio));
+	left: calc(var(--color-2-left) * var(--ratio));
+}
+
+
+
+[data-type="location"] [data-type="location"],
+[data-type="location"]>*:not([data-type="image"]),
+[data-type="location"] [data-type="location"]>*[data-type="image"],
+[data-type="location"] [data-type="type"],
+[data-type="location"] [data-type="type"][data-value="continent"]~*,
+[data-type="location"] [data-type="type"][data-value="state"]~[data-type="name"],
+[data-type="location"] [data-type="type"][data-value="territory"]~[data-type="name"],
+[data-type="location"] [data-type="type"][data-value="country"]~[data-type="abbr"]
+{
+	display: none !important;
+}
+
+/*[data-type="players"] [data-type="location"]>*:not([data-type="image"])
+{
+	display: var(--player-location-name-display)
+}*/
+
+[data-type="location"] [data-type="abbr"]::after
+{
+	content: ", ";
+}
+
+[data-type="location"] *
+{
+	display: inline;
+}
+
+[data-type="teams"]>* [data-type="person"]>[data-type="location"]
+{
+	visibility: var(--player-location-visibility);
+	position: absolute;
+}
+
+[data-type="teams"]>* [data-type="person"]>[data-type="location"]>[data-type="image"]
+{
+	width: calc(var(--player-location-width) * var(--ratio));
+	height: calc(var(--player-location-width) * var(--ratio));
+	display: block;
+	/*display: inline-block;*/
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-1-top) - var(--player-1-top)) * var(--ratio));
+	left: calc(calc(var(--player-location-1-left) - var(--player-1-left)) * var(--ratio));
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-2-top) - var(--player-2-top)) * var(--ratio));
+	left: calc(calc(var(--player-location-2-left) - var(--player-2-left)) * var(--ratio));
+}
+
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(1) [data-type="person"]>[data-type="location"]
+{
+	left: calc(calc(var(--player-location-1-left) - var(--player-1-left) - calc(var(--player-location-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="person"]>[data-type="location"]
+{
+	left: calc(calc(var(--player-location-1-left) - var(--player-1-left) + calc(var(--player-location-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(1) [data-type="person"]>[data-type="location"]
+{
+	left: calc(calc(var(--player-location-2-left) - var(--player-2-left) - calc(var(--player-location-separation) / 2)) * var(--ratio));
+}
+
+[data-event="Doubles"] [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="person"]>[data-type="location"]
+{
+	left: calc(calc(var(--player-location-2-left) - var(--player-2-left) + calc(var(--player-location-separation) / 2)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-1-top) + calc(1 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(3) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-1-top) + calc(2 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(4) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-1-top) + calc(3 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(5) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-1-top) + calc(4 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(6) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-1-top) + calc(5 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-2-top) + calc(1 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(3) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-2-top) + calc(2 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(4) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-2-top) + calc(3 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(5) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-2-top) + calc(4 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(6) [data-type="person"]>[data-type="location"]
+{
+	top: calc(calc(var(--player-location-2-top) + calc(5 * calc(var(--player-location-width) + var(--player-location-separation))) - var(--player-2-top)) * var(--ratio));
+}
+
+
+
+[data-type="twitter"]:not(:empty)::before
+{
+	content: "";
+}
+
+[data-type="teams"]>* [data-type="twitter"]
+{
+	visibility: var(--player-twitter-visibility);
+	position: absolute;
+	width: calc(var(--player-twitter-width) * var(--ratio));
+	font-family: var(--player-twitter-text-font);
+	font-size: calc(1rem * var(--player-twitter-text-size) / var(--text-size));
+	color: var(--player-twitter-text-color);
+}
+
+[data-type="teams"]>*:nth-child(1) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) - var(--player-1-top)) * var(--ratio));
+	left: calc(calc(var(--player-twitter-1-left) - var(--player-1-left)) * var(--ratio));
+	text-align: var(--player-twitter-1-text-align);
+}
+
+[data-type="teams"]>*:nth-child(2) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-2-top) - var(--player-2-top)) * var(--ratio));
+	left: calc(calc(var(--player-twitter-2-left) - var(--player-2-left)) * var(--ratio));
+	text-align: var(--player-twitter-2-text-align);
+}
+
+[data-event="Doubles"] [data-type="players"]>*:nth-child(1) [data-type="twitter"]
+{
+	text-align: left;
+}
+
+[data-event="Doubles"] [data-type="players"]>*:nth-child(2) [data-type="twitter"]
+{
+	text-align: right;
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(2) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(1 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(3) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(2 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(4) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(3 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(5) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(4 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(1) [data-type="players"]>*:nth-child(6) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(5 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(2) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(1 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(3) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(2 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(4) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(3 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(5) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(4 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+html:not([data-event="Doubles"]) [data-type="teams"]>*:nth-child(2) [data-type="players"]>*:nth-child(6) [data-type="twitter"]
+{
+	top: calc(calc(var(--player-twitter-1-top) + calc(5 * calc(calc(1.5 * var(--player-twitter-text-size)) + var(--player-twitter-separation))) - var(--player-1-top)) * var(--ratio));
+}
+
+
+
+[data-type="commentators"]>* [data-type="twitter"]
+{
+	visibility: var(--commentator-twitter-visibility);
+	position: absolute;
+	width: calc(var(--commentator-twitter-width) * var(--ratio));
+	font-family: var(--commentator-twitter-text-font);
+	font-size: calc(1rem * var(--commentator-twitter-text-size) / var(--text-size));
+	color: var(--commentator-twitter-text-color);
+}
+
+[data-type="commentators"]>*:nth-child(1) [data-type="twitter"]
+{
+	top: calc(calc(var(--commentator-twitter-1-top) - var(--commentator-1-top)) * var(--ratio));
+	left: calc(calc(var(--commentator-twitter-1-left) - var(--commentator-1-left)) * var(--ratio));
+	text-align: var(--commentator-twitter-1-text-align);
+}
+
+[data-type="commentators"]>*:nth-child(2) [data-type="twitter"]
+{
+	top: calc(calc(var(--commentator-twitter-2-top) - var(--commentator-2-top)) * var(--ratio));
+	left: calc(calc(var(--commentator-twitter-2-left) - var(--commentator-2-left)) * var(--ratio));
+	text-align: var(--commentator-twitter-2-text-align);
+}
+
+[data-type="commentators"]>*:nth-child(3) [data-type="twitter"]
+{
+	top: calc(calc(var(--commentator-twitter-3-top) - var(--commentator-3-top)) * var(--ratio));
+	left: calc(calc(var(--commentator-twitter-3-left) - var(--commentator-3-left)) * var(--ratio));
+	text-align: var(--commentator-twitter-3-text-align);
+}
+
+[data-type="commentators"]>*:nth-child(4) [data-type="twitter"]
+{
+	top: calc(calc(var(--commentator-twitter-4-top) - var(--commentator-4-top)) * var(--ratio));
+	left: calc(calc(var(--commentator-twitter-4-left) - var(--commentator-4-left)) * var(--ratio));
+	text-align: var(--commentator-twitter-4-text-align);
+}
+
+
+
+[data-type="commentators"] [data-type="person"]
+{
+	visibility: var(--commentator-visibility);
+	position: absolute;
+	width: calc(var(--commentator-width) * var(--ratio));
+	font-family: var(--commentator-text-font);
+	font-size: calc(1rem * var(--commentator-text-size) / var(--text-size));
+	color: var(--commentator-text-color);
+	/*height: calc(var(--commentator-height) * var(--ratio));*/
+}
+
+[data-type="commentators"]>*:nth-child(1) [data-type="person"]
+{
+	top: calc(var(--commentator-1-top) * var(--ratio));
+	left: calc(var(--commentator-1-left) * var(--ratio));
+	text-align: var(--commentator-1-text-align);
+}
+
+[data-type="commentators"]>*:nth-child(2) [data-type="person"]
+{
+	top: calc(var(--commentator-2-top) * var(--ratio));
+	left: calc(var(--commentator-2-left) * var(--ratio));
+	text-align: var(--commentator-2-text-align);
+}
+
+[data-type="commentators"]>*:nth-child(3) [data-type="person"]
+{
+	top: calc(var(--commentator-3-top) * var(--ratio));
+	left: calc(var(--commentator-3-left) * var(--ratio));
+	text-align: var(--commentator-3-text-align);
+}
+
+[data-type="commentators"]>*:nth-child(4) [data-type="person"]
+{
+	top: calc(var(--commentator-4-top) * var(--ratio));
+	left: calc(var(--commentator-4-left) * var(--ratio));
+	text-align: var(--commentator-4-text-align);
+}
+
+
+
+[data-type="maplist"]
+{
+	visibility: var(--maps-visibility);
+	position: absolute;
+	text-align: left;
+	top: calc(var(--maps-top) * var(--ratio));
+	left: calc(var(--maps-left) * var(--ratio));
+	width: calc(var(--maps-width) * var(--ratio));
+}
+
+[data-type="maps"]
+{
+	font-size: 0;
+}
+
+[data-type="maps"]>*
+{
+	display: inline-block;
+}
+
+[data-type="maps"] [data-type="image"]
+{
+	transition: width 0.5s;
+	height: calc(var(--maps-single-height) * var(--ratio));
+	width: 0;
+}
+
+[data-type="maps"] [data-type="status"][data-value="picked"]~[data-type="map"] [data-type="image"],
+[data-type="maps"] [data-type="status"][data-value="banned"]~[data-type="map"] [data-type="image"]
+{
+	width: calc(var(--maps-single-width) * var(--ratio));
+}
+
+[data-type="maps"] [data-type="image"]::before
+{
+	font-size: calc(1rem * var(--maps-icon-size) / var(--text-size));
+	text-align: center;
+	display: block;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding-top: calc(calc(calc(var(--maps-single-height) * var(--ratio)) - calc(1rem * var(--maps-icon-size) / var(--text-size))) / 2);
+	content: "";
+	font-family: 'Futura-Bold';
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	opacity: var(--maps-icon-opacity);
+}
+
+[data-type="maps"] [data-type="status"][data-value="picked"]~[data-type="map"] [data-type="image"]::before
+{
+	/*background: rgba(0,255,0,0.25);*/
+	content: "\f00c";
+	color: var(--maps-picked-color);
+}
+
+[data-type="maps"] [data-type="status"][data-value="banned"]~[data-type="map"] [data-type="image"]::before
+{
+	/*background: rgba(255,0,0,0.25);*/
+	content: "\f00d";
+	color: var(--maps-banned-color);
+}
+
+[data-type="maps"] [data-type="image"]
+{
+	background-size: cover;
+	background-position: left;
+}
+
+
+
+.changing
+{
+	transition-duration: 0.5s;
+	transition-property: opacity;
+	opacity: 0 !important;
+}
+
+.changed
+{
+	transition-duration: 0.5s;
+	transition-property: opacity;
+}
+
+@keyframes cut-in
+{
+
+}
+
+@keyframes cut-out
+{
+
+}
+
+@keyframes fade-out
+{
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+@keyframes fade-in
+{
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes fade-from-black
+{
+	from { background-color: black; opacity: 0; }
+	25% { background-color: black; opacity: 0; }
+	to { background-color: transparent; opacity: 1; }
+}
+
+@keyframes fade-to-black
+{
+	from { background-color: transparent; opacity: 1; }
+	75% { background-color: black; opacity: 0; }
+	to { background-color: black; opacity: 0; }
+}
+
+@keyframes grow
+{
+	from { transform: scale(0); opacity: 0; }
+	to { transform: scale(1); }
+}
+
+@keyframes shrink
+{
+	from { transform: scale(1); }
+	to { transform: scale(0); opacity: 0; }
+}
+
+@keyframes grow-x
+{
+	from { transform: scaleX(0); opacity: 0; }
+	to { transform: scaleX(1); }
+}
+
+@keyframes shrink-x
+{
+	from { transform: scaleX(1); }
+	to { transform: scaleX(0); opacity: 0; }
+}
+
+@keyframes grow-y
+{
+	from { transform: scaleY(0); opacity: 0; }
+	to { transform: scaleY(1); }
+}
+
+@keyframes shrink-y
+{
+	from { transform: scaleY(1); }
+	to { transform: scaleY(0); opacity: 0; }
+}
+
+@keyframes in-from-left
+{
+	from { transform: translateX(-100%); }
+	to { transform: translateX(0); }
+}
+
+@keyframes out-to-left
+{
+	from { transform: translateX(0); }
+	to { transform: translateX(-100%); }
+}
+
+@keyframes in-from-top
+{
+	from { transform: translateY(-100%); }
+	to { transform: translateY(0); }
+}
+
+@keyframes out-to-top
+{
+	from { transform: translateY(0); }
+	to { transform: translateY(-100%); }
+}
+
+@keyframes in-from-right
+{
+	from { transform: translateX(100%); }
+	to { transform: translateX(0); }
+}
+
+@keyframes out-to-right
+{
+	from { transform: translateX(0); }
+	to { transform: translateX(100%); }
+}
+
+@keyframes in-from-bottom
+{
+	from { transform: translateY(100%); }
+	to { transform: translateY(0); }
+}
+
+@keyframes out-to-bottom
+{
+	from { transform: translateY(0); }
+	to { transform: translateY(100%); }
+}
