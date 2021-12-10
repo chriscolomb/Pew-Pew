@@ -66,7 +66,7 @@ class Bot_Commands(commands.Cog):
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
         """initiates fight process"""
-        #checks if both users are in the database, can add to the database (implement later)
+        #checks if both users are in the database
         for id in mongodb.player_collection.find():
             if id["_id"] == user.id:
 
@@ -90,6 +90,7 @@ class Bot_Commands(commands.Cog):
             else:
                 await ctx.channel.send("user {0} and {1} is not in the database".format(user.id,ctx.author.id))
                 #can implement later, adds one user or another in the database if not found.
+                
                 
             
 

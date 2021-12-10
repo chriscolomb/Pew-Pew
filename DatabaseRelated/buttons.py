@@ -1,7 +1,6 @@
 import nextcord
 import mongodb
-#still need to implement: how we're going to get both user and pass them to the ELO, because we are using
-#buttons, one click can't get both users to pass to ELO.
+import updateELO
 
 #Buttons to start fights
 class AttackButtons(nextcord.ui.View):
@@ -53,10 +52,15 @@ class WinorLose(nextcord.ui.View):
         get_user = interaction.user.id
         await interaction.response.send_message("I'm sorry for your loss")
     
-    #button for dispute, could timeout this then erase after 1 minute
+    #button for dispute
     @nextcord.ui.button(label= "dispute", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "dispute01")
     async def dispute_button(self, button, interaction):
         get_user = interaction.user.id
-        await interaction.response.send_message("Will undo last battle")
+        await interaction.response.send_message("uhoh")
+    #button for confirm, could timeout this then erase after 1 minute
+    @nextcord.ui.button(label= "confirm", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "confirm01")
+    async def confirm_button(self, button, interaction):
+        get_user = interaction.user.id
+        await interaction.response.send_message("battle confirmed")
 
     
