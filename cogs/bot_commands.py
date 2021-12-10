@@ -7,6 +7,7 @@ sys.path.append('DatabaseRelated')
 import mongodb
 from player import Player
 from buttons import AttackButtons
+from battle import Battle
 
 class Bot_Commands(commands.Cog):
 
@@ -61,17 +62,34 @@ class Bot_Commands(commands.Cog):
             
     #         await ctx.channel.send("<@{0.author.id}> is not in the database.".format(ctx))
 
+    #if this command is activated, it should delete BattleInProgress of previous battle
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
         """initiates fight process"""
         #checks if both users are in the database, can add to the database (implement later)
         for id in mongodb.player_collection.find():
             if id["_id"] == user.id:
+
+                for idTwo in mongodb.player_collection.find():
+                    if idTwo["_id"] == ctx.author.id:
+
+                        p1 = ctx.author.id
+                        p2 = user.id
+                        battle = Battle(p1,p2)
+                        battle_entry = {
+                            "_id": battle.p1,
+                            "p2": battle.p2,
+                            "gained_rank": battle.gained_rank,                            
+                            "lost_rank": battle.lost_rank,
+                            "dispute": battle.dispute,
+                            "p1Win": battle.p1Win  
+                        }
+                        mongodb.battle_collection.insert_one(battle_entry)
                         await ctx.channel.send("settle it in smash", view =AttackButtons())
                         return
             else:
                 await ctx.channel.send("user {0} and {1} is not in the database".format(user.id,ctx.author.id))
-                #can implement later, adds one user or another int he database if not found.
+                #can implement later, adds one user or another in the database if not found.
                 
             
 

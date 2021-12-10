@@ -10,6 +10,11 @@ from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose
 # this would be used for only admin in TTD server, need to implement this
+# need to implement our own help command, need to disable this
+# need a comand to edit entries
+# need a ban from ranked battles command and entry
+# need a way to settle disputes, maybe have the bot submit it to another database?
+# p1,p2,gained_rank,lost_rank,p1Win = False could be stored in the dispute database to be viewed for later.
 class Admin_Commands(commands.Cog):
     """Admin Commands"""
 
@@ -37,7 +42,7 @@ class Admin_Commands(commands.Cog):
 
             p1 = Player(user.id)
             p1_entry = {
-                "_id": p1.id,
+                "p1": p1.id,
                 "rating": p1.rating,
                 "win_count": p1.win_count,
                 "lose_count": p1.lose_count,

@@ -8,6 +8,7 @@ from pymongo import collection # pprint library is used to make the output look 
 client = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-cluster.rzshs.mongodb.net/test")
 bot_db = client["Bot"]
 player_collection = bot_db["Player"]
+battle_collection = bot_db["BattleInProgress"]
 
 # Issue the serverStatus command and print the results
 serverStatusResult=bot_db.command("serverStatus")
