@@ -1,7 +1,6 @@
 import nextcord
 import sys
 from nextcord.ext import commands
-#from nextcord.utils import get
 
 #parent directory import
 sys.path.append('DatabaseRelated')
@@ -9,7 +8,6 @@ import mongodb
 from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose
-from buttons import ConfirmorDispute
 from buttons import MatchComplete
 # this would be used for only admin in TTD server, need to implement this
 class Admin_Commands(commands.Cog):
@@ -24,7 +22,6 @@ class Admin_Commands(commands.Cog):
         print("bot ready")
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
-        self.client.add_view(ConfirmorDispute())
         self.client.add_view(MatchComplete())
         #print('Logged on as {0}!'.format(self.user.name))
 

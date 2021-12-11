@@ -1,34 +1,30 @@
 import mongodb
 '''Updates ELO ratings from match results'''
 def update_elo_rating(winner, loser):
+    print(winner.id)
     # Get ratings from Player objects
-    winner_rating = winner.get_rating()
-    loser_rating = loser.get_rating()
+    winner_rating = winner.rating
+    loser_rating = loser.rating
 
     # Calculate probabilities of winning
     winner_probability = winner_rating / (winner_rating + loser_rating)
     loser_probability = loser_rating / (winner_rating + loser_rating)    
 
-    p1_k = 16
-    p2_k = 16
-    # USCF K-factor
-    if winner_rating >= 2400:
-        if loser_rating >= 2400:
-            p1_k = 16
-            p2_k = 16
-        elif loser_rating >= 2100:
-            p1_k = 16
-            p2_k = 24
-        elif loser_rating < 2100:
-            p1_k = 16
-            p2_k = 32
-    if loser_rating > 2400:
-        if winner_rating >= 2100:
-            p1_k = 24
-            p2_k = 16
-        elif winner_rating < 2100:
-            p1_k = 32
-            p2_k = 16
+    # FIDE K-factor for Winner
+    if winner_rating < 2300 or (winner.win_count + winner.lose_count) <= 30:
+        p1_k = 40
+    elif winner_rating < 2400:
+        p1_k = 20
+    else:
+        p1_k = 10
+    
+    # FIDE K-factor for Loser
+    if loser_rating < 2300 or (loser.win_count + loser.lose_count) <= 30:
+        p2_k = 40
+    elif loser_rating < 2400:
+        p2_k = 20
+    else:
+        p2_k = 10
 
     # Calculate players' ELO ratings
     winner_rating = winner_rating + p1_k * (1 - winner_probability)
