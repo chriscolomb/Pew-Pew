@@ -7,11 +7,8 @@ class Player:
         self.win_streak = win_streak
         self.best_win_streak = best_win_streak
 
-    def get_player(self, id):
-        if id == self.id:
-            return self
-        else:
-            print("Player not found.")
+    def get_id(self):
+        return self.id
 
     def get_rating(self):
         return self.rating

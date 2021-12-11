@@ -7,7 +7,7 @@ sys.path.append('DatabaseRelated')
 import mongodb
 from player import Player
 from buttons import AttackButtons
-from battle import Battle
+
 
 
 class Bot_Commands(commands.Cog):
@@ -73,20 +73,10 @@ class Bot_Commands(commands.Cog):
                 for idTwo in mongodb.player_collection.find():
                     if idTwo["_id"] == ctx.author.id:
                         await ctx.channel.send("both players found")
-                        p1 = ctx.author.id
-                        p2 = user.id
-                        p1_entry = Player(id["_id"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
-                        p2_entry = Player(idTwo["_id"], rating=idTwo["rating"], win_count=idTwo["win_count"], lose_count=idTwo["lose_count"], win_streak=idTwo["win_streak"], best_win_streak=idTwo["best_win_streak"])
-                        battle = Battle(p1,p2)
-                        battle_entry = {
-                            "p1": battle.p1,
-                            "p2": battle.p2,
-                            # "gained_rank": battle.gained_rank,                            
-                            # "lost_rank": battle.lost_rank,
-                            # "dispute": battle.dispute,
-                            # "p1Win": battle.p1Win  
-                        }
-                        mongodb.battle_collection.insert_one(battle_entry)
+                        p1_id = ctx.author.id
+                        p2_id = user.id
+                        p1_entry = Player(idTwo["_id"], rating=idTwo["rating"], win_count=idTwo["win_count"], lose_count=idTwo["lose_count"], win_streak=idTwo["win_streak"], best_win_streak=idTwo["best_win_streak"])
+                        p2_entry = Player(id["_id"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
                         await ctx.channel.send("settle it in smash", view =AttackButtons(p1_entry, p2_entry))
                         return
         
