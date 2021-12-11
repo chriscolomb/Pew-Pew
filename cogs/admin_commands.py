@@ -42,7 +42,7 @@ class Admin_Commands(commands.Cog):
 
             p1 = Player(user.id)
             p1_entry = {
-                "p1": p1.id,
+                "_id": p1.id,
                 "rating": p1.rating,
                 "win_count": p1.win_count,
                 "lose_count": p1.lose_count,
