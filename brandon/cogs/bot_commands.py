@@ -8,7 +8,6 @@ sys.path.append('DatabaseRelated')
 import mongodb
 from player import Player
 from buttons import AttackButtons
-from multipledispatch import dispatch
 
 
 
@@ -18,7 +17,6 @@ class Bot_Commands(commands.Cog):
         self.client = client
     
     @commands.command()
-    # @dispatch(nextcord.ext.commands.context.Context, nextcord.member.Member)
     async def stats(self,ctx, user: nextcord.Member=None):
         """This will reveal all stats for player"""
         if user != None:
@@ -39,6 +37,7 @@ class Bot_Commands(commands.Cog):
                     
                     await ctx.channel.send(embed = embed)
                     return
+            await ctx.channel.send("<@{0.user}> is not in the database.".format(ctx))
         else:
             for id in mongodb.player_collection.find():
                 if id["_id"] == ctx.author.id:
@@ -57,36 +56,7 @@ class Bot_Commands(commands.Cog):
 
                     await ctx.channel.send(embed = embed)
                     return
-
-        await ctx.channel.send("<@{0.user}> is not in the database.".format(ctx))
-    
-    
-    # @commands.command()
-    # @dispatch(nextcord.ext.commands.context.Context)
-    # async def stats(self,ctx):
-    #     for id in mongodb.player_collection.find():
-    #         if id["_id"] == ctx.author.id:
-    #             title = "Stats for {0.author}".format(ctx)
-
-    #             embed = nextcord.Embed(
-    #                 title = title,
-    #                 colour = nextcord.Colour.green()
-    #             )
-
-    #             embed.add_field(name="Rating", value=id.get("rating"))
-    #             embed.add_field(name="Win Count", value=id.get("win_count"))
-    #             embed.add_field(name="Lose Count", value=id.get("lose_count"))
-    #             embed.add_field(name="Win Streak", value=id.get("win_streak"))
-    #             embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
-
-    #             await ctx.channel.send(embed = embed)
-    #             return
-            
-    #         await ctx.channel.send("<@{0.author.id}> is not in the database.".format(ctx))
-    
-
-    #was going to make self stats but this didn't work, weird overload.
-
+            await ctx.channel.send("<@{0.author.id}> is not in the database.".format(ctx))
     
 
     #if this command is activated, it should delete BattleInProgress of previous battle
