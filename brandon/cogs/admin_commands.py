@@ -9,12 +9,8 @@ import mongodb
 from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose
+from buttons import MatchComplete
 # this would be used for only admin in TTD server, need to implement this
-# need to implement our own help command, need to disable this
-# need a comand to edit entries
-# need a ban from ranked battles command and entry
-# need a way to settle disputes, maybe have the bot submit it to another database?
-# p1,p2,gained_rank,lost_rank,p1Win = False could be stored in the dispute database to be viewed for later.
 class Admin_Commands(commands.Cog):
     """Admin Commands"""
 
@@ -27,6 +23,7 @@ class Admin_Commands(commands.Cog):
         print("bot ready")
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
+        self.client.add_view(MatchComplete())
         #print('Logged on as {0}!'.format(self.user.name))
 
     @commands.command()
