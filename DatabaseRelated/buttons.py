@@ -1,12 +1,8 @@
 import nextcord
-from nextcord import message
-from nextcord import guild
-from nextcord.channel import TextChannel
 import mongodb
 import UpdateELO
 from battle import Battle
-from nextcord import Guild
-from nextcord import member
+
 
 
 #Buttons to start fights, figure out how to timeout button
@@ -22,19 +18,29 @@ class AttackButtons(nextcord.ui.View):
     #approve button for matches, should check to see if the @mention is the one who clicked it
     @nextcord.ui.button(label= "ACCEPT", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "fight01")
     async def approve_button(self, button, interaction):
+        #creates battle collection
         battle = Battle(self.p1.get_id(),self.p2.get_id())
         battle_entry = {
             "p1": battle.p1,
             "p2": battle.p2,
             }
         mongodb.battle_collection.insert_one(battle_entry)
+
         user_id = self.p1.id
+        user_id2 = self.p2.id
         guild_id = interaction.message.guild.id
         server = self.client.get_guild(guild_id)
-        # to fix https://stackoverflow.com/questions/64221377/discord-py-rewrite-get-member-function-returning-none-for-all-users-except-bot
-        thread_name = server.get_member(user_id)        
-        battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{}".format(thread_name), message = interaction.message, auto_archive_duration= 60, reason = None)
-        await battle_thread.send(content = "let the fight begin", view = WinorLose(self.p1, self.p2)) 
+        #retrieves username from discord - the numbers
+        p1_name = str(server.get_member(user_id))
+        p2_name = str(server.get_member(user_id2))
+        p1_name = p1_name[:-4]
+        p2_name = p2_name[:-4]
+
+        #creates thread and sends the view to that thread
+        battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{} vs {}".format(p1_name,p2_name), message = interaction.message, auto_archive_duration= 60, reason = None)
+        await battle_thread.send(content = "let the fight begin", view = WinorLose(self.p1, self.p2))
+
+
         #await interaction.response.edit_message(content = "let the fight begin", 
         #view = WinorLose(self.p1, self.p2))
         #await nextcord.Thread.send(interaction.channel,content = "let the fight begin", 

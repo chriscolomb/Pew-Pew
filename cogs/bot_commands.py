@@ -1,12 +1,6 @@
 import nextcord
-from nextcord import message
-from nextcord import channel
-from nextcord import threads
-from nextcord.client import Client
 from nextcord.ext import commands
 import sys
-
-from nextcord.threads import ThreadMember
 
 #parent directory import
 sys.path.append('DatabaseRelated')
@@ -78,29 +72,29 @@ class Bot_Commands(commands.Cog):
                 if id["_id"] == user.id:
                     for idTwo in mongodb.player_collection.find():
                         if idTwo["_id"] == ctx.author.id:
-                            await ctx.channel.send("both players found")
+                            #creates entry for player object
                             p1_entry = Player(idTwo["_id"], rating=idTwo["rating"], win_count=idTwo["win_count"], lose_count=idTwo["lose_count"], win_streak=idTwo["win_streak"], best_win_streak=idTwo["best_win_streak"])
                             p2_entry = Player(id["_id"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
                             entries_added = True
-                            #channelT = self.client.get_channel(ThreadMember.thread_id)
-                            #await channelT.send(content = "Settle it in Smash.")
                     
                             #gets the desired username without the #
                             guild_id = ctx.message.guild.id
                             server = self.client.get_guild(guild_id)
-                            member_name = str(server.get_member(ctx.author.id))
-                            username = member_name[0:len(member_name)-5]
-                            username = username + member_name[len(member_name)- 4: len(member_name)]
+                            member_name1 = str(server.get_member(ctx.author.id))
+                            member_name2 = str(server.get_member(user.id))
+                            username1 = member_name1[0:len(member_name1)-5]
+                            username2 = member_name2[0:len(member_name2)-5]
 
                             #checks to see if the username is the title (which would be just the thread) and if it is, only do win or lose view
-                            if str(ctx.message.channel) == username:
+                            if str(ctx.message.channel) == "{} vs {}".format(username1,username2):
                                 viewButton = WinorLose(p1_entry, p2_entry)                                   
                             else:
-                                viewButton = AttackButtons(p1_entry, p2_entry, self.client)
-                                
-                                
+                                viewButton = AttackButtons(p1_entry, p2_entry, self.client)                               
+                            #Sends the view to the right channel and the corresponding view associated with teh thread or channel   
                             await ctx.channel.send("Settle it in Smash.", view= viewButton)                            
                             return
+                        
+                        #if user is not in database adds them to the database    
                         else:
                             not_in_db_count += 1
                             author = ctx.author.id
@@ -112,14 +106,7 @@ class Bot_Commands(commands.Cog):
                 editdatabase.EditDatabase.createPlayer(author)
             else:
                 editdatabase.EditDatabase.createPlayer(ctx.author.id)
-                editdatabase.EditDatabase.createPlayer(user.id)
-
-        
-        await ctx.channel.send("added user to database")
-        #can implement later, adds one user or another in the database if not found.
-                
-                
-            
+                editdatabase.EditDatabase.createPlayer(user.id)                             
 
 
 def setup(client):
