@@ -1,7 +1,11 @@
 import nextcord
+from nextcord import message
+from nextcord import guild
+from nextcord.channel import TextChannel
 import mongodb
 import UpdateELO
 from battle import Battle
+from nextcord import Guild
 
 
 #Buttons to start fights, figure out how to timeout button
@@ -11,6 +15,8 @@ class AttackButtons(nextcord.ui.View):
         self.p1 = p1
         self.p2 = p2
 
+
+
     #approve button for matches, should check to see if the @mention is the one who clicked it
     @nextcord.ui.button(label= "ACCEPT", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "fight01")
     async def approve_button(self, button, interaction):
@@ -19,9 +25,19 @@ class AttackButtons(nextcord.ui.View):
             "p1": battle.p1,
             "p2": battle.p2,
             }
-        mongodb.battle_collection.insert_one(battle_entry) 
-        await interaction.response.edit_message(content = "let the fight begin", 
-        view = WinorLose(self.p1, self.p2))         
+        mongodb.battle_collection.insert_one(battle_entry)
+        user_id = self.p1.id
+        print(user_id)
+        # to fix https://stackoverflow.com/questions/64221377/discord-py-rewrite-get-member-function-returning-none-for-all-users-except-bot
+        thread_name = Guild.fetch_member(user_id)        
+        battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{}".format(thread_name), message = interaction.message, auto_archive_duration= 60, reason = None)
+        await battle_thread.send(content = "let the fight begin", view = WinorLose(self.p1, self.p2)) 
+        #await interaction.response.edit_message(content = "let the fight begin", 
+        #view = WinorLose(self.p1, self.p2))
+        #await nextcord.Thread.send(interaction.channel,content = "let the fight begin", 
+        #view = WinorLose(self.p1, self.p2))
+        
+                
     
     #deny button for matches
     @nextcord.ui.button(label= "DENY", emoji= "<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.danger, custom_id= "deny01")
@@ -67,7 +83,7 @@ class WinorLose(nextcord.ui.View):
                 else:
                     delete_query = {"p1": loser.get_id()}
             mongodb.battle_collection.delete_one(delete_query)
-            await interaction.response.edit_message(content = "<@{}> Wins Against <@{}>!".format(winner.get_id(), loser.get_id()), view=MatchComplete(winner, loser))  
+            await interaction.response.edit_message(content = "<@{}> Wins Against <@{}>!".format(winner.get_id(), loser.get_id()), view=MatchComplete())  
         else:
             await interaction.response.edit_message(content="let the fight begin", view=self)        
 
