@@ -1,13 +1,19 @@
 import nextcord
+from nextcord import message
+from nextcord import channel
+from nextcord import threads
 from nextcord.client import Client
 from nextcord.ext import commands
 import sys
+
+from nextcord.threads import ThreadMember
 
 #parent directory import
 sys.path.append('DatabaseRelated')
 import mongodb
 from player import Player
 from buttons import AttackButtons
+from buttons import WinorLose 
 import editdatabase
 
 
@@ -76,11 +82,25 @@ class Bot_Commands(commands.Cog):
                             p1_entry = Player(idTwo["_id"], rating=idTwo["rating"], win_count=idTwo["win_count"], lose_count=idTwo["lose_count"], win_streak=idTwo["win_streak"], best_win_streak=idTwo["best_win_streak"])
                             p2_entry = Player(id["_id"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
                             entries_added = True
-                            await ctx.channel.send("Settle it in Smash.", view =AttackButtons(p1_entry, p2_entry))
+                            #channelT = self.client.get_channel(ThreadMember.thread_id)
+                            #await channelT.send(content = "Settle it in Smash.")
+
+                            #need to fix
+                            if  nextcord.ChannelType.text:
+                                viewButton = AttackButtons(p1_entry, p2_entry)                                   
+                            else:
+                                viewButton = WinorLose(p1_entry, p2_entry)
+                                
+                                
+                            await ctx.channel.send("Settle it in Smash.", view= viewButton)
+                            # for x in range(2):
+                            #, view =AttackButtons(p1_entry, p2_entry))
+                            
                             return
                         else:
                             not_in_db_count += 1
                             author = ctx.author.id
+                            
                 else:
                     not_in_db_count += 1
                     author = user.id

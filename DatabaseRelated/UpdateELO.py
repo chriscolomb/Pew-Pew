@@ -1,7 +1,6 @@
 import mongodb
 '''Updates ELO ratings from match results'''
 def update_elo_rating(winner, loser):
-    print(winner.id)
     # Get ratings from Player objects
     winner_rating = winner.rating
     loser_rating = loser.rating
