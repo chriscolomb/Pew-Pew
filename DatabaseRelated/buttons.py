@@ -6,14 +6,16 @@ import mongodb
 import UpdateELO
 from battle import Battle
 from nextcord import Guild
+from nextcord import member
 
 
 #Buttons to start fights, figure out how to timeout button
 class AttackButtons(nextcord.ui.View):
-    def __init__(self, p1=None, p2=None):
+    def __init__(self, p1=None, p2=None, client = None):
         super().__init__(timeout=None)
         self.p1 = p1
         self.p2 = p2
+        self.client = client
 
 
 
@@ -27,9 +29,10 @@ class AttackButtons(nextcord.ui.View):
             }
         mongodb.battle_collection.insert_one(battle_entry)
         user_id = self.p1.id
-        print(user_id)
+        guild_id = interaction.message.guild.id
+        server = self.client.get_guild(guild_id)
         # to fix https://stackoverflow.com/questions/64221377/discord-py-rewrite-get-member-function-returning-none-for-all-users-except-bot
-        thread_name = Guild.fetch_member(user_id)        
+        thread_name = server.get_member(user_id)        
         battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{}".format(thread_name), message = interaction.message, auto_archive_duration= 60, reason = None)
         await battle_thread.send(content = "let the fight begin", view = WinorLose(self.p1, self.p2)) 
         #await interaction.response.edit_message(content = "let the fight begin", 

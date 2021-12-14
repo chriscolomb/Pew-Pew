@@ -73,7 +73,7 @@ class Bot_Commands(commands.Cog):
         not_in_db_count = 0
         entries_added = False
         while not entries_added:
-            #checks if both users are in the database
+            #checks if both users are in the database, if not it adds them
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
                     for idTwo in mongodb.player_collection.find():
@@ -84,18 +84,22 @@ class Bot_Commands(commands.Cog):
                             entries_added = True
                             #channelT = self.client.get_channel(ThreadMember.thread_id)
                             #await channelT.send(content = "Settle it in Smash.")
+                    
+                            #gets the desired username without the #
+                            guild_id = ctx.message.guild.id
+                            server = self.client.get_guild(guild_id)
+                            member_name = str(server.get_member(ctx.author.id))
+                            username = member_name[0:len(member_name)-5]
+                            username = username + member_name[len(member_name)- 4: len(member_name)]
 
-                            #need to fix
-                            if  nextcord.ChannelType.text:
-                                viewButton = AttackButtons(p1_entry, p2_entry)                                   
+                            #checks to see if the username is the title (which would be just the thread) and if it is, only do win or lose view
+                            if str(ctx.message.channel) == username:
+                                viewButton = WinorLose(p1_entry, p2_entry)                                   
                             else:
-                                viewButton = WinorLose(p1_entry, p2_entry)
+                                viewButton = AttackButtons(p1_entry, p2_entry, self.client)
                                 
                                 
-                            await ctx.channel.send("Settle it in Smash.", view= viewButton)
-                            # for x in range(2):
-                            #, view =AttackButtons(p1_entry, p2_entry))
-                            
+                            await ctx.channel.send("Settle it in Smash.", view= viewButton)                            
                             return
                         else:
                             not_in_db_count += 1

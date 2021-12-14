@@ -1,7 +1,10 @@
+import nextcord
 from nextcord.ext import commands
 import os
 
-client = commands.Bot(command_prefix = "!")
+intents = nextcord.Intents.default()
+intents.members = True
+client = commands.Bot(command_prefix = "!", intents = intents)
 
 @client.command()
 async def load(ctx, extension):
