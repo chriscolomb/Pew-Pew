@@ -10,6 +10,11 @@ from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
 
+#Notes:
+#Win and lose does not work, lines 82 to 92 on botcommands and 24 to 33 in buttons contribute to this
+#https://stackoverflow.com/questions/70359430/python-nexcord-ui-i-dont-know-how-its-passing-arguments-to-the-method-when-
+
+
 class Bot_Commands(commands.Cog):
 
     def __init__(self,client):

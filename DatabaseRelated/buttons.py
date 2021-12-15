@@ -150,7 +150,7 @@ class MatchComplete(nextcord.ui.View):
         return player_to_check == interaction.user      
     
     @nextcord.ui.button(label= "REMATCH",emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.primary, custom_id= "rematch01")
-    async def rematch_button(self, interaction,):
+    async def rematch_button(self, interaction):
         
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             await interaction.response.send_message(content = "lets go", view = WinorLose(self.p1, self.p2, self.battle_thread))
