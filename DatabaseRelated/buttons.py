@@ -18,7 +18,8 @@ class AttackButtons(nextcord.ui.View):
         return player_to_check == interaction.user
 
     async def handleApproveorDeny(self,button,interaction, approveClicked):
-        
+        global battle_thread
+
         button.disable = True
         if approveClicked:
             if self.interaction_check(self.p2, interaction):
@@ -145,3 +146,4 @@ class MatchComplete(nextcord.ui.View):
     async def endMatch_button(self, interaction):        
         if self.interaction_check(self.p2, interaction) or self.interaction_check(self.p1, interaction):
             await interaction.send_message("Goodbye", view = self)
+            battle_thread.delete
