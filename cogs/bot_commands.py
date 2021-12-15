@@ -10,8 +10,6 @@ from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
 
-
-
 class Bot_Commands(commands.Cog):
 
     def __init__(self,client):
