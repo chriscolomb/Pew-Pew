@@ -20,7 +20,7 @@ class AttackButtons(nextcord.ui.View):
         button.disable = True
 
         if approveClicked == True:
-            if self.interaction_check(self.p2, interaction) == True:
+            if self.interaction_check(self.p2, interaction):
                 #gets user and mention username
                 user_id = self.p1.id
                 user_id2 = self.p2.id
@@ -126,10 +126,10 @@ class MatchComplete(nextcord.ui.View):
     
     @nextcord.ui.button(label= "REMATCH",emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.primary, custom_id= "rematch01")
     async def confirm_button(self, interaction):
-        
+
         await interaction.send_message("new match", view = WinorLose(self.p1,self.p2))
     
     @nextcord.ui.button(label= "REMATCH",emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.primary, custom_id= "endMatch01")
-    async def confirm_button(self, interaction):
+    async def confirm_button(self, interaction):        
         
         await interaction.send_message("Goodbye", view = self)
