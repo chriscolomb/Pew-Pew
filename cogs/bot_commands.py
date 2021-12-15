@@ -84,13 +84,12 @@ class Bot_Commands(commands.Cog):
                             member_name2 = str(server.get_member(user.id))
                             username1 = member_name1[0:len(member_name1)-5]
                             username2 = member_name2[0:len(member_name2)-5]
-
                             #checks to see if the username is the title (which would be just the thread) and if it is, only do win or lose view
                             if str(ctx.message.channel) == "{} vs {}".format(username1,username2):
-                                viewButton = WinorLose(p1_entry, p2_entry)                                   
+                                viewButton = WinorLose(p1_entry, p2_entry,ctx.message.channel)                                   
                             else:
                                 viewButton = AttackButtons(p1_entry, p2_entry, self.client)                               
-                            #Sends the view to the right channel and the corresponding view associated with teh thread or channel   
+                            #Sends the view to the right channel and the corresponding view associated with the thread or channel   
                             await ctx.channel.send("Settle it in Smash.", view= viewButton)                            
                             return
                         
