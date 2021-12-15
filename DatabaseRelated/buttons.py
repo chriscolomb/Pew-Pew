@@ -18,11 +18,10 @@ class AttackButtons(nextcord.ui.View):
         return player_to_check == interaction.user
 
     async def handleApproveorDeny(self,button,interaction, approveClicked):
-        global battle_thread
-
+        
         button.disable = True
         if approveClicked:
-            if self.interaction_check(self.p2, interaction):
+            if self.interaction_check(self.p1, interaction):
                 #gets user and mention username
                 user_id = self.p1.id
                 user_id2 = self.p2.id
@@ -36,7 +35,7 @@ class AttackButtons(nextcord.ui.View):
 
                 #creates thread and sends the view to that thread
                 battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{} vs {}".format(p1_name,p2_name), message = interaction.message, auto_archive_duration= 60, reason = None)
-                await battle_thread.send(content = "let the fight begin", view = WinorLose(self.p1, self.p2))
+                await battle_thread.send(content = "let the fight begin", view = WinorLose(self.p1, self.p2,battle_thread))
             else:
                 interaction.responce.send_message("only {} can click approve".format(self.p2)) 
         else:
@@ -45,21 +44,24 @@ class AttackButtons(nextcord.ui.View):
     #approve button for matches, should check to see if the @mention is the one who clicked it
     @nextcord.ui.button(label= "ACCEPT", emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.green, custom_id= "fight01")
     async def approve_button(self, button, interaction):
+        
         self.handleApproveorDeny(self, button, interaction, True)       
     
     #deny button for matches
     @nextcord.ui.button(label= "DENY", emoji= "<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.danger, custom_id= "deny01")
     async def deny_button(self, button, interaction):
+        
         self.handleApproveorDeny(self, button, interaction, False)
         
 
 
 class WinorLose(nextcord.ui.View):
-    def __init__(self, p1=None, p2=None):
+    def __init__(self, p1=None, p2=None, battle_thread = None):
         super().__init__(timeout=None)
         self.clicks = 0
         self.p1 = p1
-        self.p2 = p2    
+        self.p2 = p2
+        self.battle_thread = battle_thread    
 
     #Where the magic will happen; the buttons will call the updateELO class from here, also need to disable buttons here
     async def handle_win_or_lose(self, button: nextcord.ui.Button, interaction: nextcord.Interaction, clicker_wins):
@@ -103,7 +105,7 @@ class WinorLose(nextcord.ui.View):
                 else:
                     delete_query = {"p1": loser.get_id()}
             mongodb.battle_collection.delete_one(delete_query)
-            await interaction.response.edit_message(content = "<@{}> Wins Against <@{}>!".format(winner.get_id(), loser.get_id()), view=MatchComplete(self.p1,self.p2))  
+            await interaction.response.edit_message(content = "<@{}> Wins Against <@{}>!".format(winner.get_id(), loser.get_id()), view=MatchComplete(self.p1,self.p2,self.battle_thread))  
         else:
             await interaction.response.edit_message(content="let the fight begin", view=self)        
 
@@ -131,19 +133,20 @@ class WinorLose(nextcord.ui.View):
         else:
             interaction.response.send_message("only {} or {} can click the button".format(self.p1,self.p2))
 
-class MatchComplete(nextcord.ui.View):
-    def __init__(self, p1=None, p2=None):
+class MatchComplete(nextcord.ui.View,):
+    def __init__(self, p1=None, p2=None, battle_thread = None):
         super().__init__(timeout=None)
         self.p1 = p1
-        self.p2 = p2  
+        self.p2 = p2
+        self.battle_thread = battle_thread  
     
     @nextcord.ui.button(label= "REMATCH",emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.primary, custom_id= "rematch01")
     async def rematch_button(self, interaction):
         if self.interaction_check(self.p2, interaction) or self.interaction_check(self.p1, interaction):
-            await interaction.send_message("new match", view = WinorLose(self.p1,self.p2))
+            await interaction.send_message("new match", view = WinorLose(self.p1,self.p2,self.battle_thread))
     
     @nextcord.ui.button(label= "End Match",emoji="<:Cutedragon:794999307048321044>", style= nextcord.ButtonStyle.primary, custom_id= "endMatch01")
     async def endMatch_button(self, interaction):        
         if self.interaction_check(self.p2, interaction) or self.interaction_check(self.p1, interaction):
             await interaction.send_message("Goodbye", view = self)
-            battle_thread.delete
+            self.battle_thread.delete
