@@ -21,7 +21,7 @@ class AttackButtons(nextcord.ui.View):
     async def handleApproveorDeny(self,button: nextcord.ui.Button, interaction: nextcord.Interaction, approveClicked):
         button.disable = True
         if approveClicked:
-            if self.interaction_check1(interaction, self.p1,):
+            if self.interaction_check1(interaction, self.p1):
                 #gets user and mention username
                 user_id = self.p1.id
                 user_id2 = self.p2.id
