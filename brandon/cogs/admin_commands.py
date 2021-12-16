@@ -1,7 +1,6 @@
 import nextcord
 import sys
 from nextcord.ext import commands
-#from nextcord.utils import get
 
 #parent directory import
 sys.path.append('DatabaseRelated')
