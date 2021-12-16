@@ -30,7 +30,7 @@ class Bot_Commands(commands.Cog):
 
                     embed = nextcord.Embed(
                         title = title,
-                        colour = nextcord.Colour.green()
+                        colour = nextcord.Colour.from_rgb(121,180,183)
                     )
 
                     embed.add_field(name="Rating", value=id.get("rating"))
@@ -49,7 +49,7 @@ class Bot_Commands(commands.Cog):
 
                     embed = nextcord.Embed(
                         title = title,
-                        colour = nextcord.Colour.green()
+                        colour = nextcord.Colour.from_rgb(121,180,183)
                     )
 
                     embed.add_field(name="Rating", value=id.get("rating"))
@@ -92,8 +92,16 @@ class Bot_Commands(commands.Cog):
                                 viewButton = WinorLose(p1_entry, p2_entry,ctx.message.channel)                                   
                             else:
                                 viewButton = AttackButtons(p1_entry, p2_entry, self.client)                               
-                            #Sends the view to the right channel and the corresponding view associated with the thread or channel   
-                            await ctx.channel.send("Settle it in Smash.", view= viewButton)                            
+                            
+
+                            embed = nextcord.Embed(
+                                title = "Settle it in Smash!",
+                                description = "<@{}>, do you accept match against <@{}>?".format(p2_entry.get_id(), p1_entry.get_id()),
+                                colour = nextcord.Colour.from_rgb(121,180,183)
+                            )
+
+                            #Sends the view to the right channel and the corresponding view associated with the thread or channel
+                            await ctx.channel.send(embed=embed, view= viewButton)                            
                             return
                         
                         #if user is not in database adds them to the database    
