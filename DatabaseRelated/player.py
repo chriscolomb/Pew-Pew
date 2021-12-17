@@ -1,11 +1,13 @@
 class Player:
-    def __init__(self, id, rating=1000, win_count=0, lose_count=0, win_streak=0, best_win_streak=0):
+    def __init__(self, id, rating=1000, win_count=0, lose_count=0, win_streak=0, best_win_streak=0, main = None, second = None):
         self.id = id
         self.rating = rating
         self.win_count = win_count
         self.lose_count = lose_count
         self.win_streak = win_streak
         self.best_win_streak = best_win_streak
+        self.main = main
+        self.second = second
 
     def get_id(self):
         return self.id

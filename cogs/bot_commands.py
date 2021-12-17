@@ -57,6 +57,8 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Lose Count", value=id.get("lose_count"))
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
+                    embed.add_field(name="main", value=id.get("main"))
+                    embed.add_field(name="secondaries", value=id.get("second"))
 
                     await ctx.channel.send(embed = embed)
                     return
@@ -80,18 +82,8 @@ class Bot_Commands(commands.Cog):
                             p2_entry = Player(id["_id"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
                             entries_added = True
                     
-                            #gets the desired username without the #
-                            guild_id = ctx.message.guild.id
-                            server = self.client.get_guild(guild_id)
-                            member_name1 = str(server.get_member(ctx.author.id))
-                            member_name2 = str(server.get_member(user.id))
-                            username1 = member_name1[0:len(member_name1)-5]
-                            username2 = member_name2[0:len(member_name2)-5]
-                            #checks to see if the username is the title (which would be just the thread) and if it is, only do win or lose view
-                            if str(ctx.message.channel) == "{} vs {}".format(username1,username2):
-                                viewButton = WinorLose(p1_entry, p2_entry,ctx.message.channel)                                   
-                            else:
-                                viewButton = AttackButtons(p1_entry, p2_entry, self.client)                               
+
+                            viewButton = AttackButtons(p1_entry, p2_entry, self.client)                               
                             
 
                             embed = nextcord.Embed(

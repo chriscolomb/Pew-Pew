@@ -67,7 +67,6 @@ class Admin_Commands(commands.Cog):
         else:
             await ctx.channel.send("You don't have admin privilages to do this command")
     
-    
 
 def setup(client):
     client.add_cog(Admin_Commands(client))
