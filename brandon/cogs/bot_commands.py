@@ -41,7 +41,6 @@ class Bot_Commands(commands.Cog):
                     
                     await ctx.channel.send(embed = embed)
                     return
-            await ctx.channel.send("<@{0.user}> is not in the database.".format(ctx))
         else:
             for id in mongodb.player_collection.find():
                 if id["_id"] == ctx.author.id:
@@ -60,13 +59,24 @@ class Bot_Commands(commands.Cog):
 
                     await ctx.channel.send(embed = embed)
                     return
-            await ctx.channel.send("<@{0.author.id}> is not in the database.".format(ctx))
+        embed = nextcord.Embed(
+            title = "Player is not in the database.",
+            colour = nextcord.Colour.from_rgb(121,180,183)
+        )
+        await ctx.channel.send(embed=embed)
     
 
     #if this command is activated, it should delete BattleInProgress of previous battle
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
         """initiates fight process"""
+        if user.id == ctx.author.id:
+            embed = nextcord.Embed(
+                title = "You cannot fight yourself.",
+                colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+            await ctx.channel.send(embed=embed)
+            return
         not_in_db_count = 0
         entries_added = False
         while not entries_added:

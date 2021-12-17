@@ -9,11 +9,9 @@ client = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-
 bot_db = client["Bot"]
 player_collection = bot_db["Player"]
 battle_collection = bot_db["BattleInProgress"]
-dispute_collection = bot_db["dispute"]
 # Issue the serverStatus command and print the results
 serverStatusResult=bot_db.command("serverStatus")
 #pprint(serverStatusResult)
-
 
 db_list = client.list_database_names()
 collection_list = bot_db.list_collection_names()

@@ -1,6 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import os
+#pip3 freeze > requirements.txt helpful command for updating versions
 
 intents = nextcord.Intents.default()
 intents.members = True
