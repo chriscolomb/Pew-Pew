@@ -1,1 +1,1 @@
-worker: python pewpewbot.py
+worker: python pewpewbot.py@rewrite
