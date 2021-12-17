@@ -1,21 +1,22 @@
-import discord
-from dotenv import load_dotenv
+import nextcord
+from nextcord.ext import commands
+import os
+#pip3 freeze > requirements.txt helpful command for updating versions
 
-load_dotenv()
-TOKEN = 'NzkwNzg0MzU0NTgxNzQxNTk5.X-FpUg.nUj2RmF7ZjdO-wCL9oEvGJiNf4Q'
-GUILD = '575869943346757682'
+intents = nextcord.Intents.default()
+intents.members = True
+client = commands.Bot(command_prefix = "!", intents = intents)
 
-client = discord.Client()
+@client.command()
+async def load(ctx, extension):
+    client.load_extension(f'cogs.{extension}')
 
-@client.event
-async def on_ready():
-    for guild in client.guilds:
-        if guild.name == GUILD:
-            break
+@client.command()
+async def unload(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
 
-    print(
-        f'{client.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
-
-client.run(TOKEN)
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
+    
+client.run('NzkwNzg0MzU0NTgxNzQxNTk5.X-FpUg.AfDsH6U1x5GNlE_1tjGwmjjuNVU')
