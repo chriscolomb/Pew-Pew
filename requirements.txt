@@ -1,0 +1,6 @@
+git+https://https://github.com/chriscolomb/Pew-Pew
+nextcord
+pprint
+os
+sys
+mongodb

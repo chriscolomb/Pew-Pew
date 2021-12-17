@@ -14,6 +14,5 @@ dispute_collection = bot_db["dispute"]
 serverStatusResult=bot_db.command("serverStatus")
 #pprint(serverStatusResult)
 
-
 db_list = client.list_database_names()
 collection_list = bot_db.list_collection_names()
