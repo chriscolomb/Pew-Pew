@@ -41,7 +41,8 @@ class AttackButtons(nextcord.ui.View):
                         colour = nextcord.Colour.from_rgb(121,180,183)
                     )
                     #creates thread and sends the view to that thread
-                    battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{} vs {}".format(p1_name,p2_name), message = interaction.message, auto_archive_duration= 60, reason = None)
+                    battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{} vs {}".format(p1_name,p2_name), 
+                    message = interaction.message, auto_archive_duration= 60, reason = None)
                     await interaction.response.edit_message(embed=embed, view =None)
                     thread_embed = nextcord.Embed(
                         title = "Let the Fight Begin!",
@@ -132,7 +133,8 @@ class WinorLose(nextcord.ui.View):
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
 
-            await interaction.response.edit_message(embed= embed_end_match, view=MatchComplete(self.p1, self.p2, battle_thread))
+            await interaction.response.edit_message(embed= embed_end_match, 
+            view=MatchComplete(self.p1, self.p2, battle_thread))
         else:
             await interaction.response.edit_message(view=self)  
       
