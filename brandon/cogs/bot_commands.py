@@ -9,6 +9,7 @@ from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
+import random
 
 #Notes:
 #Win and lose does not work, lines 82 to 92 on botcommands and 24 to 33 in buttons contribute to this
@@ -126,7 +127,27 @@ class Bot_Commands(commands.Cog):
                 editdatabase.EditDatabase.createPlayer(author)
             else:
                 editdatabase.EditDatabase.createPlayer(ctx.author.id)
-                editdatabase.EditDatabase.createPlayer(user.id)                             
+                editdatabase.EditDatabase.createPlayer(user.id)      
+
+    @commands.command()
+    async def random(self, ctx):
+        fighters = ['mario', 'donkey_kong', 'link', 'samus', 'dark_samus', 'yoshi', 'kirby', 'fox', 'pikachu', 'luigi', 'ness', 'captain_falcon', 'jigglypuff', 'peach', 'daisy', 'bowser', 'ice_climbers', 'sheik', 'zelda', 'dr_mario','pichu', 'falco', 'marth', 'lucina', 'young_link', 'ganondorf', 'mewtwo', 'roy', 'chrom','mr_game_and_watch', 'meta_knight', 'pit', 'dark_pit', 'zero_suit_samus', 'wario', 'snake', 'ike','pokemon_trainer', 'diddy_kong', 'lucas', 'sonic', 'king_dedede', 'olimar', 'lucario', 'rob', 'toon_link','wolf', 'villager', 'mega_man', 'wii_fit_trainer', 'rosalina_and_luma', 'little_mac', 'greninja','mii_fighter', 'palutena', 'pac_man', 'robin', 'shulk', 'bowser_jr', 'duck_hunt', 'ryu', 'ken', 'cloud','corrin', 'bayonetta', 'inkling', 'ridley', 'simon', 'richter', 'king_k_rool', 'isabelle', 'incineroar','piranha_plant', 'joker', 'dq_hero', 'banjo_and_kazooie', 'terry', 'byleth', 'minmin', 'steve', 'sephiroth', 'pyra', 'kazuya', 'sora']
+
+        alts = ['main', 'main2', 'main3', 'main4', 'main5', 'main6', 'main7', 'main8']
+
+        character_images = []
+
+        url = "https://raw.githubusercontent.com/chriscolomb/ssbu/master/OPTIMIZED%20PORTRAITS/"
+        for fighter in fighters:
+            if fighter != 'mii_fighter':
+                for alt in alts:
+                    image_url = url + fighter + '_' + alt + '.png'
+                    character_images.append(image_url)
+            elif fighter == 'mii_fighter':
+                image_url = url + fighter + '_' + alts[0] + '.png'
+                character_images.append(image_url)
+        
+        await ctx.channel.send(content=random.choice(character_images))
 
 
 def setup(client):
