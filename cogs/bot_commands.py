@@ -169,8 +169,13 @@ class Bot_Commands(commands.Cog):
         #player_id = {"_id": ctx.author.id}
         #character_select = character_dictionary["chess"]
         dictionary = self.character_dictionary_method()
-        print(dictionary)
-        
+        isIn = True
+        try: dictionary[character]
+        except KeyError:
+            await ctx.channel.send("character doesn't exist")
+            isIn = False
+        if isIn:
+            await ctx.channel.send("lucky you")
 
 def setup(client):
     client.add_cog(Bot_Commands(client))
