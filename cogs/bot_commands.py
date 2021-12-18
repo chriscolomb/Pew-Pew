@@ -14,17 +14,17 @@ import random
 class Bot_Commands(commands.Cog):
 
     def __init__(self,client):
-        self.client = client
-    
+        self.client = client    
 
-    def Character_dictionary():
-        global character_dictionary
+    def character_dictionary_method(self):
         character_dictionary = {}
         characters = open("server_emojis.txt")
         for line in characters:
             key,value = line.split()
             character_dictionary[key] = value
         characters.close()
+
+        return character_dictionary
 
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
@@ -82,6 +82,7 @@ class Bot_Commands(commands.Cog):
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
             await ctx.channel.send(embed=embed)
+
             return
         not_in_db_count = 0
         entries_added = False
@@ -164,10 +165,11 @@ class Bot_Commands(commands.Cog):
         #     if str(emoji.name) == character:
         #         update_main_query = {"$set": {"main": emoji}}
         #         mongodb.player_collection.update_one(player_id, update_main_query)
-        player_id = {"_id": ctx.author.id}
-        for character in character_dictionary:
-            if character == character_dictionary[character]:
-                ctx.message.send("character found")
+        #global character_dictionary
+        #player_id = {"_id": ctx.author.id}
+        #character_select = character_dictionary["chess"]
+        dictionary = self.character_dictionary_method()
+        print(dictionary)
         
 
 def setup(client):
