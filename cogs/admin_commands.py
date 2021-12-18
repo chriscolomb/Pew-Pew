@@ -25,7 +25,6 @@ class Admin_Commands(commands.Cog):
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
-        Bot_Commands.character_dictionary_method()
 
         #print('Logged on as {0}!'.format(self.user.name))
 

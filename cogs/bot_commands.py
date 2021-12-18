@@ -16,7 +16,7 @@ class Bot_Commands(commands.Cog):
     def __init__(self,client):
         self.client = client    
 
-    def character_dictionary_method(self):
+    async def character_dictionary_method(self):
         character_dictionary = {}
         characters = open("server_emojis.txt")
         for line in characters:
@@ -168,7 +168,7 @@ class Bot_Commands(commands.Cog):
         #global character_dictionary
         #player_id = {"_id": ctx.author.id}
         #character_select = character_dictionary["chess"]
-        dictionary = self.character_dictionary_method()
+        dictionary = await self.character_dictionary_method()
         isIn = True
         try: dictionary[character]
         except KeyError:
