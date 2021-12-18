@@ -15,3 +15,5 @@ serverStatusResult=bot_db.command("serverStatus")
 
 db_list = client.list_database_names()
 collection_list = bot_db.list_collection_names()
+
+character_dictionary = {}

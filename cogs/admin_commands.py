@@ -67,6 +67,17 @@ class Admin_Commands(commands.Cog):
         else:
             await ctx.channel.send("You don't have admin privilages to do this command")
     
+    @commands.command()
+    async def write_emojis(self,ctx):
+        """writes emojis into a text file"""
+        if ctx.author.guild_permissions.administrator:
+            server_emojis = open("server_emojis", "w")
+            #need to change this to TTD server ID
+            server = self.client.get_guild(575869943346757682)
+            for emoji in server.emojis:
+                character = [str(emoji.name), " ", str(emoji.id), "\n"]
+                server_emojis.writelines(character)
+            await ctx.channel.send("txt file updated")
 
 def setup(client):
     client.add_cog(Admin_Commands(client))
