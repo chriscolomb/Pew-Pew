@@ -168,6 +168,79 @@ class Bot_Commands(commands.Cog):
         await ctx.channel.send(embed=embed)
 
     @commands.command()
+    async def rankings(self,ctx):
+        rankings = []
+        player = {
+            "id": None,
+            "rating": 0,
+            "tier": None
+        }
+
+        for id in mongodb.player_collection.find().sort("rating", -1):
+            player["id"] = id["_id"]
+            player["rating"] = id["rating"]
+            player["tier"] = Player.get_tier(player["rating"])
+            rankings.append(player.copy())
+            player.clear()
+
+        embed = nextcord.Embed(
+            title = "Rankings",
+            colour = nextcord.Colour.from_rgb(121,180,183)
+        )
+        # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
+
+        diamond_rankings = []
+        platinum_rankings = []
+        gold_rankings = []
+        silver_rankings = []
+        bronze_rankings = []
+        for element in rankings:
+            if element["tier"] == "Diamond":
+                diamond_rankings.append(element)
+            elif element["tier"] == "Platinum":
+                platinum_rankings.append(element)
+            elif element["tier"] == "Gold":
+                gold_rankings.append(element)
+            elif element["tier"] == "Silver":
+                silver_rankings.append(element)
+            elif element["tier"] == "Bronze":
+                bronze_rankings.append(element)
+        
+        rank = 1
+        if diamond_rankings:
+            diamond_value = ""
+            for element in diamond_rankings:
+                diamond_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                rank += 1
+            embed.add_field(name="Diamond", value=diamond_value)
+        if platinum_rankings:
+            platinum_value = ""
+            for element in platinum_rankings:
+                platinum_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                rank += 1
+            embed.add_field(name="Platinum", value=platinum_value)
+        if gold_rankings:
+            gold_value = ""
+            for element in gold_rankings:
+                gold_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                rank += 1
+            embed.add_field(name="Gold", value=gold_value)
+        if silver_rankings:
+            silver_value = ""
+            for element in silver_rankings:
+                silver_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                rank += 1
+            embed.add_field(name="Silver", value=silver_value)
+        if bronze_rankings:
+            bronze_value = ""
+            for element in bronze_rankings:
+                bronze_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                rank += 1
+            embed.add_field(name="Bronze", value=bronze_value)
+
+        await ctx.channel.send(embed = embed)
+
+    @commands.command()
     async def addCharacter(self, ctx, character):
         #TTD 753129805318455356
         # emoji = None
