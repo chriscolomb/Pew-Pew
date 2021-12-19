@@ -10,6 +10,7 @@ from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
 import random
+from datetime import datetime as dt
 
 class Bot_Commands(commands.Cog):
 
@@ -92,12 +93,14 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
                     
+                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
+                    
                     await ctx.channel.send(embed = embed)
                     return
         else:
             for id in mongodb.player_collection.find():
                 if id["_id"] == ctx.author.id:
-                    title = "Stats for {0.author}".format(ctx)
+                    title = "Stats for {0.author}".format(ctx)[:-5]
 
                     embed = nextcord.Embed(
                         title = title,
@@ -109,6 +112,8 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Lose Count", value=id.get("lose_count"))
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
+
+                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
 
                     await ctx.channel.send(embed = embed)
                     return
