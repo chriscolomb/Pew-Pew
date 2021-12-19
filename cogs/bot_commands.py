@@ -41,7 +41,7 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
                     
-                    embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
+                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
                     
                     await ctx.channel.send(embed = embed)
                     return
@@ -61,7 +61,7 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
 
-                    embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
+                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
 
                     await ctx.channel.send(embed = embed)
                     return
@@ -178,7 +178,7 @@ class Bot_Commands(commands.Cog):
             title = "Rankings",
             colour = nextcord.Colour.from_rgb(121,180,183)
         )
-        embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
+        # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
 
         diamond_rankings = []
         platinum_rankings = []
