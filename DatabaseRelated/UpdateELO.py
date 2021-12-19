@@ -1,4 +1,3 @@
-import mongodb
 '''Updates ELO ratings from match results'''
 def update_elo_rating(winner, loser):
     # Get ratings from Player objects

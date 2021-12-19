@@ -9,6 +9,7 @@ client = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-
 bot_db = client["Bot"]
 player_collection = bot_db["Player"]
 battle_collection = bot_db["BattleInProgress"]
+history_collection = bot_db["History"]
 # Issue the serverStatus command and print the results
 serverStatusResult=bot_db.command("serverStatus")
 #pprint(serverStatusResult)
