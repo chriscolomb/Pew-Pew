@@ -4,7 +4,7 @@ from nextcord.interactions import Interaction
 import mongodb
 import UpdateELO
 from battle import Battle
-import datetime
+from datetime import datetime as dt
 
 
 
@@ -32,10 +32,6 @@ class AttackButtons(nextcord.ui.View):
                 p1_name = str(server.get_member(user_id))[:-5]
                 p2_name = str(server.get_member(user_id2))[:-5]
 
-
-                #Need
-                #to
-                #Change this to self.p2 for final version
                 if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
@@ -120,6 +116,14 @@ class WinorLose(nextcord.ui.View):
                         winner = self.p1
                         loser = self.p2  
             UpdateELO.update_elo_rating(winner, loser)
+
+            #add battle to history collection
+            history_entry = {
+            "winner": winner.get_id(),
+            "loser": loser.get_id(),
+            "date": dt.now()
+            }
+            mongodb.history_collection.insert_one(history_entry)
             #deletes battle collection
             delete_query = {}
             for player in mongodb.battle_collection.find():

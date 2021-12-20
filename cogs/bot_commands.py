@@ -1,16 +1,16 @@
 import nextcord
 from nextcord.ext import commands
 import sys
+import random
 
 #parent directory import
 sys.path.append('DatabaseRelated')
+sys.path.append('cogs')
 import mongodb
 from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
-import random
-from datetime import datetime as dt
 
 class Bot_Commands(commands.Cog):
 
@@ -19,6 +19,7 @@ class Bot_Commands(commands.Cog):
 
     async def character_dictionary_method(self):
         character_dictionary = {}
+        value = []
         characters = open("server_emojis.txt")
         for line in characters:
             key,value = line.split()
@@ -74,54 +75,9 @@ class Bot_Commands(commands.Cog):
             title = "Player is not in the database.",
             colour = nextcord.Colour.from_rgb(121,180,183)
         )
-        await ctx.channel.send(embed=embed)@commands.command()
-    async def stats(self,ctx, user: nextcord.Member=None):
-        """This will reveal all stats for player"""
-        if user != None:
-            for id in mongodb.player_collection.find():
-                if id["_id"] == user.id:
-                    title = "Stats for {0}".format(user)
-
-                    embed = nextcord.Embed(
-                        title = title,
-                        colour = nextcord.Colour.from_rgb(121,180,183)
-                    )
-
-                    embed.add_field(name="Rating", value=id.get("rating"))
-                    embed.add_field(name="Win Count", value=id.get("win_count"))
-                    embed.add_field(name="Lose Count", value=id.get("lose_count"))
-                    embed.add_field(name="Win Streak", value=id.get("win_streak"))
-                    embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
-                    
-                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
-                    
-                    await ctx.channel.send(embed = embed)
-                    return
-        else:
-            for id in mongodb.player_collection.find():
-                if id["_id"] == ctx.author.id:
-                    title = "Stats for {0.author}".format(ctx)[:-5]
-
-                    embed = nextcord.Embed(
-                        title = title,
-                        colour = nextcord.Colour.from_rgb(121,180,183)
-                    )
-
-                    embed.add_field(name="Rating", value=id.get("rating"))
-                    embed.add_field(name="Win Count", value=id.get("win_count"))
-                    embed.add_field(name="Lose Count", value=id.get("lose_count"))
-                    embed.add_field(name="Win Streak", value=id.get("win_streak"))
-                    embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
-
-                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
-
-                    await ctx.channel.send(embed = embed)
-                    return
-        embed = nextcord.Embed(
-            title = "Player is not in the database.",
-            colour = nextcord.Colour.from_rgb(121,180,183)
-        )
         await ctx.channel.send(embed=embed)
+    
+
     
 
     #if this command is activated, it should delete BattleInProgress of previous battle
@@ -282,29 +238,23 @@ class Bot_Commands(commands.Cog):
             embed.add_field(name="Bronze", value=bronze_value)
 
         await ctx.channel.send(embed = embed)
-    
 
     @commands.command()
-    async def addCharacter(self, ctx, character):
-        #TTD 753129805318455356
-        # emoji = None
-        # player_id = {"_id": ctx.author.id}
-        # TTD_server = self.client.get_guild(575869943346757682)
-        # for emoji in TTD_server.emojis:
-        #     if str(emoji.name) == character:
-        #         update_main_query = {"$set": {"main": emoji}}
-        #         mongodb.player_collection.update_one(player_id, update_main_query)
-        #global character_dictionary
-        #player_id = {"_id": ctx.author.id}
-        #character_select = character_dictionary["chess"]
+    async def addCharacter(self,ctx, character):
         dictionary = await self.character_dictionary_method()
+        
         isIn = True
+        player_id = {"_id": ctx.author.id}
         try: dictionary[character]
         except KeyError:
             await ctx.channel.send("character doesn't exist")
             isIn = False
         if isIn:
+            characterID = int(dictionary[character])
+            update_main_query = { "$set": { "main": characterID}}
+            mongodb.player_collection.update_one(player_id, update_main_query)
             await ctx.channel.send("lucky you")
+            ctx.channel.send(ctx.guild.id)
 
 def setup(client):
     client.add_cog(Bot_Commands(client))
