@@ -52,6 +52,8 @@ class Bot_Commands(commands.Cog):
                     await ctx.channel.send(embed = embed)
                     return
         else:
+            #TTD 753129805318455356 
+            server = self.client.get_guild(575869943346757682)
             for id in mongodb.player_collection.find():
                 if id["_id"] == ctx.author.id:
                     title = "Stats for {0.author}".format(ctx)[:-5]
@@ -66,6 +68,23 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Lose Count", value=id.get("lose_count"))
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
+
+                    emoji_display = {}
+                    main_tupple = id.get("main")
+                    emoji_array = []
+                    #get mains by emoji
+                    for emojis in main_tupple:
+                        emoji_name_id =await server.fetch_emoji(emojis)
+                        emoji_name = emoji_name_id.name 
+                        emoji_display[emoji_name] = emoji_name_id.id
+                        emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+
+                    #key, value = emoji_display.popitem()
+                    # for key in emoji_display:
+                    #     new_value = int(emoji_display[key])                            
+                    #     embed.add_field(name="main(s)", value = {"<:{}:{}>".format( str(key), int(new_value))})
+
+                    embed.add_field(name="main(s)", value = emoji_array)
 
                     # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
 
@@ -240,21 +259,26 @@ class Bot_Commands(commands.Cog):
         await ctx.channel.send(embed = embed)
 
     @commands.command()
-    async def addCharacter(self,ctx, character):
+    async def addCharacter(self,ctx, *args):
         dictionary = await self.character_dictionary_method()
+        character_array = []
+
+        for characters in args:
+            isIn = True
+            player_id = {"_id": ctx.author.id}
+            try: dictionary[characters]
+            except KeyError:
+                await ctx.channel.send("character {} doesn't exist".format(characters))
+                isIn = False
+                return
+            if isIn:
+                characterID = int(dictionary[characters])
+                character_array.append(characterID)
+                await ctx.channel.send("lucky you")
         
-        isIn = True
-        player_id = {"_id": ctx.author.id}
-        try: dictionary[character]
-        except KeyError:
-            await ctx.channel.send("character doesn't exist")
-            isIn = False
-        if isIn:
-            characterID = int(dictionary[character])
-            update_main_query = { "$set": { "main": characterID}}
-            mongodb.player_collection.update_one(player_id, update_main_query)
-            await ctx.channel.send("lucky you")
-            ctx.channel.send(ctx.guild.id)
+        update_main_query = { "$set": { "main": character_array } }
+        mongodb.player_collection.update_one(player_id, update_main_query)
+
 
 def setup(client):
     client.add_cog(Bot_Commands(client))
