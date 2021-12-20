@@ -11,7 +11,6 @@ from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
-from admin_commands import Admin_Commands
 
 class Bot_Commands(commands.Cog):
 
@@ -241,30 +240,21 @@ class Bot_Commands(commands.Cog):
         await ctx.channel.send(embed = embed)
 
     @commands.command()
-    async def addCharacter(self, ctx, character):
-        #TTD 753129805318455356
-        # emoji = None
-        # player_id = {"_id": ctx.author.id}
-        # TTD_server = self.client.get_guild(575869943346757682)
-        # for emoji in TTD_server.emojis:
-        #     if str(emoji.name) == character:
-        #         update_main_query = {"$set": {"main": emoji}}
-        #         mongodb.player_collection.update_one(player_id, update_main_query)
-        #global character_dictionary
-        #player_id = {"_id": ctx.author.id}
-        #character_select = character_dictionary["chess"]
+    async def addCharacter(self,ctx, character):
         dictionary = await self.character_dictionary_method()
-        print(dictionary)
+        
         isIn = True
         player_id = {"_id": ctx.author.id}
-        update_main_query = { "$set": { "main": int[dictionary[character]]}}
         try: dictionary[character]
         except KeyError:
             await ctx.channel.send("character doesn't exist")
             isIn = False
         if isIn:
+            characterID = int(dictionary[character])
+            update_main_query = { "$set": { "main": characterID}}
             mongodb.player_collection.update_one(player_id, update_main_query)
             await ctx.channel.send("lucky you")
+            ctx.channel.send(ctx.guild.id)
 
 def setup(client):
     client.add_cog(Bot_Commands(client))
