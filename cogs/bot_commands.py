@@ -295,6 +295,7 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def addSecondary(self,ctx, *args):
+        """add seconary to your account"""
         dictionary = await self.character_dictionary_method()
         character_array = []
 
