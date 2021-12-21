@@ -1,29 +1,38 @@
 import nextcord
 from nextcord.ext import commands
 import sys
+import random
 
 #parent directory import
 sys.path.append('DatabaseRelated')
+sys.path.append('cogs')
 import mongodb
 from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
-import random
-from datetime import datetime as dt
-
-#Notes:
-#Win and lose does not work, lines 82 to 92 on botcommands and 24 to 33 in buttons contribute to this
-#https://stackoverflow.com/questions/70359430/python-nexcord-ui-i-dont-know-how-its-passing-arguments-to-the-method-when-
-
+import operator
 
 class Bot_Commands(commands.Cog):
 
     def __init__(self,client):
-        self.client = client
-    
+        self.client = client    
+
+    async def character_dictionary_method(self):
+        character_dictionary = {}
+        value = []
+        characters = open("server_emojis.txt")
+        for line in characters:
+            key,value = line.split()
+            character_dictionary[key] = value
+        characters.close()
+
+        return character_dictionary
+
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
+        #TTD 753129805318455356 
+        server = self.client.get_guild(575869943346757682)
         """This will reveal all stats for player"""
         if user != None:
             for id in mongodb.player_collection.find():
@@ -41,7 +50,40 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
                     
-                    # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
+                    if id.get("main"):
+                        emoji_display = {}
+                        main_tuple = id.get("main")
+                        emoji_array = []
+                        
+                        #get mains by emoji
+                        for emoji in main_tuple:
+                            emoji_name_id =await server.fetch_emoji(emoji)
+                            emoji_name = emoji_name_id.name 
+                            emoji_display[emoji_name] = emoji_name_id.id
+                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                        
+                        value = ""
+                        for emoji in emoji_array:
+                            value += emoji + " "
+                        
+                        embed.add_field(name="Mains", value = value)
+
+                    if id.get("secondary"):
+                        emoji_display = {}
+                        secondary_tuple = id.get("secondary")
+                        emoji_array = []
+
+                        for emoji in secondary_tuple:
+                            emoji_name_id =await server.fetch_emoji(emoji)
+                            emoji_name = emoji_name_id.name 
+                            emoji_display[emoji_name] = emoji_name_id.id
+                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                        
+                        value = ""
+                        for emoji in emoji_array:
+                            value += emoji + " "
+
+                        embed.add_field(name="Secondaries", value = value)
                     
                     await ctx.channel.send(embed = embed)
                     return
@@ -61,6 +103,50 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
 
+                    if id.get("main"):
+                        emoji_display = {}
+                        main_tuple = id.get("main")
+                        emoji_array = []
+                        
+                        #get mains by emoji
+                        for emoji in main_tuple:
+                            emoji_name_id =await server.fetch_emoji(emoji)
+                            emoji_name = emoji_name_id.name 
+                            emoji_display[emoji_name] = emoji_name_id.id
+                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                        
+                        value = ""
+                        for emoji in emoji_array:
+                            value += emoji + " "
+                        
+                        embed.add_field(name="Mains", value = value)
+
+                    if id.get("secondary"):
+                        emoji_display = {}
+                        secondary_tuple = id.get("secondary")
+                        emoji_array = []
+
+                        for emoji in secondary_tuple:
+                            emoji_name_id =await server.fetch_emoji(emoji)
+                            emoji_name = emoji_name_id.name 
+                            emoji_display[emoji_name] = emoji_name_id.id
+                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                        
+                        value = ""
+                        for emoji in emoji_array:
+                            value += emoji + " "
+
+                        embed.add_field(name="Secondaries", value = value)
+                    
+
+                                        
+                    #key, value = emoji_display.popitem()
+                    # for key in emoji_display:
+                    #     new_value = int(emoji_display[key])                            
+                    #     embed.add_field(name="main(s)", value = {"<:{}:{}>".format( str(key), int(new_value))})
+
+                    #embed.add_field(name="main(s)", value = emoji_array)
+
                     # embed.set_footer(text="Generated on " + dt.now().strftime("%m/%d/%y at %I:%M %p"))
 
                     await ctx.channel.send(embed = embed)
@@ -72,17 +158,22 @@ class Bot_Commands(commands.Cog):
         await ctx.channel.send(embed=embed)
     
 
+    
+
     #if this command is activated, it should delete BattleInProgress of previous battle
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
         """initiates fight process"""
-        if user.id == ctx.author.id:
+        channel = self.client.get_channel(ctx.channel.id)
+        if channel.type == nextcord.ChannelType.public_thread:
             embed = nextcord.Embed(
-                title = "You cannot fight yourself.",
+                title = "Cannot do `=fight` command within thread!",
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
             await ctx.channel.send(embed=embed)
             return
+
+
         not_in_db_count = 0
         entries_added = False
         while not entries_added:
@@ -156,7 +247,6 @@ class Bot_Commands(commands.Cog):
         embed.set_image(url=random.choice(character_images))
         embed.colour = nextcord.Colour.from_rgb(121,180,183)
         await ctx.channel.send(embed=embed)
-    
 
     @commands.command()
     async def rankings(self,ctx):
@@ -167,12 +257,16 @@ class Bot_Commands(commands.Cog):
             "tier": None
         }
 
+        guild_members = []
+        async for member in ctx.guild.fetch_members(limit=None):
+            guild_members.append(member.id)
         for id in mongodb.player_collection.find().sort("rating", -1):
-            player["id"] = id["_id"]
-            player["rating"] = id["rating"]
-            player["tier"] = Player.get_tier(player["rating"])
-            rankings.append(player.copy())
-            player.clear()
+            if id["_id"] in guild_members:
+                player["id"] = id["_id"]
+                player["rating"] = id["rating"]
+                player["tier"] = Player.get_tier(player["rating"])
+                rankings.append(player.copy())
+                player.clear()
 
         embed = nextcord.Embed(
             title = "Rankings",
@@ -231,7 +325,145 @@ class Bot_Commands(commands.Cog):
 
         await ctx.channel.send(embed = embed)
 
+    @commands.command()
+    async def main(self,ctx, *args):
+        """adds main to your account"""
+        dictionary = await self.character_dictionary_method()
+        character_array = []
+
+        for characters in args:
+            isIn = True
+            player_id = {"_id": ctx.author.id}
+            try: dictionary[characters]
+            except KeyError:
+                embed = nextcord.Embed(
+                    title = "Character \"{}\" doesn't exist!".format(characters),
+                    colour = nextcord.Colour.from_rgb(121,180,183)
+                )
+                await ctx.channel.send(embed=embed)
+                isIn = False
+                return
+            if isIn:
+                characterID = int(dictionary[characters])
+                character_array.append(characterID)
+                embed = nextcord.Embed(
+                    title = "Character(s) added!",
+                    colour = nextcord.Colour.from_rgb(121,180,183)
+                )
+                await ctx.channel.send(embed=embed)
         
+        update_main_query = { "$set": { "main": character_array } }
+        mongodb.player_collection.update_one(player_id, update_main_query)
+
+    @commands.command()
+    async def secondary(self,ctx, *args):
+        """add seconary to your account"""
+        dictionary = await self.character_dictionary_method()
+        character_array = []
+
+        for characters in args:
+            isIn = True
+            player_id = {"_id": ctx.author.id}
+            try: dictionary[characters]
+            except KeyError:
+                embed = nextcord.Embed(
+                    title = "Character \"{}\" doesn't exist!".format(characters),
+                    colour = nextcord.Colour.from_rgb(121,180,183)
+                )
+                await ctx.channel.send(embed=embed)
+                isIn = False
+                return
+            if isIn:
+                characterID = int(dictionary[characters])
+                character_array.append(characterID)
+                embed = nextcord.Embed(
+                    title = "Character(s) added!",
+                    colour = nextcord.Colour.from_rgb(121,180,183)
+                )
+                await ctx.channel.send(embed=embed)
+        
+        update_main_query = { "$set": { "secondary": character_array } }
+        mongodb.player_collection.update_one(player_id, update_main_query)
+    
+
+    @commands.command()
+    async def wins(self,ctx, user: nextcord.Member=None):
+        server = self.client.get_guild(575869943346757682)
+        """This will reveal all stats for player"""
+        if user != None:
+            for id in mongodb.player_collection.find():
+                if id["_id"] == user.id:
+                    title = "Wins/Loses for {0}".format(user)[:-5] + " (`{}`)".format(str(id["rating"]))
+
+                    embed = nextcord.Embed(
+                        title = title,
+                        colour = nextcord.Colour.from_rgb(121,180,183)
+                    )
+
+                    wins = id["match_history"][0]
+                    sorted_wins = sorted(wins.items(), key=operator.itemgetter(1), reverse=True)
+                    win_value = ""
+                    count = 0
+                    for win in sorted_wins:
+                        if count != 10:
+                            win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                            count += 1
+
+                    loses = id["match_history"][1]
+                    sorted_loses = sorted(loses.items(), key=operator.itemgetter(1), reverse=True)
+                    lose_value = ""
+                    count = 0
+                    for lose in sorted_loses:
+                        if count != 10:
+                            lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
+                            count += 1
+                    
+
+                    embed.add_field(name="Wins", value=win_value)
+                    embed.add_field(name="Loses", value=lose_value)
+
+                    await ctx.channel.send(embed = embed)
+                    return
+        else:
+            for id in mongodb.player_collection.find():
+                if id["_id"] == ctx.author.id:
+                    title = "Wins/Loses for {0.author}".format(ctx)[:-5] + " (`{}`)".format(str(id["rating"]))
+
+                    embed = nextcord.Embed(
+                        title = title,
+                        colour = nextcord.Colour.from_rgb(121,180,183)
+                    )
+
+                    wins = id["match_history"][0]
+                    sorted_wins = sorted(wins.items(), key=operator.itemgetter(1), reverse=True)
+                    win_value = ""
+                    count = 0
+                    for win in sorted_wins:
+                        if count != 10:
+                            win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                            count += 1
+
+                    loses = id["match_history"][1]
+                    sorted_loses = sorted(loses.items(), key=operator.itemgetter(1), reverse=True)
+                    lose_value = ""
+                    count = 0
+                    for lose in sorted_loses:
+                        if count != 10:
+                            lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
+                            count += 1
+                    
+
+                    embed.add_field(name="Wins", value=win_value)
+                    embed.add_field(name="Loses", value=lose_value)
+
+                    await ctx.channel.send(embed = embed)
+                    return
+        embed = nextcord.Embed(
+            title = "Player is not in the database.",
+            colour = nextcord.Colour.from_rgb(121,180,183)
+        )
+        await ctx.channel.send(embed=embed)
+
 
 
 def setup(client):

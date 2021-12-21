@@ -1,9 +1,11 @@
+from os import close
 import nextcord
 import sys
 from nextcord.ext import commands
 
 #parent directory import
 sys.path.append('DatabaseRelated')
+sys.path.append('cogs')
 import mongodb
 from player import Player
 from buttons import AttackButtons
@@ -15,14 +17,14 @@ class Admin_Commands(commands.Cog):
 
     def __init__(self,client: commands.Bot):
         self.client = client
-        
-    
+                
     @commands.Cog.listener()
     async def on_ready(self):
         print("bot ready")
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
+        await self.write_emojis()
         #print('Logged on as {0}!'.format(self.user.name))
 
     @commands.command()
@@ -67,7 +69,17 @@ class Admin_Commands(commands.Cog):
         else:
             await ctx.channel.send("You don't have admin privilages to do this command")
     
-    
+    async def write_emojis(self):
+        """writes emojis into a text file""" 
+        #TTD 753129805318455356      
+        server_emojis = open("server_emojis.txt", "w")
+        #need to change this to TTD server ID
+        server = self.client.get_guild(575869943346757682)
+        for emoji in server.emojis:
+            character = [str(emoji.name).lower(), " ", str(emoji.id), "\n"]
+            server_emojis.writelines(character)
+        
+        server_emojis.close()
 
 def setup(client):
     client.add_cog(Admin_Commands(client))

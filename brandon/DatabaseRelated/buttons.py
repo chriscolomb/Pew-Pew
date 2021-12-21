@@ -4,7 +4,7 @@ from nextcord.interactions import Interaction
 import mongodb
 import UpdateELO
 from battle import Battle
-import datetime
+from datetime import datetime as dt
 
 
 
@@ -32,10 +32,6 @@ class AttackButtons(nextcord.ui.View):
                 p1_name = str(server.get_member(user_id))[:-5]
                 p2_name = str(server.get_member(user_id2))[:-5]
 
-
-                #Need
-                #to
-                #Change this to self.p2 for final version
                 if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
@@ -120,6 +116,43 @@ class WinorLose(nextcord.ui.View):
                         winner = self.p1
                         loser = self.p2  
             UpdateELO.update_elo_rating(winner, loser)
+
+            #add battle to history collection
+            history_entry = {
+                "winner": winner.get_id(),
+                "loser": loser.get_id(),
+                "date": dt.now()
+            }
+            mongodb.history_collection.insert_one(history_entry)
+
+            for player in mongodb.player_collection.find():
+                if player["_id"] == winner.get_id():
+                    copy = player["match_history"]
+                    if player["match_history"][0].get(str(loser.get_id())) != None:
+                        copy[0][str(loser.get_id())] += 1
+                    else:                 
+                        copy[0][str(loser.get_id())] = 1    
+                    query = {
+                        "_id": winner.get_id(),
+                    }
+                    update_query = { "$set": { "match_history": copy } }
+                    mongodb.player_collection.update_one(query, update_query)
+                elif player["_id"] == loser.get_id():
+                    copy = player["match_history"]
+                    if player["match_history"][1].get(str(winner.get_id())) != None:
+                        copy[1][str(winner.get_id())] += 1
+                    else:                 
+                        copy[1][str(winner.get_id())] = 1    
+                    query = {
+                        "_id": loser.get_id(),
+                    }
+                    update_query = { "$set": { "match_history": copy } }
+                    mongodb.player_collection.update_one(query, update_query)
+                    
+            
+
+            
+
             #deletes battle collection
             delete_query = {}
             for player in mongodb.battle_collection.find():

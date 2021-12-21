@@ -1,6 +1,3 @@
-from inspect import getmodule
-
-
 class Player:
     def __init__(self, id, rating=1000, win_count=0, lose_count=0, win_streak=0, best_win_streak=0):
         self.id = id
@@ -28,7 +25,7 @@ class Player:
     def plus_lose(self):
         self.lose_count += 1
         self.win_streak = 0
-
+    
     def get_tier(rating):
         if 0 < rating <= 1149:
             return "Bronze"
