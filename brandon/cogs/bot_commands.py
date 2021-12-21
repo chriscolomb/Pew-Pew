@@ -172,6 +172,15 @@ class Bot_Commands(commands.Cog):
             )
             await ctx.channel.send(embed=embed)
             return
+        
+        if user.id == ctx.author.id:
+            embed = nextcord.Embed(
+                title = "You cannot fight yourself.",
+                colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+            await ctx.channel.send(embed=embed)
+
+            return
 
 
         not_in_db_count = 0
@@ -350,7 +359,7 @@ class Bot_Commands(commands.Cog):
                     title = "Character(s) added!",
                     colour = nextcord.Colour.from_rgb(121,180,183)
                 )
-                await ctx.channel.send(embed=embed)
+        await ctx.channel.send(embed=embed)
         
         update_main_query = { "$set": { "main": character_array } }
         mongodb.player_collection.update_one(player_id, update_main_query)
@@ -380,7 +389,7 @@ class Bot_Commands(commands.Cog):
                     title = "Character(s) added!",
                     colour = nextcord.Colour.from_rgb(121,180,183)
                 )
-                await ctx.channel.send(embed=embed)
+        await ctx.channel.send(embed=embed)
         
         update_main_query = { "$set": { "secondary": character_array } }
         mongodb.player_collection.update_one(player_id, update_main_query)
