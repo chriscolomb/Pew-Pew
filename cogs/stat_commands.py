@@ -22,9 +22,14 @@ class Stat_Commands(commands.Cog):
         
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
+        """Displays your stats"""
         #TTD 753129805318455356 
         server = self.client.get_guild(575869943346757682)
-        """This will reveal all stats for player"""
+        """This will reveal all stats for player 
+            reveals stats:\n win count, lose count,\n 
+                           win streak, mains, and secondaries\n
+            enter nothing for your own stats\n 
+            Example: ```=stats``` or ```=stats @{mention}```"""
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
@@ -158,6 +163,9 @@ class Stat_Commands(commands.Cog):
 
     @commands.command()
     async def rankings(self,ctx):
+        """displays discord server rankings
+            
+            Example: ```=rankings```"""
         rankings = []
         player = {
             "id": None,
@@ -235,6 +243,11 @@ class Stat_Commands(commands.Cog):
 
     @commands.command()
     async def wins(self,ctx, user: nextcord.Member=None):
+        """displays your wins and loses per opponent\n
+            will display your top 10 opponents you lost too,\n
+            will also display your top 10 opponents you won against\n
+            Example: ```=wins```"""
+
         server = self.client.get_guild(575869943346757682)
         """This will reveal all stats for player"""
         if user != None:

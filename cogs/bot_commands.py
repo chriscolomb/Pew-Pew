@@ -14,6 +14,7 @@ import editdatabase
 import operator
 
 class Bot_Commands(commands.Cog):
+    """Commands that don't fall in other categories"""
 
     def __init__(self,client):
         self.client = client    
@@ -31,7 +32,15 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
-        """initiates fight process"""
+        """initiates fight process
+            
+            directions:\n 
+                click approve\n
+                tnext click win or lose\n
+                reset button for mistakes\n
+                rematch or end the games\n
+            Example: ```=fight @mention```"""                          
+                        
         channel = self.client.get_channel(ctx.channel.id)
         if channel.type == nextcord.ChannelType.public_thread:
             embed = nextcord.Embed(
@@ -104,6 +113,9 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def random(self, ctx):
+        """Displays random character portrait with random skin
+            
+            Example: ```=random```"""
         fighters = ['mario', 'donkey_kong', 'link', 'samus', 'dark_samus', 'yoshi', 'kirby', 'fox', 'pikachu', 'luigi', 'ness', 'captain_falcon', 'jigglypuff', 'peach', 'daisy', 'bowser', 'ice_climbers', 'sheik', 'zelda', 'dr_mario','pichu', 'falco', 'marth', 'lucina', 'young_link', 'ganondorf', 'mewtwo', 'roy', 'chrom','mr_game_and_watch', 'meta_knight', 'pit', 'dark_pit', 'zero_suit_samus', 'wario', 'snake', 'ike','pokemon_trainer', 'diddy_kong', 'lucas', 'sonic', 'king_dedede', 'olimar', 'lucario', 'rob', 'toon_link','wolf', 'villager', 'mega_man', 'wii_fit_trainer', 'rosalina_and_luma', 'little_mac', 'greninja', 'mii_brawler', 'mii_gunner', 'mii_swordfighter', 'palutena', 'pac_man', 'robin', 'shulk', 'bowser_jr', 'duck_hunt', 'ryu', 'ken', 'cloud','corrin', 'bayonetta', 'inkling', 'ridley', 'simon', 'richter', 'king_k_rool', 'isabelle', 'incineroar','piranha_plant', 'joker', 'dq_hero', 'banjo_and_kazooie', 'terry', 'byleth', 'minmin', 'steve', 'sephiroth', 'pyra', 'kazuya', 'sora']
 
         alts = ['main', 'main2', 'main3', 'main4', 'main5', 'main6', 'main7', 'main8']
@@ -127,7 +139,12 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def main(self,ctx, *args):
-        """adds main to your account"""
+        """add main(s) to your account
+            beta\n
+            If used, all characters before are deleted\n
+            if the user enters nothing, main(s) are cleared\n
+            Example: ```=main {character name}```"""
+
         dictionary = await self.character_dictionary_method()
         character_array = []
         player_id = {"_id": ctx.author.id}
@@ -170,7 +187,11 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def secondary(self,ctx, *args):
-        """add seconary to your account"""
+        """add seconaries to your account
+            beta\n
+            If used, all characters before are deleted\n
+            if the user enters nothing, secondaries are cleared\n
+            Example: ```=secondary {character name}```"""
         dictionary = await self.character_dictionary_method()
         character_array = []
         player_id = {"_id": ctx.author.id}

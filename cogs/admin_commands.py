@@ -30,6 +30,7 @@ class Admin_Commands(commands.Cog):
     
     @commands.command()
     async def load(self,ctx,extension):
+        """loads the cog files"""
         admin1= 472883421212049409
         admin2= 705139734426419260
         if ctx.author.id == admin2 or ctx.author.id == admin1: 
@@ -37,6 +38,7 @@ class Admin_Commands(commands.Cog):
 
     @commands.command()
     async def unload(self,ctx, extension):
+        """unloads the cog files"""
         admin1= 472883421212049409
         admin2= 705139734426419260
         if ctx.author.id == admin2 or ctx.author.id == admin1: 
@@ -45,7 +47,9 @@ class Admin_Commands(commands.Cog):
     @commands.command()
     
     async def createPlayer(self,ctx, user: nextcord.Member):
-        """adds player to database"""
+        """adds player to database \_d\_
+            
+            Example: ```=createPlayer @{mention}```"""
         #print('ctx from {0.author}: {0.content}'.format(ctx))
         if ctx.author.guild_permissions.administrator:
             for id in mongodb.player_collection.find({},
@@ -70,7 +74,9 @@ class Admin_Commands(commands.Cog):
 
     @commands.command()
     async def deletePlayer(self,ctx, user: nextcord.Member):
-        """deletes user from database"""
+        """deletes user from database \_d\_
+            
+            Example: ```=deletePlayer @{mention}```"""
         if ctx.author.guild_permissions.administrator:        
         
             for id in mongodb.player_collection.find({},
