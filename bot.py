@@ -6,6 +6,7 @@ import os
 intents = nextcord.Intents.default()
 intents.members = True
 client = commands.Bot(command_prefix = "=", intents = intents)
+client.remove_command("help")
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):

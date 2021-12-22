@@ -1,0 +1,106 @@
+import nextcord
+from nextcord import embeds
+from nextcord.colour import Color
+from nextcord.ext import commands
+import sys
+import random
+
+
+#parent directory import
+sys.path.append('DatabaseRelated')
+sys.path.append('cogs')
+import mongodb
+from player import Player
+import operator
+
+class Help_Commands(commands.Cog):
+    """stat commands"""
+
+    def __init__(self,client: commands.Bot):
+        self.client = client    
+    
+    
+    @commands.group(invoke_without_command = True)
+    async def help(ctx):
+        embded = nextcord.embded(
+            title = "help",
+            description = "use help followed by the command =help <command>, example =help stats"
+        )
+        embded.add_field(name = "Commands", value = "fight, main, secondary, random")
+        embded.add_field(name = "Stat Commands", value = "stats, rankings, wins")
+
+        await ctx.send(embded = embded)
+
+    @help.command()
+    async def fight(ctx):
+        embded= nextcord.embded(
+            title = "fight",
+            description = "start a fight with another player",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "use fight command by fight @{mention user}")
+
+    @help.command()
+    async def main(ctx):
+        embded= nextcord.embded(
+            title = "main",
+            description = "adds a main to your profile(beta still)",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "use the main command followed by the character name, and enter nothing to clear your mains")
+
+    @help.command()
+    async def secondary(ctx):
+        embded= nextcord.embded(
+            title = "secondary",
+            description = "adds a secondary to your profile(beta still)",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "use the main command followed by the character name, and enter nothing to clear your secondaries")
+
+    @help.command()
+    async def random(ctx):
+        embded= nextcord.embded(
+            title = "random",
+            description = "Random characters and skin picture",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "just use the command followed by nothing to get your character, just try to get your own {}.".format("<:wink:>"))
+
+    @help.command()
+    async def stats(ctx):
+        embded= nextcord.embded(
+            title = "stats",
+            description = "returns the stats of the desire user",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "command followed by @(mention user} or enter nopthing to get your own")
+
+    @help.command()
+    async def rankings(ctx):
+        embded= nextcord.embded(
+            title = "rankings",
+            description = "returns the ranking of the desired user",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "command followed by @(mention user} or enter nopthing to get your own")
+
+    @help.command()
+    async def wins(ctx):
+        embded= nextcord.embded(
+            title = "wins",
+            description = "number of wins and losses of your opponents",
+            color = ctx.author.color 
+        )
+
+        embded.add_field(name = "how to use", value = "command followed by @(mention user} or enter nopthing to get your own")       
+    
+
+def setup(client):
+    client.add_cog(Help_Commands(client))
