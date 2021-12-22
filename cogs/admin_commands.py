@@ -145,7 +145,8 @@ class Admin(commands.Cog):
         """
         Writes server emojis into a text file
         """ 
-        #TTD 753129805318455356      
+        #TTD 753129805318455356  
+        #Test 575869943346757682
         server_emojis = open("server_emojis.txt", "w")
         #need to change this to TTD server ID
         server = self.client.get_guild(575869943346757682)

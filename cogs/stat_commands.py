@@ -29,6 +29,7 @@ class Statistic(commands.Cog):
         > For others: `=stats @player`
         """
         #TTD 753129805318455356 
+        #Test 575869943346757682
         server = self.client.get_guild(575869943346757682)
         if user != None:
             for id in mongodb.player_collection.find():
