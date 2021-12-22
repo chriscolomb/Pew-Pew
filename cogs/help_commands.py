@@ -1,18 +1,6 @@
 from typing import Optional, Set
-import nextcord
 from nextcord import embeds
-from nextcord.colour import Color
 from nextcord.ext import commands
-import sys
-import random
-
-
-#parent directory import
-sys.path.append('DatabaseRelated')
-sys.path.append('cogs')
-import mongodb
-from player import Player
-import operator
 
 class MyHelpCommand(commands.MinimalHelpCommand):
     def get_command_signature(self, command):
@@ -47,10 +35,6 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 embed.set_author(name=self.context.bot.user.name, icon_url=avatar.url)
                 embed.add_field(name=name, value=value)
 
-
-
-
-
         return embed 
     
     async def send_bot_help(self, mapping:dict):
@@ -77,13 +61,10 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             description= cog.description,
             command_set=cog.get_commands()
         )
-        await self.get_destination().send(embed=embed)
-
-            
+        await self.get_destination().send(embed=embed)           
 
     send_group_help = send_command_help
-
-    
+   
 
 class Help_Commands(commands.Cog):
     def __init__(self, bot):
