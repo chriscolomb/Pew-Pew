@@ -11,8 +11,8 @@ import mongodb
 from player import Player
 import operator
 
-class Stat_Commands(commands.Cog):
-    """stat commands"""
+class Statistic(commands.Cog):
+    """Statistic Commands"""
 
     def __init__(self,client: commands.Bot):
         self.client = client
@@ -22,14 +22,14 @@ class Stat_Commands(commands.Cog):
         
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
-        """Displays your stats"""
+        """
+        See player statistics\n
+        **Usage:**
+        > For yourself: `=stats`
+        > For others: `=stats @player`
+        """
         #TTD 753129805318455356 
         server = self.client.get_guild(575869943346757682)
-        """This will reveal all stats for player 
-            reveals stats:\n win count, lose count,\n 
-                           win streak, mains, and secondaries\n
-            enter nothing for your own stats\n 
-            Example: ```=stats``` or ```=stats @{mention}```"""
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
@@ -163,9 +163,16 @@ class Stat_Commands(commands.Cog):
 
     @commands.command()
     async def rankings(self,ctx):
-        """displays discord server rankings
-            
-            Example: ```=rankings```"""
+        """
+        See server player rankings\n
+        **Usage:** `=rankings`
+        > Players are divided by tiers:
+        > `Diamond:  2200 or more`
+        > `Platinum: 1850 to 2199`
+        > `Gold:     1500 to 1849`
+        > `Silver:   1150 to 1499`
+        > `Bronze:      0 to 1149`
+        """
         rankings = []
         player = {
             "id": None,
@@ -243,13 +250,13 @@ class Stat_Commands(commands.Cog):
 
     @commands.command()
     async def wins(self,ctx, user: nextcord.Member=None):
-        """displays your wins and loses per opponent\n
-            will display your top 10 opponents you lost too,\n
-            will also display your top 10 opponents you won against\n
-            Example: ```=wins```"""
+        """
+        See win/lose counts against players\n
+        **Usage:** `=wins`
+        > Shows top 10 win/lose counts against players
+        """
 
         server = self.client.get_guild(575869943346757682)
-        """This will reveal all stats for player"""
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
@@ -312,9 +319,10 @@ class Stat_Commands(commands.Cog):
                             lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
-
-                    embed.add_field(name="Wins", value=win_value)
-                    embed.add_field(name="Loses", value=lose_value)
+                    if len(wins) != 0:
+                        embed.add_field(name="Wins", value=win_value)
+                    if len(loses) != 0:
+                        embed.add_field(name="Loses", value=lose_value)
 
                     await ctx.channel.send(embed = embed)
                     return
@@ -331,4 +339,4 @@ class Stat_Commands(commands.Cog):
 
     
 def setup(client):
-    client.add_cog(Stat_Commands(client))
+    client.add_cog(Statistic(client))
