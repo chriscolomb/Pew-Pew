@@ -20,7 +20,7 @@ class Help_Commands(commands.Cog):
         self.client = client    
     
     
-    @commands.group(invoke_without_command = True)
+    @commands.group()
     async def help(ctx):
         embded = nextcord.embded(
             title = "help",
