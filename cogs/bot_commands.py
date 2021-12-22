@@ -28,6 +28,9 @@ class Bot_Commands(commands.Cog):
         characters.close()
 
         return character_dictionary
+    
+    async def check_empty(self,array):
+        return not array
 
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
@@ -50,7 +53,9 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
                     
-                    if id.get("main"):
+                    main_array = id.get("main")
+                    array_check = await self.check_empty(main_array)
+                    if not array_check:
                         emoji_display = {}
                         main_tuple = id.get("main")
                         emoji_array = []
@@ -68,7 +73,9 @@ class Bot_Commands(commands.Cog):
                         
                         embed.add_field(name="Mains", value = value)
 
-                    if id.get("secondary"):
+                    secondary_array = id.get("secondary")
+                    array_check2 = await self.check_empty(secondary_array)
+                    if not array_check2:
                         emoji_display = {}
                         secondary_tuple = id.get("secondary")
                         emoji_array = []
@@ -103,7 +110,9 @@ class Bot_Commands(commands.Cog):
                     embed.add_field(name="Win Streak", value=id.get("win_streak"))
                     embed.add_field(name="Best Win Streak", value=id.get("best_win_streak"))
 
-                    if id.get("main"):
+                    main_array = id.get("main")
+                    array_check = await self.check_empty(main_array)
+                    if not array_check:
                         emoji_display = {}
                         main_tuple = id.get("main")
                         emoji_array = []
@@ -121,7 +130,9 @@ class Bot_Commands(commands.Cog):
                         
                         embed.add_field(name="Mains", value = value)
 
-                    if id.get("secondary"):
+                    secondary_array = id.get("secondary")
+                    array_check2 = await self.check_empty(secondary_array)
+                    if not array_check2:
                         emoji_display = {}
                         secondary_tuple = id.get("secondary")
                         emoji_array = []
@@ -339,60 +350,85 @@ class Bot_Commands(commands.Cog):
         """adds main to your account"""
         dictionary = await self.character_dictionary_method()
         character_array = []
-
-        for characters in args:
-            isIn = True
-            player_id = {"_id": ctx.author.id}
-            try: dictionary[characters]
-            except KeyError:
-                embed = nextcord.Embed(
-                    title = "Character \"{}\" doesn't exist!".format(characters),
-                    colour = nextcord.Colour.from_rgb(121,180,183)
-                )
-                await ctx.channel.send(embed=embed)
-                isIn = False
-                return
-            if isIn:
-                characterID = int(dictionary[characters])
-                character_array.append(characterID)
-                embed = nextcord.Embed(
-                    title = "Character(s) added!",
-                    colour = nextcord.Colour.from_rgb(121,180,183)
-                )
-        await ctx.channel.send(embed=embed)
-        
-        update_main_query = { "$set": { "main": character_array } }
-        mongodb.player_collection.update_one(player_id, update_main_query)
+        player_id = {"_id": ctx.author.id}
+        embed = nextcord.Embed(
+            title = "mains emptied",
+            colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+        #empty_args = (args,isinstance(args,type(None)))
+        if args == None:
+            character_array = [None]
+        else:
+            for characters in args:
+                isIn = True
+                try: dictionary[characters]
+                except KeyError:
+                    embed = nextcord.Embed(
+                        title = "Character \"{}\" doesn't exist!".format(characters),
+                        colour = nextcord.Colour.from_rgb(121,180,183)
+                    )
+                    await ctx.channel.send(embed=embed)
+                    isIn = False
+                if isIn:
+                    characterID = int(dictionary[characters])
+                    if characterID not in character_array:
+                        character_array.append(characterID)
+                        
+                        embed = nextcord.Embed(
+                            title = "Character(s) added!",
+                            colour = nextcord.Colour.from_rgb(121,180,183)
+                        )
+                    else:
+                        embed = nextcord.Embed(
+                            title = "cann't duplicate entries",
+                            colour = nextcord.Colour.from_rgb(121,180,183)
+                            )
+            
+            await ctx.channel.send(embed=embed)
+            update_main_query = { "$set": { "main": character_array } }
+            mongodb.player_collection.update_one(player_id, update_main_query)
 
     @commands.command()
     async def secondary(self,ctx, *args):
         """add seconary to your account"""
         dictionary = await self.character_dictionary_method()
         character_array = []
-
-        for characters in args:
-            isIn = True
-            player_id = {"_id": ctx.author.id}
-            try: dictionary[characters]
-            except KeyError:
-                embed = nextcord.Embed(
-                    title = "Character \"{}\" doesn't exist!".format(characters),
-                    colour = nextcord.Colour.from_rgb(121,180,183)
-                )
-                await ctx.channel.send(embed=embed)
-                isIn = False
-                return
-            if isIn:
-                characterID = int(dictionary[characters])
-                character_array.append(characterID)
-                embed = nextcord.Embed(
-                    title = "Character(s) added!",
-                    colour = nextcord.Colour.from_rgb(121,180,183)
-                )
-        await ctx.channel.send(embed=embed)
-        
-        update_main_query = { "$set": { "secondary": character_array } }
-        mongodb.player_collection.update_one(player_id, update_main_query)
+        player_id = {"_id": ctx.author.id}
+        embed = nextcord.Embed(
+            title = "secondaries emptied",
+            colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+        #empty_args = (args,isinstance(args,type(None)))
+        if args == None:
+            character_array = [None]
+        else:
+            for characters in args:
+                isIn = True
+                try: dictionary[characters]
+                except KeyError:
+                    embed = nextcord.Embed(
+                        title = "Character \"{}\" doesn't exist!".format(characters),
+                        colour = nextcord.Colour.from_rgb(121,180,183)
+                    )
+                    await ctx.channel.send(embed=embed)
+                    isIn = False
+                if isIn:
+                    characterID = int(dictionary[characters])
+                    if characterID not in character_array:
+                        character_array.append(characterID)
+                        
+                        embed = nextcord.Embed(
+                            title = "Character(s) added!",
+                            colour = nextcord.Colour.from_rgb(121,180,183)
+                        )
+                    else:
+                        embed = nextcord.Embed(
+                            title = "cann't duplicate entries",
+                            colour = nextcord.Colour.from_rgb(121,180,183)
+                            )
+        await ctx.channel.send(embed=embed)  
+        update_secondary_query = { "$set": { "secondary": character_array } }
+        mongodb.player_collection.update_one(player_id, update_secondary_query)
     
 
     @commands.command()
