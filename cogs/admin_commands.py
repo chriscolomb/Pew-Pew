@@ -1,6 +1,7 @@
 from os import close
 import nextcord
 import sys
+from nextcord import client
 from nextcord.ext import commands
 
 #parent directory import
@@ -26,8 +27,23 @@ class Admin_Commands(commands.Cog):
         self.client.add_view(MatchComplete())
         await self.write_emojis()
         #print('Logged on as {0}!'.format(self.user.name))
+    
+    @commands.command()
+    async def load(self,ctx,extension):
+        admin1= 472883421212049409
+        admin2= 705139734426419260
+        if ctx.author.id == admin2 or ctx.author.id == admin1: 
+            self.client.load_extension(f'cogs.{client.extension}')
 
     @commands.command()
+    async def unload(self,ctx, extension):
+        admin1= 472883421212049409
+        admin2= 705139734426419260
+        if ctx.author.id == admin2 or ctx.author.id == admin1: 
+            self.client.unload_extension(f'cogs.{client.extension}')
+
+    @commands.command()
+    
     async def createPlayer(self,ctx, user: nextcord.Member):
         """adds player to database"""
         #print('ctx from {0.author}: {0.content}'.format(ctx))
@@ -80,6 +96,7 @@ class Admin_Commands(commands.Cog):
             server_emojis.writelines(character)
         
         server_emojis.close()
+
 
 def setup(client):
     client.add_cog(Admin_Commands(client))
