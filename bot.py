@@ -1,22 +1,19 @@
-from typing import Optional, Set
 import nextcord
-from nextcord import embeds
-from nextcord import message
 from nextcord.ext import commands
 import os
-import sys
+
+from cogs import help_commands
 
 from nextcord.ext.commands.core import group
-
-from cogs.help_commands import MyHelpCommand
 
 # sys.path.append("C:\Users\Chapm\GitHub\Pew_Pew\cogs")
 #from cogs import help_commands
 
+
 intents = nextcord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix = "=", intents = intents, description="MatchMaking bot for discord")
-client.help_command = MyHelpCommand()
+client = commands.Bot(command_prefix = "=", intents = intents, description="**Ranked Matchmaking Bot for SSBU with ELO Rating!**\n> To see a description for each command based on category: \n> `=help command_category`\n> For help with specific commands: \n> `=help command_name`")
+client.help_command = help_commands.MyHelpCommand()
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):

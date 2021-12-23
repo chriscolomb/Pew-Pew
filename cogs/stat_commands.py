@@ -1,4 +1,5 @@
 import nextcord
+from nextcord import utils
 from nextcord.ext import commands
 import sys
 import random
@@ -11,8 +12,8 @@ import mongodb
 from player import Player
 import operator
 
-class Stat_Commands(commands.Cog):
-    """stat commands"""
+class Statistic(commands.Cog):
+    """Statistic Commands"""
 
     def __init__(self,client: commands.Bot):
         self.client = client
@@ -22,14 +23,15 @@ class Stat_Commands(commands.Cog):
         
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
-        """Displays your stats"""
+        """
+        See player statistics\n
+        **Usage:**
+        > For yourself: `=stats`
+        > For others: `=stats @player`
+        """
         #TTD 753129805318455356 
-        server = self.client.get_guild(575869943346757682)
-        """This will reveal all stats for player 
-            reveals stats:\n win count, lose count,\n 
-                           win streak, mains, and secondaries\n
-            enter nothing for your own stats\n 
-            Example: ```=stats``` or ```=stats @{mention}```"""
+        #Test 575869943346757682
+        server = self.client.get_guild(753129805318455356 )
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
@@ -111,11 +113,17 @@ class Stat_Commands(commands.Cog):
                         emoji_array = []
                         
                         #get mains by emoji
-                        for emoji in main_tuple:
-                            emoji_name_id =await server.fetch_emoji(emoji)
-                            emoji_name = emoji_name_id.name 
-                            emoji_display[emoji_name] = emoji_name_id.id
-                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                        for emoji1 in main_tuple:
+                            # emoji_name_id =await server.fetch_emoji(emoji)
+                            # print(emoji_name_id)
+                            # #emoji_name = str(emoji_name_id.name).lower 
+                            # # emoji_display[emoji_name] = emoji_name_id.id
+                            # emoji_array.append(f"<{emoji_name_id.name.lower()}:{emoji_name_id.id}>")
+                            emoji_name = await server.fetch_emoji(emoji1)
+                            for emoji_guild in self.client.guilds:
+                                print(emoji_guild)
+                                emoji = nextcord.utils.get(emoji_guild.emojis, name =emoji_name)
+                                emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
                         
                         value = ""
                         for emoji in emoji_array:
@@ -163,9 +171,16 @@ class Stat_Commands(commands.Cog):
 
     @commands.command()
     async def rankings(self,ctx):
-        """displays discord server rankings
-            
-            Example: ```=rankings```"""
+        """
+        See server player rankings\n
+        **Usage:** `=rankings`
+        > Players are divided by tiers:
+        > `Diamond:  2200 or more`
+        > `Platinum: 1850 to 2199`
+        > `Gold:     1500 to 1849`
+        > `Silver:   1150 to 1499`
+        > `Bronze:      0 to 1149`
+        """
         rankings = []
         player = {
             "id": None,
@@ -243,13 +258,13 @@ class Stat_Commands(commands.Cog):
 
     @commands.command()
     async def wins(self,ctx, user: nextcord.Member=None):
-        """displays your wins and loses per opponent\n
-            will display your top 10 opponents you lost too,\n
-            will also display your top 10 opponents you won against\n
-            Example: ```=wins```"""
+        """
+        See win/lose counts against players\n
+        **Usage:** `=wins`
+        > Shows top 10 win/lose counts against players
+        """
 
         server = self.client.get_guild(575869943346757682)
-        """This will reveal all stats for player"""
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
@@ -279,8 +294,10 @@ class Stat_Commands(commands.Cog):
                             count += 1
                     
 
-                    embed.add_field(name="Wins", value=win_value)
-                    embed.add_field(name="Loses", value=lose_value)
+                    if len(wins) != 0:
+                        embed.add_field(name="Wins", value=win_value)
+                    if len(loses) != 0:
+                        embed.add_field(name="Loses", value=lose_value)
 
                     await ctx.channel.send(embed = embed)
                     return
@@ -312,9 +329,10 @@ class Stat_Commands(commands.Cog):
                             lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
-
-                    embed.add_field(name="Wins", value=win_value)
-                    embed.add_field(name="Loses", value=lose_value)
+                    if len(wins) != 0:
+                        embed.add_field(name="Wins", value=win_value)
+                    if len(loses) != 0:
+                        embed.add_field(name="Loses", value=lose_value)
 
                     await ctx.channel.send(embed = embed)
                     return
@@ -331,4 +349,4 @@ class Stat_Commands(commands.Cog):
 
     
 def setup(client):
-    client.add_cog(Stat_Commands(client))
+    client.add_cog(Statistic(client))

@@ -1,6 +1,14 @@
 from typing import Optional, Set
+import nextcord
 from nextcord import embeds
+from nextcord.colour import Color
 from nextcord.ext import commands
+import sys
+
+
+#parent directory import
+sys.path.append('DatabaseRelated')
+sys.path.append('cogs')
 
 class MyHelpCommand(commands.MinimalHelpCommand):
     def get_command_signature(self, command):
@@ -8,8 +16,8 @@ class MyHelpCommand(commands.MinimalHelpCommand):
 
     async def _help_embed(self, title: str, description: Optional[str] = None, 
     mapping:Optional[dict] = None, command_set: Optional[Set[commands.Command]] = None):
-        avatar = self.context.bot.user.avatar or self.context.bot.user.default_avatar
-        embed= embeds.Embed(title= title)
+        # avatar = self.context.bot.user.avatar or self.context.bot.user.default_avatar
+        embed= embeds.Embed(title= title, colour = nextcord.Colour.from_rgb(121,180,183))
         if description:
             embed.description = description
         if command_set:
@@ -23,7 +31,7 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                 filtered = await self.filter_commands(command_set, sort =True)
                 if not filtered:
                     continue
-                name = cog.qualified_name if cog else "no category"
+                name = cog.qualified_name if cog else "Other"
                 cmd_list = "\u2002".join(
                     f"`{self.context.clean_prefix}{cmd.name}`" for cmd in filtered
                 )
@@ -32,17 +40,17 @@ class MyHelpCommand(commands.MinimalHelpCommand):
                     if cog and cog.description
                     else cmd_list
                 )
-                embed.set_author(name=self.context.bot.user.name, icon_url=avatar.url)
+                # embed.set_author(name=self.context.bot.user.name, icon_url=avatar.url)
                 embed.add_field(name=name, value=value)
-
         return embed 
     
     async def send_bot_help(self, mapping:dict):
         embed =await self._help_embed(
-            title = "Bot Commands",
+            title = "Help with Pew Pew",
             description=self.context.bot.description,
             mapping = mapping
         )      
+        
        
         await self.get_destination().send(embed= embed)
         
@@ -61,12 +69,16 @@ class MyHelpCommand(commands.MinimalHelpCommand):
             description= cog.description,
             command_set=cog.get_commands()
         )
-        await self.get_destination().send(embed=embed)           
+        await self.get_destination().send(embed=embed)
+
+            
 
     send_group_help = send_command_help
-   
 
-class Help_Commands(commands.Cog):
+    
+
+class Help(commands.Cog):
+    """Help Command"""
     def __init__(self, bot):
         self._original_help_command = bot.help_command
         bot.help_command = MyHelpCommand()
@@ -74,6 +86,7 @@ class Help_Commands(commands.Cog):
         
     def cog_unload(self):
         self.bot.help_command = self._original_help_command
+    
 
 def setup(client):
-    client.add_cog(Help_Commands(client))
+    client.add_cog(Help(client))

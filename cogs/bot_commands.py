@@ -11,10 +11,9 @@ from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose 
 import editdatabase
-import operator
 
-class Bot_Commands(commands.Cog):
-    """Commands that don't fall in other categories"""
+class Bot(commands.Cog):
+    """Normal Bot Commands"""
 
     def __init__(self,client):
         self.client = client    
@@ -32,14 +31,15 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
-        """initiates fight process
-            
-            directions:\n 
-                click approve\n
-                tnext click win or lose\n
-                reset button for mistakes\n
-                rematch or end the games\n
-            Example: ```=fight @mention```"""                          
+        """
+        Initiate a fight with another player\n
+        **Usage:**: `=fight @player`\n
+        **Directions:**
+        > Opponent clicks `APPROVE` or `DENY`
+        > If approved, both players click either `WIN` or `LOSE`
+        > If pressed wrongly, press `RESET` to enable buttons again
+        > Both players click `REMATCH` to reinitiate a fight process or end it with `GGs`
+        """                          
                         
         channel = self.client.get_channel(ctx.channel.id)
         if channel.type == nextcord.ChannelType.public_thread:
@@ -113,9 +113,11 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def random(self, ctx):
-        """Displays random character portrait with random skin
-            
-            Example: ```=random```"""
+        """
+        See a random SSBU portrait
+        > Try to get your main!
+        """
+
         fighters = ['mario', 'donkey_kong', 'link', 'samus', 'dark_samus', 'yoshi', 'kirby', 'fox', 'pikachu', 'luigi', 'ness', 'captain_falcon', 'jigglypuff', 'peach', 'daisy', 'bowser', 'ice_climbers', 'sheik', 'zelda', 'dr_mario','pichu', 'falco', 'marth', 'lucina', 'young_link', 'ganondorf', 'mewtwo', 'roy', 'chrom','mr_game_and_watch', 'meta_knight', 'pit', 'dark_pit', 'zero_suit_samus', 'wario', 'snake', 'ike','pokemon_trainer', 'diddy_kong', 'lucas', 'sonic', 'king_dedede', 'olimar', 'lucario', 'rob', 'toon_link','wolf', 'villager', 'mega_man', 'wii_fit_trainer', 'rosalina_and_luma', 'little_mac', 'greninja', 'mii_brawler', 'mii_gunner', 'mii_swordfighter', 'palutena', 'pac_man', 'robin', 'shulk', 'bowser_jr', 'duck_hunt', 'ryu', 'ken', 'cloud','corrin', 'bayonetta', 'inkling', 'ridley', 'simon', 'richter', 'king_k_rool', 'isabelle', 'incineroar','piranha_plant', 'joker', 'dq_hero', 'banjo_and_kazooie', 'terry', 'byleth', 'minmin', 'steve', 'sephiroth', 'pyra', 'kazuya', 'sora']
 
         alts = ['main', 'main2', 'main3', 'main4', 'main5', 'main6', 'main7', 'main8']
@@ -139,19 +141,20 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def main(self,ctx, *args):
-        """add main(s) to your account
-            beta\n
-            If used, all characters before are deleted\n
-            if the user enters nothing, main(s) are cleared\n
-            Example: ```=main {character name}```"""
+        """
+        Assign mains to your player stats\n
+        **Usage:** 
+        > To add one or more: `=main rob zss`
+        > To clear your mains: `=main`
+        """
 
         dictionary = await self.character_dictionary_method()
         character_array = []
         player_id = {"_id": ctx.author.id}
         embed = nextcord.Embed(
-            title = "mains emptied",
+            title = "Mains cleared!",
             colour = nextcord.Colour.from_rgb(121,180,183)
-            )
+        )
         #empty_args = (args,isinstance(args,type(None)))
         if args == None:
             character_array = [None]
@@ -177,7 +180,7 @@ class Bot_Commands(commands.Cog):
                         )
                     else:
                         embed = nextcord.Embed(
-                            title = "cann't duplicate entries",
+                            title = "Can't add duplicates!",
                             colour = nextcord.Colour.from_rgb(121,180,183)
                             )
             
@@ -187,16 +190,17 @@ class Bot_Commands(commands.Cog):
 
     @commands.command()
     async def secondary(self,ctx, *args):
-        """add seconaries to your account
-            beta\n
-            If used, all characters before are deleted\n
-            if the user enters nothing, secondaries are cleared\n
-            Example: ```=secondary {character name}```"""
+        """
+        Assign secondaries to your player stats\n
+        **Usage:** 
+        > To add one or more: `=secondary sora marth`
+        > To clear your secondaries: `=secondary`
+        """
         dictionary = await self.character_dictionary_method()
         character_array = []
         player_id = {"_id": ctx.author.id}
         embed = nextcord.Embed(
-            title = "secondaries emptied",
+            title = "Secondaries cleared!",
             colour = nextcord.Colour.from_rgb(121,180,183)
             )
         #empty_args = (args,isinstance(args,type(None)))
@@ -232,4 +236,4 @@ class Bot_Commands(commands.Cog):
         mongodb.player_collection.update_one(player_id, update_secondary_query)
 
 def setup(client):
-    client.add_cog(Bot_Commands(client))
+    client.add_cog(Bot(client))
