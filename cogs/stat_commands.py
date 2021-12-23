@@ -287,8 +287,10 @@ class Statistic(commands.Cog):
                             count += 1
                     
 
-                    embed.add_field(name="Wins", value=win_value)
-                    embed.add_field(name="Loses", value=lose_value)
+                    if len(wins) != 0:
+                        embed.add_field(name="Wins", value=win_value)
+                    if len(loses) != 0:
+                        embed.add_field(name="Loses", value=lose_value)
 
                     await ctx.channel.send(embed = embed)
                     return
