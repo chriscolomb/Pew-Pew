@@ -192,7 +192,7 @@ class WinorLose(nextcord.ui.View):
             self.clicks += 1
             await self.handle_win_or_lose(button,interaction, False)
     
-    #button for losing
+    #button for reset
     @nextcord.ui.button(label= "RESET", emoji = None, style= nextcord.ButtonStyle.secondary, custom_id= "reset01")
     async def reset_button(self, button, interaction):
         thread_embed = nextcord.Embed(

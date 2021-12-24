@@ -29,6 +29,18 @@ class Bot(commands.Cog):
 
         return character_dictionary
 
+    async def character_alias_method(self):
+        character_aliases = {}
+        value = []
+        characters = open("server_emojis_alias.txt")
+        for line in characters:
+            key,value = line.split()
+            character_aliases[key] = value
+        characters.close()
+
+        return character_aliases
+
+
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
         """

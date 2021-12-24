@@ -21,6 +21,18 @@ class Statistic(commands.Cog):
     async def check_empty(self,array):
         return not array
         
+    async def character_alias_method(self):
+        character_aliases = {}
+        value = []
+        characters = open("server_emojis_alias.txt")
+        for line in characters:
+            key,value = line.split()
+            character_aliases[key] = value
+        characters.close()
+
+        return character_aliases
+
+        
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
         """
@@ -113,17 +125,21 @@ class Statistic(commands.Cog):
                         emoji_array = []
                         
                         #get mains by emoji
-                        for emoji1 in main_tuple:
+                        for emoji in main_tuple:
                             # emoji_name_id =await server.fetch_emoji(emoji)
                             # print(emoji_name_id)
                             # #emoji_name = str(emoji_name_id.name).lower 
                             # # emoji_display[emoji_name] = emoji_name_id.id
                             # emoji_array.append(f"<{emoji_name_id.name.lower()}:{emoji_name_id.id}>")
-                            emoji_name = await server.fetch_emoji(emoji1)
-                            for emoji_guild in self.client.guilds:
-                                print(emoji_guild)
-                                emoji = nextcord.utils.get(emoji_guild.emojis, name =emoji_name)
-                                emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
+                            # emoji_name = await server.fetch_emoji(emoji1)
+                            # for emoji_guild in self.client.guilds:
+                            #     print(emoji_guild)
+                            #     emoji = nextcord.utils.get(emoji_guild.emojis, name =emoji_name)
+                            #     emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
+
+                            theEmoji = self.client.get_emoji(emoji)
+                            emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
+
                         
                         value = ""
                         for emoji in emoji_array:
