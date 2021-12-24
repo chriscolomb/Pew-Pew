@@ -52,39 +52,39 @@ class Admin(commands.Cog):
     #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
     #         self.client.unload_extension(f'cogs.{client.extension}')
 
-    # @commands.command()
-    # @has_permissions(administrator=True)
-    # async def createPlayer(self,ctx, user: nextcord.Member):
-    #     """
-    #     Add user to database\n
-    #     **Usage:** `=createPlayer @player`
-    #     """
-    #     #print('ctx from {0.author}: {0.content}'.format(ctx))
-    #     for id in mongodb.player_collection.find({},
-    #                                                 {"_id": 1, "rating": 0, "win_count": 0, "lose_count": 0, "win_streak": 0, "best_win_streak": 0}):
-    #         if id["_id"] == user.id:
-    #             embed = nextcord.Embed(
-    #                 title = "{0} is already in the database.".format(user),
-    #                 colour = nextcord.Colour.from_rgb(121,180,183)
-    #             )
-    #             await ctx.channel.send(embed=embed)                
-    #             return
+    @commands.command()
+    @has_permissions(administrator=True)
+    async def createPlayer(self,ctx, user: nextcord.Member):
+        """
+        Add user to database\n
+        **Usage:** `=createPlayer @player`
+        """
+        #print('ctx from {0.author}: {0.content}'.format(ctx))
+        for id in mongodb.player_collection.find({},
+                                                    {"_id": 1, "rating": 0, "win_count": 0, "lose_count": 0, "win_streak": 0, "best_win_streak": 0}):
+            if id["_id"] == user.id:
+                embed = nextcord.Embed(
+                    title = "{0} is already in the database.".format(user),
+                    colour = nextcord.Colour.from_rgb(121,180,183)
+                )
+                await ctx.channel.send(embed=embed)                
+                return
 
-    #     p1 = Player(user.id)
-    #     p1_entry = {
-    #         "_id": p1.id,
-    #         "rating": p1.rating,
-    #         "win_count": p1.win_count,
-    #         "lose_count": p1.lose_count,
-    #         "win_streak": p1.win_streak,
-    #         "best_win_streak": p1.best_win_streak
-    #     }
-    #     mongodb.player_collection.insert_one(p1_entry)
-    #     embed = nextcord.Embed(
-    #         title = "<@{0}> entry for database created.".format(user),
-    #         colour = nextcord.Colour.from_rgb(121,180,183)
-    #     )
-    #     await ctx.channel.send(embed=embed)
+        p1 = Player(user.id)
+        p1_entry = {
+            "_id": p1.id,
+            "rating": p1.rating,
+            "win_count": p1.win_count,
+            "lose_count": p1.lose_count,
+            "win_streak": p1.win_streak,
+            "best_win_streak": p1.best_win_streak
+        }
+        mongodb.player_collection.insert_one(p1_entry)
+        embed = nextcord.Embed(
+            title = "<@{0}> entry for database created.".format(user),
+            colour = nextcord.Colour.from_rgb(121,180,183)
+        )
+        await ctx.channel.send(embed=embed)
 
     @commands.command()
     @has_permissions(administrator=True)
@@ -132,14 +132,14 @@ class Admin(commands.Cog):
     #         )
     #         await ctx.channel.send(embed=embed)
     
-    # @deletePlayer.error
-    # async def deletePlayer_error(ctx, error):
-    #     if isinstance(error, MissingPermissions):
-    #         embed = nextcord.Embed(
-    #             title = "Only `Admins` can do this command!",
-    #             colour = nextcord.Colour.from_rgb(121,180,183)
-    #         )
-    #         await ctx.channel.send(embed=embed)
+    @deletePlayer.error
+    async def deletePlayer_error(ctx, error):
+        if isinstance(error, MissingPermissions):
+            embed = nextcord.Embed(
+                title = "Only `Admins` can do this command!",
+                colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+            await ctx.channel.send(embed=embed)
     
     async def write_emojis(self):
         """

@@ -138,7 +138,9 @@ class Statistic(commands.Cog):
                             #     emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
 
                             theEmoji = self.client.get_emoji(emoji)
-                            emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
+                            name1 =theEmoji.name
+                            id1 = theEmoji.id
+                            emoji_array.append(f"<:{name1.lower()}:{id1}>")
 
                         
                         value = ""
@@ -155,10 +157,14 @@ class Statistic(commands.Cog):
                         emoji_array = []
 
                         for emoji in secondary_tuple:
-                            emoji_name_id =await server.fetch_emoji(emoji)
-                            emoji_name = emoji_name_id.name 
-                            emoji_display[emoji_name] = emoji_name_id.id
-                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                            # emoji_name_id =await server.fetch_emoji(emoji)
+                            # emoji_name = emoji_name_id.name 
+                            # emoji_display[emoji_name] = emoji_name_id.id
+                            # emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                            theEmojiSecond = self.client.get_emoji(emoji)
+                            nameSecond =theEmojiSecond.name
+                            idSecond = theEmojiSecond.id
+                            emoji_array.append(f"<:{nameSecond.lower()}:{idSecond}>")
                         
                         value = ""
                         for emoji in emoji_array:
