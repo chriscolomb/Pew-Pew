@@ -1,4 +1,5 @@
 import nextcord
+from nextcord import utils
 from nextcord.ext import commands
 import sys
 import random
@@ -20,6 +21,18 @@ class Statistic(commands.Cog):
     async def check_empty(self,array):
         return not array
         
+    async def character_alias_method(self):
+        character_aliases = {}
+        value = []
+        characters = open("server_emojis_alias.txt")
+        for line in characters:
+            key,value = line.split()
+            character_aliases[key] = value
+        characters.close()
+
+        return character_aliases
+
+        
     @commands.command()
     async def stats(self,ctx, user: nextcord.Member=None):
         """
@@ -30,7 +43,7 @@ class Statistic(commands.Cog):
         """
         #TTD 753129805318455356 
         #Test 575869943346757682
-        server = self.client.get_guild(575869943346757682)
+        server = self.client.get_guild(753129805318455356 )
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
@@ -113,10 +126,22 @@ class Statistic(commands.Cog):
                         
                         #get mains by emoji
                         for emoji in main_tuple:
-                            emoji_name_id =await server.fetch_emoji(emoji)
-                            emoji_name = emoji_name_id.name 
-                            emoji_display[emoji_name] = emoji_name_id.id
-                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                            # emoji_name_id =await server.fetch_emoji(emoji)
+                            # print(emoji_name_id)
+                            # #emoji_name = str(emoji_name_id.name).lower 
+                            # # emoji_display[emoji_name] = emoji_name_id.id
+                            # emoji_array.append(f"<{emoji_name_id.name.lower()}:{emoji_name_id.id}>")
+                            # emoji_name = await server.fetch_emoji(emoji1)
+                            # for emoji_guild in self.client.guilds:
+                            #     print(emoji_guild)
+                            #     emoji = nextcord.utils.get(emoji_guild.emojis, name =emoji_name)
+                            #     emoji_array.append(f"<{emoji.name.lower()}:{emoji.id}>")
+
+                            theEmoji = self.client.get_emoji(emoji)
+                            name1 =theEmoji.name
+                            id1 = theEmoji.id
+                            emoji_array.append(f"<:{name1.lower()}:{id1}>")
+
                         
                         value = ""
                         for emoji in emoji_array:
@@ -132,10 +157,14 @@ class Statistic(commands.Cog):
                         emoji_array = []
 
                         for emoji in secondary_tuple:
-                            emoji_name_id =await server.fetch_emoji(emoji)
-                            emoji_name = emoji_name_id.name 
-                            emoji_display[emoji_name] = emoji_name_id.id
-                            emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                            # emoji_name_id =await server.fetch_emoji(emoji)
+                            # emoji_name = emoji_name_id.name 
+                            # emoji_display[emoji_name] = emoji_name_id.id
+                            # emoji_array.append("<:{}:{}>".format(emoji_name, emoji_display[emoji_name]))
+                            theEmojiSecond = self.client.get_emoji(emoji)
+                            nameSecond =theEmojiSecond.name
+                            idSecond = theEmojiSecond.id
+                            emoji_array.append(f"<:{nameSecond.lower()}:{idSecond}>")
                         
                         value = ""
                         for emoji in emoji_array:

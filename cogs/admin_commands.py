@@ -149,7 +149,7 @@ class Admin(commands.Cog):
         #Test 575869943346757682
         server_emojis = open("server_emojis.txt", "w")
         #need to change this to TTD server ID
-        server = self.client.get_guild(575869943346757682)
+        server = self.client.get_guild(753129805318455356 )
         for emoji in server.emojis:
             character = [str(emoji.name).lower(), " ", str(emoji.id), "\n"]
             server_emojis.writelines(character)

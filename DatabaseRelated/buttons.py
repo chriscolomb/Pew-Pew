@@ -40,7 +40,7 @@ class AttackButtons(nextcord.ui.View):
                     #creates thread and sends the view to that thread
                     self.battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{} vs {}".format(p1_name,p2_name), 
                     message = interaction.message, auto_archive_duration= 60, reason = None)
-                    await interaction.response.edit_message(embed=embed, view =None)
+                    await interaction.response.send_message(embed=embed, view =None)
                     thread_embed = nextcord.Embed(
                         title = "Let the Fight Begin!",
                         description = "Win or lose?",
@@ -55,7 +55,7 @@ class AttackButtons(nextcord.ui.View):
                 description = "Try again some other time.",
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
-            await interaction.response.edit_message(embed=embed, view =None)
+            await interaction.response.send_message(embed=embed, view =None)
 
     
     #approve button for matches, should check to see if the @mention is the one who clicked it
@@ -168,10 +168,10 @@ class WinorLose(nextcord.ui.View):
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
 
-            await interaction.response.edit_message(embed= embed_end_match, 
+            await interaction.response.send_message(embed= embed_end_match, 
             view=MatchComplete(self.p1, self.p2, self.battle_thread))
         else:
-            await interaction.response.edit_message(view=self)  
+            await interaction.response.send_message(view=self)  
       
 
     #button for winning
@@ -192,15 +192,16 @@ class WinorLose(nextcord.ui.View):
             self.clicks += 1
             await self.handle_win_or_lose(button,interaction, False)
     
-    #button for losing
+    #button for reset
     @nextcord.ui.button(label= "RESET", emoji = None, style= nextcord.ButtonStyle.secondary, custom_id= "reset01")
     async def reset_button(self, button, interaction):
-        thread_embed = nextcord.Embed(
-            title = "Buttons Have Been Reset.",
-            description = "Win or lose?",
-            colour = nextcord.Colour.from_rgb(121,180,183)
-        )
-        await interaction.response.edit_message(embed=thread_embed, view=WinorLose(self.p1,self.p2, self.battle_thread))
+        if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):    
+            thread_embed = nextcord.Embed(
+                title = "Buttons Have Been Reset.",
+                description = "Win or lose?",
+                colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+            await interaction.response.send_message(embed=thread_embed, view=WinorLose(self.p1,self.p2, self.battle_thread))
 
 class MatchComplete(nextcord.ui.View):
     def __init__(self, p1=None, p2=None, battle_thread = None):
@@ -240,6 +241,6 @@ class MatchComplete(nextcord.ui.View):
                 description = "Thanks for playing!",
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
-            await interaction.response.edit_message(embed=thread_embed, view = None)
+            await interaction.response.send_message(embed=thread_embed, view = None)
             # await self.battle_thread.delete()
             

@@ -29,6 +29,27 @@ class Bot(commands.Cog):
 
         return character_dictionary
 
+    async def character_alias_method(self):
+        character_aliases = {}
+        value = []
+        characters = open("alias.txt")
+        for line in characters:
+            key,value = line.split()
+            character_aliases[key] = value.lower()
+        characters.close()
+
+        #checks for more than one space
+        # for idx, line in enumerate(characters, 1):
+        #     split_list = line.split()
+        #     if len(split_list) != 2:
+        #         raise ValueError("Line {}: '{}' has {} spaces, expected 1"
+        #             .format(idx, line.rstrip(), len(split_list) - 1))
+        #     else:
+        #         count = split_list
+        #         print(count)
+        return character_aliases
+
+
     @commands.command()
     async def fight(self,ctx, user: nextcord.Member):
         """
@@ -149,6 +170,7 @@ class Bot(commands.Cog):
         """
 
         dictionary = await self.character_dictionary_method()
+        alias_dictionary = await self.character_alias_method()
         character_array = []
         player_id = {"_id": ctx.author.id}
         embed = nextcord.Embed(
@@ -161,13 +183,14 @@ class Bot(commands.Cog):
         else:
             for characters in args:
                 isIn = True
+                if characters in alias_dictionary:
+                    characters = alias_dictionary[characters]
                 try: dictionary[characters]
                 except KeyError:
                     embed = nextcord.Embed(
                         title = "Character \"{}\" doesn't exist!".format(characters),
                         colour = nextcord.Colour.from_rgb(121,180,183)
                     )
-                    await ctx.channel.send(embed=embed)
                     isIn = False
                 if isIn:
                     characterID = int(dictionary[characters])
@@ -197,6 +220,7 @@ class Bot(commands.Cog):
         > To clear your secondaries: `=secondary`
         """
         dictionary = await self.character_dictionary_method()
+        alias_dictionary = await self.character_alias_method()
         character_array = []
         player_id = {"_id": ctx.author.id}
         embed = nextcord.Embed(
@@ -209,6 +233,8 @@ class Bot(commands.Cog):
         else:
             for characters in args:
                 isIn = True
+                if characters in alias_dictionary:
+                    characters = alias_dictionary[characters]
                 try: dictionary[characters]
                 except KeyError:
                     embed = nextcord.Embed(
