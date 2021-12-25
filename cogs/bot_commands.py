@@ -168,7 +168,7 @@ class Bot(commands.Cog):
         > To add one or more: `=main rob zss`
         > To clear your mains: `=main`
         """
-
+        
         dictionary = await self.character_dictionary_method()
         alias_dictionary = await self.character_alias_method()
         character_array = []
@@ -182,6 +182,7 @@ class Bot(commands.Cog):
             character_array = [None]
         else:
             for characters in args:
+                characters = characters.lower()
                 isIn = True
                 if characters in alias_dictionary:
                     characters = alias_dictionary[characters]
@@ -232,6 +233,7 @@ class Bot(commands.Cog):
             character_array = [None]
         else:
             for characters in args:
+                characters = characters.lower()
                 isIn = True
                 if characters in alias_dictionary:
                     characters = alias_dictionary[characters]
