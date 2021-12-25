@@ -89,7 +89,7 @@ class WinorLose(nextcord.ui.View):
         get_user = interaction.user.id
         
         #number of clicks in the view
-        if self.clicks == 2:
+        if self.clicks >= 2:
             #creates battle collection
             battle = Battle(self.p1.get_id(),self.p2.get_id())
             battle_entry = {
