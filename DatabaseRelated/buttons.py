@@ -32,7 +32,7 @@ class AttackButtons(nextcord.ui.View):
                 p1_name = str(server.get_member(user_id))[:-5]
                 p2_name = str(server.get_member(user_id2))[:-5]
 
-                if await self.interaction_check1(self.p1,interaction):
+                if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
                         colour = nextcord.Colour.from_rgb(121,180,183)
