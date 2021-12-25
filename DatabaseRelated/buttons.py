@@ -32,7 +32,7 @@ class AttackButtons(nextcord.ui.View):
                 p1_name = str(server.get_member(user_id))[:-5]
                 p2_name = str(server.get_member(user_id2))[:-5]
 
-                if await self.interaction_check1(self.p2,interaction):
+                if await self.interaction_check1(self.p1,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
                         colour = nextcord.Colour.from_rgb(121,180,183)
@@ -40,7 +40,7 @@ class AttackButtons(nextcord.ui.View):
                     #creates thread and sends the view to that thread
                     self.battle_thread = await nextcord.TextChannel.create_thread(interaction.channel,name ="{} vs {}".format(p1_name,p2_name), 
                     message = interaction.message, auto_archive_duration= 60, reason = None)
-                    await interaction.response.send_message(embed=embed, view =None)
+                    await interaction.response.edit_message(embed=embed, view =None)
                     thread_embed = nextcord.Embed(
                         title = "Let the Fight Begin!",
                         description = "Win or lose?",
@@ -55,7 +55,7 @@ class AttackButtons(nextcord.ui.View):
                 description = "Try again some other time.",
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
-            await interaction.response.send_message(embed=embed, view =None)
+            await interaction.response.edit_message(embed=embed, view =None)
 
     
     #approve button for matches, should check to see if the @mention is the one who clicked it
@@ -117,37 +117,37 @@ class WinorLose(nextcord.ui.View):
                         loser = self.p2  
             UpdateELO.update_elo_rating(winner, loser)
 
-            #add battle to history collection
-            history_entry = {
-                "winner": winner.get_id(),
-                "loser": loser.get_id(),
-                "date": dt.now()
-            }
-            mongodb.history_collection.insert_one(history_entry)
+            # #add battle to history collection
+            # history_entry = {
+            #     "winner": winner.get_id(),
+            #     "loser": loser.get_id(),
+            #     "date": dt.now()
+            # }
+            # mongodb.history_collection.insert_one(history_entry)
 
-            for player in mongodb.player_collection.find():
-                if player["_id"] == winner.get_id():
-                    copy = player["match_history"]
-                    if player["match_history"][0].get(str(loser.get_id())) != None:
-                        copy[0][str(loser.get_id())] += 1
-                    else:                 
-                        copy[0][str(loser.get_id())] = 1    
-                    query = {
-                        "_id": winner.get_id(),
-                    }
-                    update_query = { "$set": { "match_history": copy } }
-                    mongodb.player_collection.update_one(query, update_query)
-                elif player["_id"] == loser.get_id():
-                    copy = player["match_history"]
-                    if player["match_history"][1].get(str(winner.get_id())) != None:
-                        copy[1][str(winner.get_id())] += 1
-                    else:                 
-                        copy[1][str(winner.get_id())] = 1    
-                    query = {
-                        "_id": loser.get_id(),
-                    }
-                    update_query = { "$set": { "match_history": copy } }
-                    mongodb.player_collection.update_one(query, update_query)
+            # for player in mongodb.player_collection.find():
+            #     if player["_id"] == winner.get_id():
+            #         copy = player["match_history"]
+            #         if player["match_history"][0].get(str(loser.get_id())) != None:
+            #             copy[0][str(loser.get_id())] += 1
+            #         else:                 
+            #             copy[0][str(loser.get_id())] = 1    
+            #         query = {
+            #             "_id": winner.get_id(),
+            #         }
+            #         update_query = { "$set": { "match_history": copy } }
+            #         mongodb.player_collection.update_one(query, update_query)
+            #     elif player["_id"] == loser.get_id():
+            #         copy = player["match_history"]
+            #         if player["match_history"][1].get(str(winner.get_id())) != None:
+            #             copy[1][str(winner.get_id())] += 1
+            #         else:                 
+            #             copy[1][str(winner.get_id())] = 1    
+            #         query = {
+            #             "_id": loser.get_id(),
+            #         }
+            #         update_query = { "$set": { "match_history": copy } }
+            #         mongodb.player_collection.update_one(query, update_query)
                     
             
 
@@ -168,10 +168,10 @@ class WinorLose(nextcord.ui.View):
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
 
-            await interaction.response.send_message(embed= embed_end_match, 
+            await interaction.response.edit_message(embed= embed_end_match, 
             view=MatchComplete(self.p1, self.p2, self.battle_thread))
         else:
-            await interaction.response.send_message(view=self)  
+            await interaction.response.edit_message(view=self)  
       
 
     #button for winning
@@ -195,13 +195,13 @@ class WinorLose(nextcord.ui.View):
     #button for reset
     @nextcord.ui.button(label= "RESET", emoji = None, style= nextcord.ButtonStyle.secondary, custom_id= "reset01")
     async def reset_button(self, button, interaction):
-        if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):    
+        if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             thread_embed = nextcord.Embed(
                 title = "Buttons Have Been Reset.",
                 description = "Win or lose?",
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
-            await interaction.response.send_message(embed=thread_embed, view=WinorLose(self.p1,self.p2, self.battle_thread))
+            await interaction.response.edit_message(embed=thread_embed, view=WinorLose(self.p1,self.p2, self.battle_thread))
 
 class MatchComplete(nextcord.ui.View):
     def __init__(self, p1=None, p2=None, battle_thread = None):
@@ -241,6 +241,6 @@ class MatchComplete(nextcord.ui.View):
                 description = "Thanks for playing!",
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
-            await interaction.response.send_message(embed=thread_embed, view = None)
+            await interaction.response.edit_message(embed=thread_embed, view = None)
             # await self.battle_thread.delete()
             
