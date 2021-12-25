@@ -12,7 +12,7 @@ from nextcord.ext.commands.core import group
 
 intents = nextcord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix = "??", intents = intents, description="**Ranked Matchmaking Bot for SSBU with ELO Rating!**\n> To see a description for each command based on category: \n> `=help command_category`\n> For help with specific commands: \n> `=help command_name`")
+client = commands.Bot(command_prefix = "=", intents = intents, description="**Ranked Matchmaking Bot for SSBU with ELO Rating!**\n> To see a description for each command based on category: \n> `=help command_category`\n> For help with specific commands: \n> `=help command_name`")
 client.help_command = help_commands.MyHelpCommand()
 
 for filename in os.listdir('./cogs'):
