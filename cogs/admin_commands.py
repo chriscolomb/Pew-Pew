@@ -32,25 +32,25 @@ class Admin(commands.Cog):
         await self.write_emojis()
         #print('Logged on as {0}!'.format(self.user.name))
     
-    # @commands.command()
-    # async def load(self,ctx,extension):
-    #     """
-    #     Loads cog files
-    #     """
-    #     admin1= 472883421212049409
-    #     admin2= 705139734426419260
-    #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
-    #         self.client.load_extension(f'cogs.{client.extension}')
+    @commands.command()
+    async def load(self,ctx,extension):
+        """
+        Loads cog files
+        """
+        admin1= 472883421212049409
+        admin2= 705139734426419260
+        if ctx.author.id == admin2 or ctx.author.id == admin1: 
+            self.client.load_extension(f'cogs.{client.extension}')
 
-    # @commands.command()
-    # async def unload(self,ctx, extension):
-    #     """
-    #     Unload cog files
-    #     """
-    #     admin1= 472883421212049409
-    #     admin2= 705139734426419260
-    #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
-    #         self.client.unload_extension(f'cogs.{client.extension}')
+    @commands.command()
+    async def unload(self,ctx, extension):
+        """
+        Unload cog files
+        """
+        admin1= 472883421212049409
+        admin2= 705139734426419260
+        if ctx.author.id == admin2 or ctx.author.id == admin1: 
+            self.client.unload_extension(f'cogs.{client.extension}')
 
     @commands.command()
     @has_permissions(administrator=True)
@@ -132,14 +132,14 @@ class Admin(commands.Cog):
     #         )
     #         await ctx.channel.send(embed=embed)
     
-    @deletePlayer.error
-    async def deletePlayer_error(ctx, error):
-        if isinstance(error, MissingPermissions):
-            embed = nextcord.Embed(
-                title = "Only `Admins` can do this command!",
-                colour = nextcord.Colour.from_rgb(121,180,183)
-            )
-            await ctx.channel.send(embed=embed)
+    # @deletePlayer.error
+    # async def deletePlayer_error(ctx, error):
+    #     if isinstance(error, MissingPermissions):
+    #         embed = nextcord.Embed(
+    #             title = "Only `Admins` can do this command!",
+    #             colour = nextcord.Colour.from_rgb(121,180,183)
+    #         )
+    #         await ctx.channel.send(embed=embed)
     
     async def write_emojis(self):
         """

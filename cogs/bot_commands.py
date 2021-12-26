@@ -243,7 +243,6 @@ class Bot(commands.Cog):
                         title = "Character \"{}\" doesn't exist!".format(characters),
                         colour = nextcord.Colour.from_rgb(121,180,183)
                     )
-                    await ctx.channel.send(embed=embed)
                     isIn = False
                 if isIn:
                     characterID = int(dictionary[characters])
