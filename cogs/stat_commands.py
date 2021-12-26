@@ -286,7 +286,6 @@ class Statistic(commands.Cog):
         > Shows top 10 win/lose counts against players
         """
 
-        server = self.client.get_guild(575869943346757682)
         if user != None:
             for id in mongodb.player_collection.find():
                 if id["_id"] == user.id:
