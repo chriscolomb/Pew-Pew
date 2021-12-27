@@ -31,7 +31,7 @@ class Admin(commands.Cog):
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
         await self.write_emojis()
-        await self.simulate_history()
+        # await self.simulate_history()
         #print('Logged on as {0}!'.format(self.user.name))
     
     @commands.command()
@@ -159,19 +159,29 @@ class Admin(commands.Cog):
         server_emojis.close()
     
     async def simulate_history(self):
-        query = { "_id": { "$regex": "^\d" } }
+        
+        count = 0
+        for id in mongodb.player_collection.find():
+            if id["_id"] > 0:
 
-        update = { 
-            "$set": { 
-                "rating": 1000,
-                "win_count": 0,
-                "lose_count": 0,
-                "win_streak": 0,
-                "best_win_streak": 0
-            } 
-        }
+                query = { "_id": id["_id"] }
+                wins = {}
+                loses = {}
+                update = { 
+                    "$set": { 
+                        "rating": 1000,
+                        "win_count": 0,
+                        "lose_count": 0,
+                        "win_streak": 0,
+                        "best_win_streak": 0,
+                        "match_history": [wins, loses]
+                    } 
+                }
 
-        mongodb.player_collection.update_many(query,update)
+                mongodb.player_collection.update_one(query,update)
+                count += 1
+        
+        print(str(count) +  " entries updated")
 
         for entry in mongodb.history_collection.find():
             for id in mongodb.player_collection.find():
