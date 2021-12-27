@@ -89,7 +89,7 @@ class WinorLose(nextcord.ui.View):
         get_user = interaction.user.id
         
         #number of clicks in the view
-        if self.clicks == 2:
+        if self.clicks >= 2:
             #creates battle collection
             battle = Battle(self.p1.get_id(),self.p2.get_id())
             battle_entry = {
@@ -192,15 +192,16 @@ class WinorLose(nextcord.ui.View):
             self.clicks += 1
             await self.handle_win_or_lose(button,interaction, False)
     
-    #button for losing
+    #button for reset
     @nextcord.ui.button(label= "RESET", emoji = None, style= nextcord.ButtonStyle.secondary, custom_id= "reset01")
     async def reset_button(self, button, interaction):
-        thread_embed = nextcord.Embed(
-            title = "Buttons Have Been Reset.",
-            description = "Win or lose?",
-            colour = nextcord.Colour.from_rgb(121,180,183)
-        )
-        await interaction.response.edit_message(embed=thread_embed, view=WinorLose(self.p1,self.p2, self.battle_thread))
+        if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
+            thread_embed = nextcord.Embed(
+                title = "Buttons Have Been Reset.",
+                description = "Win or lose?",
+                colour = nextcord.Colour.from_rgb(121,180,183)
+            )
+            await interaction.response.edit_message(embed=thread_embed, view=WinorLose(self.p1,self.p2, self.battle_thread))
 
 class MatchComplete(nextcord.ui.View):
     def __init__(self, p1=None, p2=None, battle_thread = None):

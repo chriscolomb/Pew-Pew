@@ -8,6 +8,7 @@ from nextcord.ext import commands
 sys.path.append('DatabaseRelated')
 sys.path.append('cogs')
 import mongodb
+import UpdateELO
 from player import Player
 from buttons import AttackButtons
 from buttons import WinorLose
@@ -30,27 +31,28 @@ class Admin(commands.Cog):
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
         await self.write_emojis()
+        await self.simulate_history()
         #print('Logged on as {0}!'.format(self.user.name))
     
-    # @commands.command()
-    # async def load(self,ctx,extension):
-    #     """
-    #     Loads cog files
-    #     """
-    #     admin1= 472883421212049409
-    #     admin2= 705139734426419260
-    #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
-    #         self.client.load_extension(f'cogs.{client.extension}')
+    @commands.command()
+    async def load(self,ctx,extension):
+        """
+        Loads cog files
+        """
+        admin1= 472883421212049409
+        admin2= 705139734426419260
+        if ctx.author.id == admin2 or ctx.author.id == admin1: 
+            self.client.load_extension(f'cogs.{client.extension}')
 
-    # @commands.command()
-    # async def unload(self,ctx, extension):
-    #     """
-    #     Unload cog files
-    #     """
-    #     admin1= 472883421212049409
-    #     admin2= 705139734426419260
-    #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
-    #         self.client.unload_extension(f'cogs.{client.extension}')
+    @commands.command()
+    async def unload(self,ctx, extension):
+        """
+        Unload cog files
+        """
+        admin1= 472883421212049409
+        admin2= 705139734426419260
+        if ctx.author.id == admin2 or ctx.author.id == admin1: 
+            self.client.unload_extension(f'cogs.{client.extension}')
 
     # @commands.command()
     # @has_permissions(administrator=True)
@@ -145,15 +147,41 @@ class Admin(commands.Cog):
         """
         Writes server emojis into a text file
         """ 
-        #TTD 753129805318455356      
+        #TTD 753129805318455356  
+        #Test 575869943346757682
         server_emojis = open("server_emojis.txt", "w")
         #need to change this to TTD server ID
-        server = self.client.get_guild(575869943346757682)
+        server = self.client.get_guild(753129805318455356)
         for emoji in server.emojis:
             character = [str(emoji.name).lower(), " ", str(emoji.id), "\n"]
             server_emojis.writelines(character)
         
         server_emojis.close()
+    
+    async def simulate_history(self):
+        query = { "_id": { "$regex": "^\d" } }
+
+        update = { 
+            "$set": { 
+                "rating": 1000,
+                "win_count": 0,
+                "lose_count": 0,
+                "win_streak": 0,
+                "best_win_streak": 0
+            } 
+        }
+
+        mongodb.player_collection.update_many(query,update)
+
+        for entry in mongodb.history_collection.find():
+            for id in mongodb.player_collection.find():
+                if id["_id"] == entry["winner"]:
+                    winner = Player(entry["winner"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
+                if id["_id"] == entry["loser"]:
+                    loser = Player(entry["loser"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
+            UpdateELO.update_elo_rating(winner, loser)
+
+
 
 
 def setup(client):
