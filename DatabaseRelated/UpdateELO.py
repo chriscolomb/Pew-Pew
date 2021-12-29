@@ -7,9 +7,17 @@ def update_elo_rating(winner, loser):
     winner_rating = winner.rating
     loser_rating = loser.rating
 
+    POWOFTEN = 10
+    ALGOF400 = 400
+
+    #transform rating
+    transform_p1 = pow(POWOFTEN,(winner_rating/ALGOF400 ))
+    transform_p2 = pow(POWOFTEN,(loser_rating/ALGOF400 ))
+
+
     # Calculate probabilities of winning
-    winner_probability = winner_rating / (winner_rating + loser_rating)
-    loser_probability = loser_rating / (winner_rating + loser_rating)    
+    winner_probability = transform_p1 / (transform_p1 + transform_p2)
+    loser_probability = transform_p2 / (transform_p1 + transform_p2)    
 
     # FIDE K-factor for Winner
     if winner_rating < 2300 or (winner.win_count + winner.lose_count) <= 30:
@@ -67,14 +75,6 @@ def update_elo_rating(winner, loser):
 
     mongodb.player_collection.update_one(p1_query, new_p1)
     mongodb.player_collection.update_one(p2_query, new_p2)
-
-    #add battle to history collection
-    history_entry = {
-        "winner": winner.get_id(),
-        "loser": loser.get_id(),
-        "date": dt.now()
-    }
-    mongodb.history_collection.insert_one(history_entry)
 
     for player in mongodb.player_collection.find():
         if player["_id"] == winner.get_id():
