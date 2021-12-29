@@ -22,10 +22,10 @@ class AttackButtons(nextcord.ui.View):
 
     async def handleApproveorDeny(self,button: nextcord.ui.Button, interaction: nextcord.Interaction, approveClicked):
         button.disable = True
+        #gets user and mention username
+        user_id = self.p1.id
+        user_id2 = self.p2.id
         if approveClicked:
-                #gets user and mention username
-                user_id = self.p1.id
-                user_id2 = self.p2.id
                 guild_id = interaction.message.guild.id
                 server = self.client.get_guild(guild_id)
                 #retrieves username from discord - the numbers
@@ -48,8 +48,9 @@ class AttackButtons(nextcord.ui.View):
                     )
                     await self.battle_thread.send(embed=thread_embed, view = WinorLose(self.p1, self.p2, self.battle_thread))
                 else:
-                    await interaction.response.send_message("only {} can click approve".format(p2_name)) 
-        else:
+                    await interaction.response.send_message("only {} can click approve".format(p2_name), ephemeral=True) 
+        
+        elif not approveClicked and await self.interaction_check1(self.p2,interaction):
             embed = nextcord.Embed(
                 title = "Fight Denied!",
                 description = "Try again some other time.",
