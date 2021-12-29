@@ -5,11 +5,11 @@ from pprint import pprint
 from pymongo import collection # pprint library is used to make the output look more pretty
 
 # connect to MongoDB
-#client = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-cluster.rzshs.mongodb.net/test")
+client = pymongo.MongoClient("mongodb+srv://teamduckssb:em-xJFw-97G5mpG@testing-cluster.rzshs.mongodb.net/test")
 #test
 #server
 #switch
-client = pymongo.MongoClient("mongodb+srv://TestUser:i9Qff02tMQur7byG@cluster0.su84k.mongodb.net/PEW-PEW-TEST")
+#client = pymongo.MongoClient("mongodb+srv://TestUser:i9Qff02tMQur7byG@cluster0.su84k.mongodb.net/PEW-PEW-TEST")
 bot_db = client["Bot"]
 player_collection = bot_db["Player"]
 battle_collection = bot_db["BattleInProgress"]
