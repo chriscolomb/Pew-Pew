@@ -14,6 +14,8 @@ from buttons import AttackButtons
 from buttons import WinorLose
 from buttons import MatchComplete
 
+from datetime import datetime as dt
+
 from nextcord.ext.commands.core import has_permissions
 from nextcord.ext.commands import MissingPermissions
 
@@ -33,7 +35,7 @@ class Admin(commands.Cog):
  
         await self.write_emojis()
         
-        await self.simulate_history()
+        # await self.simulate_history()
         #print('Logged on as {0}!'.format(self.user.name))
     
     @commands.command()
@@ -166,7 +168,6 @@ class Admin(commands.Cog):
         server_emojis.close()
     
     async def simulate_history(self):
-        
         count = 0
         for id in mongodb.player_collection.find():
             if id["_id"] > 0:
@@ -190,18 +191,25 @@ class Admin(commands.Cog):
         
         print(str(count) +  " player entries set to default")
 
-        print("starting batch delete...")
-        myquery = { "date": {"$regex": "^2021-12-29"} }
-        x = mongodb.history_collection.delete_many(myquery)
-        print(x.deleted_count, " documents deleted.")
+        # print("starting batch delete...")
+        # date = dt(2021, 12, 29)
+        # myquery = { "date": {"$gte": date} }
+        # x = mongodb.history_collection.delete_many(myquery)
+        # print(x.deleted_count, " documents deleted.")
 
+        count = 0
+        print("starting history simulation...")
         for entry in mongodb.history_collection.find():
             for id in mongodb.player_collection.find():
                 if id["_id"] == entry["winner"]:
                     winner = Player(entry["winner"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
                 if id["_id"] == entry["loser"]:
                     loser = Player(entry["loser"], rating=id["rating"], win_count=id["win_count"], lose_count=id["lose_count"], win_streak=id["win_streak"], best_win_streak=id["best_win_streak"])
+            count += 1
             UpdateELO.update_elo_rating(winner, loser)
+            print("updated " + str(count) + " entries")
+        
+        print("finished going through history")
 
 
 
