@@ -5,9 +5,15 @@ import mongodb
 import UpdateELO
 from battle import Battle
 from datetime import datetime as dt
+import logging
+import sys
 
-
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
 #Buttons to start fights, figure out how to timeout button
 class AttackButtons(nextcord.ui.View):
     def __init__(self, p1=None, p2=None, client = None, battle_thread=None):
@@ -18,21 +24,26 @@ class AttackButtons(nextcord.ui.View):
         self.battle_thread = battle_thread
         
     async def interaction_check1(self, player_to_check,interaction):
+        logger.debug("Attack Buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
 
     async def handleApproveorDeny(self,button: nextcord.ui.Button, interaction: nextcord.Interaction, approveClicked):
         button.disable = True
+        #gets user and mention username
+        user_id = self.p1.id
+        user_id2 = self.p2.id
         if approveClicked:
-                #gets user and mention username
-                user_id = self.p1.id
-                user_id2 = self.p2.id
                 guild_id = interaction.message.guild.id
                 server = self.client.get_guild(guild_id)
                 #retrieves username from discord - the numbers
                 p1_name = str(server.get_member(user_id))[:-5]
                 p2_name = str(server.get_member(user_id2))[:-5]
-
+                
+                #Change
+                #this
+                # to test
                 if await self.interaction_check1(self.p1,interaction):
+                #if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
                         colour = nextcord.Colour.from_rgb(121,180,183)
@@ -48,8 +59,9 @@ class AttackButtons(nextcord.ui.View):
                     )
                     await self.battle_thread.send(embed=thread_embed, view = WinorLose(self.p1, self.p2, self.battle_thread))
                 else:
-                    await interaction.response.send_message("only {} can click approve".format(p2_name)) 
-        else:
+                    await interaction.response.send_message("only {} can click approve".format(p2_name), ephemeral=True) 
+        
+        elif not approveClicked and await self.interaction_check1(self.p2,interaction):
             embed = nextcord.Embed(
                 title = "Fight Denied!",
                 description = "Try again some other time.",
@@ -80,6 +92,7 @@ class WinorLose(nextcord.ui.View):
         self.battle_thread = battle_thread
 
     async def interaction_check1(self, player_to_check,interaction):
+        logger.debug("Win or lose buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
 
     #Where the magic will happen; the buttons will call the updateELO class from here, also need to disable buttons here
@@ -115,43 +128,7 @@ class WinorLose(nextcord.ui.View):
                     elif player["p2"] == get_user:
                         winner = self.p1
                         loser = self.p2  
-            UpdateELO.update_elo_rating(winner, loser)
-
-            #add battle to history collection
-            history_entry = {
-                "winner": winner.get_id(),
-                "loser": loser.get_id(),
-                "date": dt.now()
-            }
-            mongodb.history_collection.insert_one(history_entry)
-
-            for player in mongodb.player_collection.find():
-                if player["_id"] == winner.get_id():
-                    copy = player["match_history"]
-                    if player["match_history"][0].get(str(loser.get_id())) != None:
-                        copy[0][str(loser.get_id())] += 1
-                    else:                 
-                        copy[0][str(loser.get_id())] = 1    
-                    query = {
-                        "_id": winner.get_id(),
-                    }
-                    update_query = { "$set": { "match_history": copy } }
-                    mongodb.player_collection.update_one(query, update_query)
-                elif player["_id"] == loser.get_id():
-                    copy = player["match_history"]
-                    if player["match_history"][1].get(str(winner.get_id())) != None:
-                        copy[1][str(winner.get_id())] += 1
-                    else:                 
-                        copy[1][str(winner.get_id())] = 1    
-                    query = {
-                        "_id": loser.get_id(),
-                    }
-                    update_query = { "$set": { "match_history": copy } }
-                    mongodb.player_collection.update_one(query, update_query)
-                    
-            
-
-            
+            UpdateELO.update_elo_rating(winner, loser)    
 
             #deletes battle collection
             delete_query = {}
@@ -214,15 +191,19 @@ class MatchComplete(nextcord.ui.View):
         self.battle_thread = battle_thread 
 
     async def interaction_check1(self, player_to_check, interaction):
+        logger.debug("Match Complete buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
     
     
     @nextcord.ui.button(label= "REMATCH",emoji = None, style= nextcord.ButtonStyle.green, custom_id= "rematch01")
     async def rematch_button(self,button, interaction):
+
         if await self.interaction_check1(self.p2, interaction):
             self.p2_clicks +=1
+            logger.debug(" user: %s amount clicks: %s fighter: %s", self.p1.id, self.p1_clicks, self.p2)
         elif await self.interaction_check1(self.p1, interaction):
             self.p1_clicks += 1
+            logger.debug(" user: %s: amount clicks %s fighter: %s", self.p1.id, self.p1_clicks,self.p1)
         if self.p1_clicks >= 1 and self.p2_clicks >= 1:
             thread_embed = nextcord.Embed(
                 title = "Let the Fight Begin!",
