@@ -188,7 +188,12 @@ class Admin(commands.Cog):
                 mongodb.player_collection.update_one(query,update)
                 count += 1
         
-        print(str(count) +  " entries updated")
+        print(str(count) +  " player entries set to default")
+
+        print("starting batch delete...")
+        myquery = { "date": {"$regex": "^2021-12-29"} }
+        x = mongodb.history_collection.delete_many(myquery)
+        print(x.deleted_count, " documents deleted.")
 
         for entry in mongodb.history_collection.find():
             for id in mongodb.player_collection.find():

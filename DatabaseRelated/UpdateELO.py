@@ -76,14 +76,6 @@ def update_elo_rating(winner, loser):
     mongodb.player_collection.update_one(p1_query, new_p1)
     mongodb.player_collection.update_one(p2_query, new_p2)
 
-    #add battle to history collection
-    history_entry = {
-        "winner": winner.get_id(),
-        "loser": loser.get_id(),
-        "date": dt.now()
-    }
-    mongodb.history_collection.insert_one(history_entry)
-
     for player in mongodb.player_collection.find():
         if player["_id"] == winner.get_id():
             copy = player["match_history"]
