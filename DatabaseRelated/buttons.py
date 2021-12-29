@@ -5,9 +5,15 @@ import mongodb
 import UpdateELO
 from battle import Battle
 from datetime import datetime as dt
+import logging
+import sys
 
-
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
 #Buttons to start fights, figure out how to timeout button
 class AttackButtons(nextcord.ui.View):
     def __init__(self, p1=None, p2=None, client = None, battle_thread=None):
@@ -18,6 +24,7 @@ class AttackButtons(nextcord.ui.View):
         self.battle_thread = battle_thread
         
     async def interaction_check1(self, player_to_check,interaction):
+        logger.debug("Attack Buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
 
     async def handleApproveorDeny(self,button: nextcord.ui.Button, interaction: nextcord.Interaction, approveClicked):
@@ -31,7 +38,11 @@ class AttackButtons(nextcord.ui.View):
                 #retrieves username from discord - the numbers
                 p1_name = str(server.get_member(user_id))[:-5]
                 p2_name = str(server.get_member(user_id2))[:-5]
-
+                
+                #Change
+                #this
+                # to test
+                #if await self.interaction_check1(self.p1,interaction):
                 if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
@@ -81,6 +92,7 @@ class WinorLose(nextcord.ui.View):
         self.battle_thread = battle_thread
 
     async def interaction_check1(self, player_to_check,interaction):
+        logger.debug("Win or lose buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
 
     #Where the magic will happen; the buttons will call the updateELO class from here, also need to disable buttons here
@@ -118,13 +130,6 @@ class WinorLose(nextcord.ui.View):
                         loser = self.p2  
             UpdateELO.update_elo_rating(winner, loser)
 
-            
-
-            
-                    
-            
-
-            
 
             #deletes battle collection
             delete_query = {}
@@ -187,15 +192,19 @@ class MatchComplete(nextcord.ui.View):
         self.battle_thread = battle_thread 
 
     async def interaction_check1(self, player_to_check, interaction):
+        logger.debug("Match Complete buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
     
     
     @nextcord.ui.button(label= "REMATCH",emoji = None, style= nextcord.ButtonStyle.green, custom_id= "rematch01")
     async def rematch_button(self,button, interaction):
+
         if await self.interaction_check1(self.p2, interaction):
             self.p2_clicks +=1
+            logger.debug(" user: %s amount clicks: %s fighter: %s", self.p1.id, self.p1_clicks, self.p2)
         elif await self.interaction_check1(self.p1, interaction):
             self.p1_clicks += 1
+            logger.debug(" user: %s: amount clicks %s fighter: %s", self.p1.id, self.p1_clicks,self.p1)
         if self.p1_clicks >= 1 and self.p2_clicks >= 1:
             thread_embed = nextcord.Embed(
                 title = "Let the Fight Begin!",

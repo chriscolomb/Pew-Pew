@@ -7,9 +7,17 @@ def update_elo_rating(winner, loser):
     winner_rating = winner.rating
     loser_rating = loser.rating
 
+    POWOFTEN = 10
+    ALGOF400 = 400
+
+    #transform rating
+    transform_p1 = pow(POWOFTEN,(winner_rating/ALGOF400 ))
+    transform_p2 = pow(POWOFTEN,(loser_rating/ALGOF400 ))
+
+
     # Calculate probabilities of winning
-    winner_probability = winner_rating / (winner_rating + loser_rating)
-    loser_probability = loser_rating / (winner_rating + loser_rating)    
+    winner_probability = transform_p1 / (transform_p1 + transform_p2)
+    loser_probability = transform_p2 / (transform_p1 + transform_p2)    
 
     # FIDE K-factor for Winner
     if winner_rating < 2300 or (winner.win_count + winner.lose_count) <= 30:

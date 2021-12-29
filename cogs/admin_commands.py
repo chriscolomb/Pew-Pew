@@ -23,15 +23,17 @@ class Admin(commands.Cog):
 
     def __init__(self,client: commands.Bot):
         self.client = client
-                
+
     @commands.Cog.listener()
     async def on_ready(self):
         print("bot ready")
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
+ 
         await self.write_emojis()
-        # await self.simulate_history()
+        
+        await self.simulate_history()
         #print('Logged on as {0}!'.format(self.user.name))
     
     @commands.command()
@@ -123,6 +125,11 @@ class Admin(commands.Cog):
             )
             await ctx.channel.send(embed=embed)
 
+    # @commands.command()
+    # @has_permissions(administrator = True)
+    # async def create_log(self,):
+    #     logger = logging.getLogger(__name__)
+    #     logger.setLevel(logging.debug)
     
     
     # @createPlayer.error
