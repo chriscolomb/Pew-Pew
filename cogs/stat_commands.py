@@ -78,7 +78,7 @@ class Statistic(commands.Cog):
                         for emoji in emoji_array:
                             value += emoji + " "
                         
-                        embed.add_field(name="Mains", value = value, inline=False)
+                        embed.add_field(name="Mains", value = value)
 
                     secondary_array = id.get("secondary")
                     array_check2 = await self.check_empty(secondary_array)
@@ -97,7 +97,7 @@ class Statistic(commands.Cog):
                         for emoji in emoji_array:
                             value += emoji + " "
 
-                        embed.add_field(name="Secondaries", value = value, inline=True)
+                        embed.add_field(name="Secondaries", value = value)
                     
                     await ctx.channel.send(embed = embed)
                     return
@@ -147,7 +147,7 @@ class Statistic(commands.Cog):
                         for emoji in emoji_array:
                             value += emoji + " "
                         
-                        embed.add_field(name="Mains", value = value, inline=False)
+                        embed.add_field(name="Mains", value = value)
 
                     secondary_array = id.get("secondary")
                     array_check2 = await self.check_empty(secondary_array)
@@ -170,7 +170,7 @@ class Statistic(commands.Cog):
                         for emoji in emoji_array:
                             value += emoji + " "
 
-                        embed.add_field(name="Secondaries", value = value, inline=True)
+                        embed.add_field(name="Secondaries", value = value)
                     
 
                                         
