@@ -317,7 +317,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for win in sorted_wins:
                         if count != 10:
-                            win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(win[0])))[:-5]) != 0:
+                                win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
                             count += 1
 
                     loses = id["match_history"][1]
@@ -326,7 +327,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for lose in sorted_loses:
                         if count != 10:
-                            lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(lose[0])))[:-5]) != 0:
+                                lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
 
@@ -353,7 +355,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for win in sorted_wins:
                         if count != 10:
-                            win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(win[0])))[:-5]) != 0:
+                                win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
                             count += 1
 
                     loses = id["match_history"][1]
@@ -362,7 +365,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for lose in sorted_loses:
                         if count != 10:
-                            lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(lose[0])))[:-5]) != 0:
+                                lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
                     if len(wins) != 0:
