@@ -253,7 +253,7 @@ class Statistic(commands.Cog):
                 else:
                     diamond_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Diamond", value=diamond_value)
+            embed.add_field(name="Diamond", value=diamond_value, inline=False)
         if platinum_rankings:
             platinum_value = ""
             for element in platinum_rankings:
@@ -262,7 +262,7 @@ class Statistic(commands.Cog):
                 else:
                     platinum_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Platinum", value=platinum_value)
+            embed.add_field(name="Platinum", value=platinum_value, inline=False)
         if gold_rankings:
             gold_value = ""
             for element in gold_rankings:
@@ -271,7 +271,7 @@ class Statistic(commands.Cog):
                 else:
                     gold_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Gold", value=gold_value)
+            embed.add_field(name="Gold", value=gold_value, inline=False)
         if silver_rankings:
             silver_value = ""
             for element in silver_rankings:
@@ -280,7 +280,7 @@ class Statistic(commands.Cog):
                 else:
                     silver_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Silver", value=silver_value)
+            embed.add_field(name="Silver", value=silver_value, inline=False)
         if bronze_rankings:
             bronze_value = ""
             for element in bronze_rankings:
@@ -289,7 +289,7 @@ class Statistic(commands.Cog):
                 else:
                     bronze_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Bronze", value=bronze_value)
+            embed.add_field(name="Bronze", value=bronze_value, inline=False)
 
         await ctx.channel.send(embed = embed)
 
