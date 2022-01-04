@@ -369,6 +369,16 @@ class Statistic(commands.Cog):
                                 lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
+                    ## Working on this
+                    for win in sorted_wins:
+                        for lose in sorted_loses:
+                            if win[0] == lose[0]:
+                                if count != 10:
+                                    if len(str(self.client.get_user(int(win[0])))[:-5]) != 0:
+                                        win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                                    count += 1
+
+                    
                     if len(wins) != 0:
                         embed.add_field(name="Wins", value=win_value)
                     if len(loses) != 0:
