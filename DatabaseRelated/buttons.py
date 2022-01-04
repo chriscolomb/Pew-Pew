@@ -130,6 +130,15 @@ class WinorLose(nextcord.ui.View):
                         loser = self.p2  
             UpdateELO.update_elo_rating(winner, loser)
 
+            #add battle to history collection
+            #unfortunately, from 12/28 to 1/4, the history was not saved.
+            history_entry = {
+                "winner": winner.get_id(),
+                "loser": loser.get_id(),
+                "date": dt.now()
+            }
+            mongodb.history_collection.insert_one(history_entry)
+
 
             #deletes battle collection
             delete_query = {}

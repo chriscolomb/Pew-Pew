@@ -248,33 +248,48 @@ class Statistic(commands.Cog):
         if diamond_rankings:
             diamond_value = ""
             for element in diamond_rankings:
-                diamond_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                if element["id"] == ctx.author.id:
+                    diamond_value += "**" + str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - **`" + str(element["rating"]) + "`\n"    
+                else:
+                    diamond_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Diamond", value=diamond_value)
+            embed.add_field(name="Diamond", value=diamond_value, inline=False)
         if platinum_rankings:
             platinum_value = ""
             for element in platinum_rankings:
-                platinum_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                if element["id"] == ctx.author.id:
+                    platinum_value += "**" + str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - **`" + str(element["rating"]) + "`\n"    
+                else:
+                    platinum_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Platinum", value=platinum_value)
+            embed.add_field(name="Platinum", value=platinum_value, inline=False)
         if gold_rankings:
             gold_value = ""
             for element in gold_rankings:
-                gold_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                if element["id"] == ctx.author.id:
+                    gold_value += "**" + str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - **`" + str(element["rating"]) + "`\n"    
+                else:
+                    gold_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Gold", value=gold_value)
+            embed.add_field(name="Gold", value=gold_value, inline=False)
         if silver_rankings:
             silver_value = ""
             for element in silver_rankings:
-                silver_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                if element["id"] == ctx.author.id:
+                    silver_value += "**" + str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - **`" + str(element["rating"]) + "`\n"    
+                else:
+                    silver_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Silver", value=silver_value)
+            embed.add_field(name="Silver", value=silver_value, inline=False)
         if bronze_rankings:
             bronze_value = ""
             for element in bronze_rankings:
-                bronze_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
+                if element["id"] == ctx.author.id:
+                    bronze_value += "**" + str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - **`" + str(element["rating"]) + "`\n"    
+                else:
+                    bronze_value += str(rank) + ". " + str(self.client.get_user(element["id"]))[:-5] + " - `" + str(element["rating"]) + "`\n"
                 rank += 1
-            embed.add_field(name="Bronze", value=bronze_value)
+            embed.add_field(name="Bronze", value=bronze_value, inline=False)
 
         await ctx.channel.send(embed = embed)
 
@@ -302,7 +317,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for win in sorted_wins:
                         if count != 10:
-                            win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(win[0])))[:-5]) != 0:
+                                win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
                             count += 1
 
                     loses = id["match_history"][1]
@@ -311,7 +327,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for lose in sorted_loses:
                         if count != 10:
-                            lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(lose[0])))[:-5]) != 0:
+                                lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
 
@@ -338,7 +355,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for win in sorted_wins:
                         if count != 10:
-                            win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(win[0])))[:-5]) != 0:
+                                win_value += "`" + str(win[1]) + "x` " + str(self.client.get_user(int(win[0])))[:-5] + "\n"
                             count += 1
 
                     loses = id["match_history"][1]
@@ -347,7 +365,8 @@ class Statistic(commands.Cog):
                     count = 0
                     for lose in sorted_loses:
                         if count != 10:
-                            lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
+                            if len(str(self.client.get_user(int(lose[0])))[:-5]) != 0:
+                                lose_value += "`" + str(lose[1]) + "x` " + str(self.client.get_user(int(lose[0])))[:-5] + "\n"
                             count += 1
                     
                     if len(wins) != 0:
