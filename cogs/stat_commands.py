@@ -78,7 +78,7 @@ class Statistic(commands.Cog):
                         for emoji in emoji_array:
                             value += emoji + " "
                         
-                        embed.add_field(name="Mains", value = value)
+                        embed.add_field(name="Mains", value = value, inline=False)
 
                     secondary_array = id.get("secondary")
                     array_check2 = await self.check_empty(secondary_array)
