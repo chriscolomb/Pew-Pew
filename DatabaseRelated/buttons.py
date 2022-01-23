@@ -100,40 +100,10 @@ class WinorLose(nextcord.ui.View):
     async def handle_win_or_lose(self, button: nextcord.ui.Button, interaction: nextcord.Interaction, clicker_wins):
 
         #retrieves the user and depending who the last past who clicks the button, updates the ELO and player_collection
-        get_user = interaction.user.id
-        #Deletes Battle in progress if it hasn't been deleted
-
-
-            
+        get_user = interaction.user.id           
 
         #number of clicks in the view
         if self.clicks >= 2:
-            if self.rematch == None:
-            #deletes battle collection
-                delete_query = {}
-                for player in mongodb.battle_collection.find():
-                    if player["p1"] == get_user:
-                        delete_query = {"p1": get_user}
-                    if player["p2"] == get_user:
-                        delete_query = {"p2": get_user}
-                mongodb.battle_collection.delete_one(delete_query)
-
-                #creates battle collection
-                battle = Battle(self.p1.get_id(),self.p2.get_id())
-                battle_entry = {
-                    "p1": battle.p1,
-                    "p2": battle.p2,
-                    }
-                mongodb.battle_collection.insert_one(battle_entry)                
-            else:
-                for player in mongodb.battle_collection.find():
-                    if player["p1"] == get_user:
-                        self.p1 = get_user
-                        self.p2 = player["p2"]
-                    if player["p2"] == get_user:
-                        self.p2 = get_user
-                        self.p1 = player["p1"]      
-
             #if last person clicks win
             if clicker_wins:
                 for player in mongodb.battle_collection.find():
@@ -177,6 +147,33 @@ class WinorLose(nextcord.ui.View):
     #button for winning
     @nextcord.ui.button(label= "WIN", disabled = False, emoji = None, style= nextcord.ButtonStyle.green, custom_id= "iWin01")
     async def win_button(self, button, interaction):
+        get_user = interaction.user.id
+        #Deletes Battle in progress if it hasn't been deleted
+        if self.rematch == None:
+            #deletes battle collection if one already exist
+                delete_query = {}
+                for player in mongodb.battle_collection.find():
+                    if player["p1"] == get_user:
+                        delete_query = {"p1": get_user}
+                    if player["p2"] == get_user:
+                        delete_query = {"p2": get_user}
+                mongodb.battle_collection.delete_one(delete_query)
+
+                #creates battle collection
+                battle = Battle(self.p1.get_id(),self.p2.get_id())
+                battle_entry = {
+                    "p1": battle.p1,
+                    "p2": battle.p2,
+                    }
+                mongodb.battle_collection.insert_one(battle_entry)                
+        else:
+            for player in mongodb.battle_collection.find():
+                if player["p1"] == get_user:
+                    self.p1 = get_user
+                    self.p2 = player["p2"]
+                if player["p2"] == get_user:
+                    self.p2 = get_user
+                    self.p1 = player["p1"]      
         
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
@@ -186,7 +183,34 @@ class WinorLose(nextcord.ui.View):
     #button for losing
     @nextcord.ui.button(label= "LOSE", emoji = None, style= nextcord.ButtonStyle.danger, custom_id= "iLose01")
     async def loss_button(self, button, interaction):
-        
+        get_user = interaction.user.id
+        #Deletes Battle in progress if it hasn't been deleted
+        if self.rematch == None:
+            #deletes battle collection if one already exist
+                delete_query = {}
+                for player in mongodb.battle_collection.find():
+                    if player["p1"] == get_user:
+                        delete_query = {"p1": get_user}
+                    if player["p2"] == get_user:
+                        delete_query = {"p2": get_user}
+                mongodb.battle_collection.delete_one(delete_query)
+
+                #creates battle collection
+                battle = Battle(self.p1.get_id(),self.p2.get_id())
+                battle_entry = {
+                    "p1": battle.p1,
+                    "p2": battle.p2,
+                    }
+                mongodb.battle_collection.insert_one(battle_entry)                
+        else:
+            for player in mongodb.battle_collection.find():
+                if player["p1"] == get_user:
+                    self.p1 = get_user
+                    self.p2 = player["p2"]
+                if player["p2"] == get_user:
+                    self.p2 = get_user
+                    self.p1 = player["p1"]
+
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks += 1
