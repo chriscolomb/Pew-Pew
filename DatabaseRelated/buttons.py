@@ -84,12 +84,13 @@ class AttackButtons(nextcord.ui.View):
 
 
 class WinorLose(nextcord.ui.View):
-    def __init__(self, p1=None, p2=None, battle_thread=None):
+    def __init__(self, p1=None, p2=None, battle_thread=None, rematch = None):
         super().__init__(timeout = None)
         self.clicks = 0
         self.p1 = p1
         self.p2 = p2
         self.battle_thread = battle_thread
+        self.rematch = rematch
 
     async def interaction_check1(self, player_to_check,interaction):
         logger.debug("Win or lose buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
@@ -100,16 +101,38 @@ class WinorLose(nextcord.ui.View):
 
         #retrieves the user and depending who the last past who clicks the button, updates the ELO and player_collection
         get_user = interaction.user.id
-        
+        #Deletes Battle in progress if it hasn't been deleted
+
+
+            
+
         #number of clicks in the view
         if self.clicks >= 2:
-            #creates battle collection
-            battle = Battle(self.p1.get_id(),self.p2.get_id())
-            battle_entry = {
-                "p1": battle.p1,
-                "p2": battle.p2,
-                }
-            mongodb.battle_collection.insert_one(battle_entry)
+            if self.rematch == None:
+            #deletes battle collection
+                delete_query = {}
+                for player in mongodb.battle_collection.find():
+                    if player["p1"] == get_user:
+                        delete_query = {"p1": get_user}
+                    if player["p2"] == get_user:
+                        delete_query = {"p2": get_user}
+                mongodb.battle_collection.delete_one(delete_query)
+
+                #creates battle collection
+                battle = Battle(self.p1.get_id(),self.p2.get_id())
+                battle_entry = {
+                    "p1": battle.p1,
+                    "p2": battle.p2,
+                    }
+                mongodb.battle_collection.insert_one(battle_entry)                
+            else:
+                for player in mongodb.battle_collection.find():
+                    if player["p1"] == get_user:
+                        self.p1 = get_user
+                        self.p2 = player["p2"]
+                    if player["p2"] == get_user:
+                        self.p2 = get_user
+                        self.p1 = player["p1"]      
 
             #if last person clicks win
             if clicker_wins:
@@ -138,16 +161,6 @@ class WinorLose(nextcord.ui.View):
                 "date": dt.now()
             }
             mongodb.history_collection.insert_one(history_entry)
-
-
-            #deletes battle collection
-            delete_query = {}
-            for player in mongodb.battle_collection.find():
-                if player["p1"] == winner.get_id():
-                    delete_query = {"p1": winner.get_id()}
-                else:
-                    delete_query = {"p1": loser.get_id()}
-            mongodb.battle_collection.delete_one(delete_query)
 
             embed_end_match = nextcord.Embed(
                 title = "Match Complete!",
@@ -207,7 +220,7 @@ class MatchComplete(nextcord.ui.View):
     
     @nextcord.ui.button(label= "REMATCH",emoji = None, style= nextcord.ButtonStyle.green, custom_id= "rematch01")
     async def rematch_button(self,button, interaction):
-
+        rematch = True
         if await self.interaction_check1(self.p2, interaction):
             self.p2_clicks +=1
             logger.debug(" user: %s amount clicks: %s fighter: %s", self.p1.id, self.p1_clicks, self.p2)
@@ -221,12 +234,21 @@ class MatchComplete(nextcord.ui.View):
                 colour = nextcord.Colour.from_rgb(121,180,183)
             )
             await interaction.message.delete()
-            await interaction.response.send_message(embed=thread_embed, view = WinorLose(self.p1, self.p2, self.battle_thread))
+            await interaction.response.send_message(embed=thread_embed, view = WinorLose(self.p1, self.p2, self.battle_thread, rematch))
     
     @nextcord.ui.button(label= "GGs",emoji = None, style= nextcord.ButtonStyle.secondary, custom_id= "endMatch01")
     async def endMatch_button(self, button, interaction):        
         
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
+            #deletes battle collection
+            delete_query = {}
+            for player in mongodb.battle_collection.find():
+                if player["p1"] == self.p1.get_id():
+                    delete_query = {"p1": self.p1.get_id()}
+                if player["p2"] == self.p2.get_id():
+                    delete_query = {"p2": self.p2.get_id()}
+            mongodb.battle_collection.delete_one(delete_query)
+
             thread_embed = nextcord.Embed(
                 title = "GGs!",
                 description = "Thanks for playing!",
