@@ -10,7 +10,7 @@ sys.path.append('cogs')
 import mongodb
 import UpdateELO
 from player import Player
-from buttons import AttackButtons
+from buttons import AttackButtons, CharSelectView
 from buttons import WinorLose
 from buttons import MatchComplete
 
@@ -32,31 +32,32 @@ class Admin(commands.Cog):
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
+        self.client.add_view(CharSelectView())
  
         await self.write_emojis()
         
         # await self.simulate_history()
         #print('Logged on as {0}!'.format(self.user.name))
     
-    @commands.command()
-    async def load(self,ctx,extension):
-        """
-        Loads cog files
-        """
-        admin1= 472883421212049409
-        admin2= 705139734426419260
-        if ctx.author.id == admin2 or ctx.author.id == admin1: 
-            self.client.load_extension(f'cogs.{client.extension}')
+    # @commands.command()
+    # async def load(self,ctx,extension):
+    #     """
+    #     Loads cog files
+    #     """
+    #     admin1= 472883421212049409
+    #     admin2= 705139734426419260
+    #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
+    #         self.client.load_extension(f'cogs.{client.extension}')
 
-    @commands.command()
-    async def unload(self,ctx, extension):
-        """
-        Unload cog files
-        """
-        admin1= 472883421212049409
-        admin2= 705139734426419260
-        if ctx.author.id == admin2 or ctx.author.id == admin1: 
-            self.client.unload_extension(f'cogs.{client.extension}')
+    # @commands.command()
+    # async def unload(self,ctx, extension):
+    #     """
+    #     Unload cog files
+    #     """
+    #     admin1= 472883421212049409
+    #     admin2= 705139734426419260
+    #     if ctx.author.id == admin2 or ctx.author.id == admin1: 
+    #         self.client.unload_extension(f'cogs.{client.extension}')
 
     # @commands.command()
     # @has_permissions(administrator=True)

@@ -92,6 +92,51 @@ class WinorLose(nextcord.ui.View):
         self.battle_thread = battle_thread
         self.rematch = rematch
 
+    async def BIP_char_select(self, interaction):
+        get_user = interaction.user.id
+        #Deletes Battle in progress if it hasn't been deleted
+        if self.rematch == None:
+            #deletes battle collection if one already exist
+                delete_query = {}
+                for player in mongodb.battle_collection.find():
+                    if player["p1"] == get_user:
+                        delete_query = {"p1": get_user}
+                    if player["p2"] == get_user:
+                        delete_query = {"p2": get_user}
+                mongodb.battle_collection.delete_one(delete_query)
+
+                #creates battle collection
+                battle = Battle(self.p1.get_id(),self.p2.get_id())
+                battle_entry = {
+                    "p1": battle.p1,
+                    "p2": battle.p2,
+                    }
+                mongodb.battle_collection.insert_one(battle_entry)                
+        else:
+            for player in mongodb.battle_collection.find():
+                if player["p1"] == get_user:
+                    self.p1 = get_user
+                    self.p2 = player["p2"]
+                if player["p2"] == get_user:
+                    self.p2 = get_user
+                    self.p1 = player["p1"]
+    
+    async def check_empty(self,array):
+        return not array
+
+    async def char_select(self,player):
+        char_array = []
+        for id in mongodb.player_collection.find():
+            if id["_id"] == player.id:
+                main_check = await self.check_empty(id.get("main"))
+                sec_check = await self.check_empty(id.get("secondary"))
+                if  not main_check or not sec_check:
+                    main_array = id.get("main")
+                    secondary_tuple = id.get("secondary")
+                    char_array.append(main_array)
+                    char_array.append(secondary_tuple)
+        return char_array
+
     async def interaction_check1(self, player_to_check,interaction):
         logger.debug("Win or lose buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
@@ -122,6 +167,27 @@ class WinorLose(nextcord.ui.View):
                         winner = self.p1
                         loser = self.p2  
             UpdateELO.update_elo_rating(winner, loser)
+            
+            #search for who won and lost in BIP [winner,loser]
+            #get characters used in array [winner_Char,loser_char]
+            #search for char 
+            #update char stats + 1
+            #gets characters from main and secondaries
+            char1 = self.char_select(winner)
+            char2 = self.char_select(loser)
+            #gets options
+            options: list[nextcord.SelectOption] = []
+            for char in char1:
+                options.append(nextcord.SelectOption(
+                    label = char
+                ))
+            interaction.send(view=CharSelectView(options))   
+            options: list[nextcord.SelectOption] = []
+            for char in char2:
+                options.append(nextcord.SelectOption(
+                    label = char
+                ))
+            interaction.send(view=CharSelectView(options))
 
             #add battle to history collection
             #unfortunately, from 12/28 to 1/4, the history was not saved.
@@ -146,35 +212,9 @@ class WinorLose(nextcord.ui.View):
 
     #button for winning
     @nextcord.ui.button(label= "WIN", disabled = False, emoji = None, style= nextcord.ButtonStyle.green, custom_id= "iWin01")
-    async def win_button(self, button, interaction):
-        get_user = interaction.user.id
-        #Deletes Battle in progress if it hasn't been deleted
-        if self.rematch == None:
-            #deletes battle collection if one already exist
-                delete_query = {}
-                for player in mongodb.battle_collection.find():
-                    if player["p1"] == get_user:
-                        delete_query = {"p1": get_user}
-                    if player["p2"] == get_user:
-                        delete_query = {"p2": get_user}
-                mongodb.battle_collection.delete_one(delete_query)
-
-                #creates battle collection
-                battle = Battle(self.p1.get_id(),self.p2.get_id())
-                battle_entry = {
-                    "p1": battle.p1,
-                    "p2": battle.p2,
-                    }
-                mongodb.battle_collection.insert_one(battle_entry)                
-        else:
-            for player in mongodb.battle_collection.find():
-                if player["p1"] == get_user:
-                    self.p1 = get_user
-                    self.p2 = player["p2"]
-                if player["p2"] == get_user:
-                    self.p2 = get_user
-                    self.p1 = player["p1"]      
+    async def win_button(self, button, interaction):       
         
+        await self.BIP_char_Select(interaction)
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks+=1
@@ -183,34 +223,8 @@ class WinorLose(nextcord.ui.View):
     #button for losing
     @nextcord.ui.button(label= "LOSE", emoji = None, style= nextcord.ButtonStyle.danger, custom_id= "iLose01")
     async def loss_button(self, button, interaction):
-        get_user = interaction.user.id
-        #Deletes Battle in progress if it hasn't been deleted
-        if self.rematch == None:
-            #deletes battle collection if one already exist
-                delete_query = {}
-                for player in mongodb.battle_collection.find():
-                    if player["p1"] == get_user:
-                        delete_query = {"p1": get_user}
-                    if player["p2"] == get_user:
-                        delete_query = {"p2": get_user}
-                mongodb.battle_collection.delete_one(delete_query)
-
-                #creates battle collection
-                battle = Battle(self.p1.get_id(),self.p2.get_id())
-                battle_entry = {
-                    "p1": battle.p1,
-                    "p2": battle.p2,
-                    }
-                mongodb.battle_collection.insert_one(battle_entry)                
-        else:
-            for player in mongodb.battle_collection.find():
-                if player["p1"] == get_user:
-                    self.p1 = get_user
-                    self.p2 = player["p2"]
-                if player["p2"] == get_user:
-                    self.p2 = get_user
-                    self.p1 = player["p1"]
-
+        
+        await self.BIP_char_Select(interaction)
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks += 1
@@ -284,4 +298,20 @@ class MatchComplete(nextcord.ui.View):
             )
             await interaction.response.edit_message(embed=thread_embed, view = None)
             # await self.battle_thread.delete()
+
+
+#
+#Don't forgot to check if right player chooses interaction
+#
+#
+class CharSelectView(nextcord.ui.View):
+    def __init__(self,options):
+        super().__init__()
+        self.add_item(CharSelectDropdown(options))
+
+class CharSelectDropdown(nextcord.ui.Select):
+    def __init__(self, options):
+        super().__init__(placeholder = "choose a character", min_values=1, max_values =1, options=options)
             
+    def callback(self, interaction):
+        pass
