@@ -42,8 +42,8 @@ class AttackButtons(nextcord.ui.View):
                 #Change
                 #this
                 # to test
-                #if await self.interaction_check1(self.p1,interaction):
-                if await self.interaction_check1(self.p2,interaction):
+                if await self.interaction_check1(self.p1,interaction):
+                #if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
                         colour = nextcord.Colour.from_rgb(121,180,183)
