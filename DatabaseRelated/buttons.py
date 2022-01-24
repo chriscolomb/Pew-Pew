@@ -42,8 +42,8 @@ class AttackButtons(nextcord.ui.View):
                 #Change
                 #this
                 # to test
-                if await self.interaction_check1(self.p1,interaction):
-                #if await self.interaction_check1(self.p2,interaction):
+                #if await self.interaction_check1(self.p1,interaction):
+                if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
                         colour = nextcord.Colour.from_rgb(121,180,183)
@@ -250,6 +250,10 @@ class MatchComplete(nextcord.ui.View):
             logger.debug(" user: %s amount clicks: %s fighter: %s", self.p1.id, self.p1_clicks, self.p2)
         elif await self.interaction_check1(self.p1, interaction):
             self.p1_clicks += 1
+            #
+            #Need to change if we want to limit rematch
+            #
+            #self.p2_clicks +=1
             logger.debug(" user: %s: amount clicks %s fighter: %s", self.p1.id, self.p1_clicks,self.p1)
         if self.p1_clicks >= 1 and self.p2_clicks >= 1:
             thread_embed = nextcord.Embed(
