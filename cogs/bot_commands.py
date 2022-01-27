@@ -159,7 +159,12 @@ class Bot(commands.Cog):
         embed.set_image(url=random.choice(character_images))
         embed.colour = nextcord.Colour.from_rgb(121,180,183)
         await ctx.channel.send(embed=embed)
-
+    
+    #
+    #
+    #Make this one method but have a command for main and secondary
+    #
+    #async def assign_chars(self,ctx,)
     @commands.command()
     async def main(self,ctx, *args):
         """
@@ -173,19 +178,27 @@ class Bot(commands.Cog):
         alias_dictionary = await self.character_alias_method()
         character_array = []
         player_id = {"_id": ctx.author.id}
+
         embed = nextcord.Embed(
             title = "Mains cleared!",
             colour = nextcord.Colour.from_rgb(121,180,183)
         )
-        #empty_args = (args,isinstance(args,type(None)))
+        #if no args set dictionary to None
         if args == None:
             character_array = [None]
         else:
+            #lists and dictionary for creating char_stats in player profile
+            dictionary_of_mains ={}
+            dictionary_of_enemies = {}
+            default_W_L = [0,0]
+            #loops through characters in the arguments
             for characters in args:
                 characters = characters.lower()
                 isIn = True
+                #checks to see if alias was used
                 if characters in alias_dictionary:
                     characters = alias_dictionary[characters]
+                #tests to see if it is a legal character name
                 try: dictionary[characters]
                 except KeyError:
                     embed = nextcord.Embed(
@@ -193,11 +206,19 @@ class Bot(commands.Cog):
                         colour = nextcord.Colour.from_rgb(121,180,183)
                     )
                     isIn = False
+                #sets character discord ID and appends to an array
                 if isIn:
                     characterID = int(dictionary[characters])
                     if characterID not in character_array:
                         character_array.append(characterID)
-                        
+
+                        #set up as [dictionary_of_mains, [dictionary_of_enemies, default_W_L ]]
+                        for char_dictionary in dictionary:
+                            key = str(dictionary[char_dictionary])
+                            dictionary_of_enemies[key] = default_W_L
+              
+                        dictionary_of_mains[str(characterID)]= dictionary_of_enemies
+
                         embed = nextcord.Embed(
                             title = "Character(s) added!",
                             colour = nextcord.Colour.from_rgb(121,180,183)
@@ -207,10 +228,12 @@ class Bot(commands.Cog):
                             title = "Can't add duplicates!",
                             colour = nextcord.Colour.from_rgb(121,180,183)
                             )
-            
+            #sends message then adds array to player profile
             await ctx.channel.send(embed=embed)
             update_main_query = { "$set": { "main": character_array } }
+            update_char_stats = {"$set": {"char_stats": dictionary_of_mains}}
             mongodb.player_collection.update_one(player_id, update_main_query)
+            mongodb.player_collection.update_one(player_id, update_char_stats)
 
     @commands.command()
     async def secondary(self,ctx, *args):

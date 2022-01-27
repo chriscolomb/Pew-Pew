@@ -42,8 +42,8 @@ class AttackButtons(nextcord.ui.View):
                 #Change
                 #this
                 # to test
-                #if await self.interaction_check1(self.p1,interaction):
-                if await self.interaction_check1(self.p2,interaction):
+                if await self.interaction_check1(self.p1,interaction):
+                #if await self.interaction_check1(self.p2,interaction):
                     embed = nextcord.Embed(
                         title = "Fight Accepted!",
                         colour = nextcord.Colour.from_rgb(121,180,183)
@@ -124,18 +124,26 @@ class WinorLose(nextcord.ui.View):
     async def check_empty(self,array):
         return not array
 
-    async def char_select(self,player):
-        char_array = []
+    async def char_list(self,player):
+        options: list[nextcord.SelectOption] = []
         for id in mongodb.player_collection.find():
             if id["_id"] == player.id:
                 main_check = await self.check_empty(id.get("main"))
                 sec_check = await self.check_empty(id.get("secondary"))
-                if  not main_check or not sec_check:
+                if not main_check:
                     main_array = id.get("main")
+                    for main_char in main_array:
+                         options.append(nextcord.SelectOption(
+                            label = main_char))
+                if not sec_check:
                     secondary_tuple = id.get("secondary")
-                    char_array.append(main_array)
-                    char_array.append(secondary_tuple)
-        return char_array
+                    for sec_char in secondary_tuple:
+                       options.append(nextcord.SelectOption(
+                            label = sec_char))
+        # options.append(nextcord.SelectOption(
+        #     label="?"
+        # ))                  
+        return options
 
     async def interaction_check1(self, player_to_check,interaction):
         logger.debug("Win or lose buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
@@ -173,30 +181,25 @@ class WinorLose(nextcord.ui.View):
             #search for char 
             #update char stats + 1
             #gets characters from main and secondaries
-            char1 = self.char_select(winner)
-            char2 = self.char_select(loser)
-            #gets options
-            options: list[nextcord.SelectOption] = []
-            for char in char1:
-                options.append(nextcord.SelectOption(
-                    label = char
-                ))
-            interaction.send(view=CharSelectView(options))   
-            options: list[nextcord.SelectOption] = []
-            for char in char2:
-                options.append(nextcord.SelectOption(
-                    label = char
-                ))
-            interaction.send(view=CharSelectView(options))
+            char1 = await self.char_list(winner)
+            char2 = await self.char_list(loser)
+            await interaction.channel.send("winner please select char",view=CharSelectView(char1))
+            await interaction.channel.send("loser please select char",view=CharSelectView(char2))   
 
             #add battle to history collection
+            #
+            #add back when ready
+            #
             #unfortunately, from 12/28 to 1/4, the history was not saved.
-            history_entry = {
-                "winner": winner.get_id(),
-                "loser": loser.get_id(),
-                "date": dt.now()
-            }
-            mongodb.history_collection.insert_one(history_entry)
+            # history_entry = {
+            #     "winner": winner.get_id(),
+            #     "loser": loser.get_id(),
+            #     "win_char": winner_char.selected_value
+            #     "lose_char": loser_char.selected_value
+            #     "date": dt.now()
+            # }
+            # mongodb.history_collection.insert_one(history_entry)
+
 
             embed_end_match = nextcord.Embed(
                 title = "Match Complete!",
@@ -214,7 +217,7 @@ class WinorLose(nextcord.ui.View):
     @nextcord.ui.button(label= "WIN", disabled = False, emoji = None, style= nextcord.ButtonStyle.green, custom_id= "iWin01")
     async def win_button(self, button, interaction):       
         
-        await self.BIP_char_Select(interaction)
+        await self.BIP_char_select(interaction)
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks+=1
@@ -224,7 +227,7 @@ class WinorLose(nextcord.ui.View):
     @nextcord.ui.button(label= "LOSE", emoji = None, style= nextcord.ButtonStyle.danger, custom_id= "iLose01")
     async def loss_button(self, button, interaction):
         
-        await self.BIP_char_Select(interaction)
+        await self.BIP_char_select(interaction)
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks += 1
@@ -267,7 +270,7 @@ class MatchComplete(nextcord.ui.View):
             #
             #Need to change if we want to limit rematch
             #
-            #self.p2_clicks +=1
+            self.p2_clicks +=1
             logger.debug(" user: %s: amount clicks %s fighter: %s", self.p1.id, self.p1_clicks,self.p1)
         if self.p1_clicks >= 1 and self.p2_clicks >= 1:
             thread_embed = nextcord.Embed(
@@ -304,14 +307,20 @@ class MatchComplete(nextcord.ui.View):
 #Don't forgot to check if right player chooses interaction
 #
 #
-class CharSelectView(nextcord.ui.View):
-    def __init__(self,options):
-        super().__init__()
-        self.add_item(CharSelectDropdown(options))
-
 class CharSelectDropdown(nextcord.ui.Select):
     def __init__(self, options):
         super().__init__(placeholder = "choose a character", min_values=1, max_values =1, options=options)
             
-    def callback(self, interaction):
-        pass
+    async def callback(self, interaction):
+        #Find Character used
+        #Find Enemy character that fought against
+        #update score (W,L)
+        #[char,[char_enemy,(W,L)]]
+        selected_value = self.values[0]
+        self.clear()
+        await interaction.response.send_message("updated your character win/losses")
+
+class CharSelectView(nextcord.ui.View):
+    def __init__(self,options):
+        super().__init__(timeout=None)
+        self.add_item(CharSelectDropdown(options))

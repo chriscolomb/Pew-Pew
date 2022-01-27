@@ -32,7 +32,7 @@ class Admin(commands.Cog):
         self.client.add_view(AttackButtons())
         self.client.add_view(WinorLose())
         self.client.add_view(MatchComplete())
-        self.client.add_view(CharSelectView())
+        #self.client.add_view(CharSelectView())
  
         await self.write_emojis()
         
