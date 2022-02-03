@@ -15,6 +15,12 @@ class Player:
 
     def set_rating(self, rating):
         self.rating = rating
+    
+    # def set_char_selected(self, char_selected):
+    #     self.char_selected = char_selected
+    
+    # def get_char(self):
+    #     return self.char_selected
 
     def plus_win(self):
         self.win_count += 1

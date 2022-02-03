@@ -104,15 +104,24 @@ class WinorLose(nextcord.ui.View):
                     if player["p2"] == get_user:
                         delete_query = {"p2": get_user}
                 mongodb.battle_collection.delete_one(delete_query)
+                #
+                #Need to figure out how to get character select from list and input it in BIP
+                #
 
                 #creates battle collection
                 battle = Battle(self.p1.get_id(),self.p2.get_id())
                 battle_entry = {
                     "p1": battle.p1,
+                    "p1_char": battle.p1_char,
                     "p2": battle.p2,
+                    "p2_char": battle.p2_char
                     }
                 mongodb.battle_collection.insert_one(battle_entry)                
         else:
+            char1 = await self.char_list(self.p1)
+            char2 = await self.char_list(self.p2)
+            await interaction.channel.send("winner please select char",view=CharSelectView(char1))
+            await interaction.channel.send("loser please select char",view=CharSelectView(char2)) 
             for player in mongodb.battle_collection.find():
                 if player["p1"] == get_user:
                     self.p1 = get_user
@@ -139,10 +148,7 @@ class WinorLose(nextcord.ui.View):
                     secondary_tuple = id.get("secondary")
                     for sec_char in secondary_tuple:
                        options.append(nextcord.SelectOption(
-                            label = sec_char))
-        # options.append(nextcord.SelectOption(
-        #     label="?"
-        # ))                  
+                            label = sec_char))            
         return options
 
     async def interaction_check1(self, player_to_check,interaction):
@@ -157,35 +163,34 @@ class WinorLose(nextcord.ui.View):
 
         #number of clicks in the view
         if self.clicks >= 2:
+            await self.BIP_char_select(interaction)
             #if last person clicks win
             if clicker_wins:
                 for player in mongodb.battle_collection.find():
                     if player["p1"] == get_user:
                         winner = self.p1
                         loser = self.p2
+                        winner_chosen_char = player["p1_char"]
+                        loser_chosen_char = player["p2_char"]
                     elif player["p2"] == get_user:
                         winner = self.p2
-                        loser = self.p1  
+                        loser = self.p1
+                        winner_chosen_char = player["p2_char"]
+                        loser_chosen_char = player["p1_char"]  
             else:
                 for player in mongodb.battle_collection.find():
                     if player["p1"] == get_user:
                         winner = self.p2                       
                         loser = self.p1
+                        winner_chosen_char = player["p2_char"]
+                        loser_chosen_char = player["p1_char"]
                     elif player["p2"] == get_user:
                         winner = self.p1
-                        loser = self.p2  
-            UpdateELO.update_elo_rating(winner, loser)
-            
-            #search for who won and lost in BIP [winner,loser]
-            #get characters used in array [winner_Char,loser_char]
-            #search for char 
-            #update char stats + 1
-            #gets characters from main and secondaries
-            char1 = await self.char_list(winner)
-            char2 = await self.char_list(loser)
-            await interaction.channel.send("winner please select char",view=CharSelectView(char1))
-            await interaction.channel.send("loser please select char",view=CharSelectView(char2))   
-
+                        loser = self.p2
+                        winner_chosen_char = player["p1_char"]
+                        loser_chosen_char = player["p2_char"]
+            #can put winner_char and loser char and pass it to ELO, can do above when getting winner and loser***************************  
+            UpdateELO.update_elo_rating(winner, loser, winner_chosen_char, loser_chosen_char) 
             #add battle to history collection
             #
             #add back when ready
@@ -215,9 +220,8 @@ class WinorLose(nextcord.ui.View):
 
     #button for winning
     @nextcord.ui.button(label= "WIN", disabled = False, emoji = None, style= nextcord.ButtonStyle.green, custom_id= "iWin01")
-    async def win_button(self, button, interaction):       
+    async def win_button(self, button, interaction):     
         
-        await self.BIP_char_select(interaction)
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks+=1
@@ -227,7 +231,6 @@ class WinorLose(nextcord.ui.View):
     @nextcord.ui.button(label= "LOSE", emoji = None, style= nextcord.ButtonStyle.danger, custom_id= "iLose01")
     async def loss_button(self, button, interaction):
         
-        await self.BIP_char_select(interaction)
         if await self.interaction_check1(self.p2, interaction) or await self.interaction_check1(self.p1, interaction):
             button.disabled = True
             self.clicks += 1
@@ -258,7 +261,24 @@ class MatchComplete(nextcord.ui.View):
         logger.debug("Match Complete buttons, player to check: %s player who interacted with button: %s", player_to_check, interaction.user.id)
         return player_to_check.id == interaction.user.id
     
-    
+    async def char_list(self,player):
+        options: list[nextcord.SelectOption] = []
+        for id in mongodb.player_collection.find():
+            if id["_id"] == player.id:
+                main_check = await self.check_empty(id.get("main"))
+                sec_check = await self.check_empty(id.get("secondary"))
+                if not main_check:
+                    main_array = id.get("main")
+                    for main_char in main_array:
+                         options.append(nextcord.SelectOption(
+                            label = main_char))
+                if not sec_check:
+                    secondary_tuple = id.get("secondary")
+                    for sec_char in secondary_tuple:
+                       options.append(nextcord.SelectOption(
+                            label = sec_char))            
+        return options
+
     @nextcord.ui.button(label= "REMATCH",emoji = None, style= nextcord.ButtonStyle.green, custom_id= "rematch01")
     async def rematch_button(self,button, interaction):
         rematch = True
@@ -280,6 +300,12 @@ class MatchComplete(nextcord.ui.View):
             )
             await interaction.message.delete()
             await interaction.response.send_message(embed=thread_embed, view = WinorLose(self.p1, self.p2, self.battle_thread, rematch))
+        
+        #search for char 
+        char1 = await self.char_list(interaction)
+        #char2 = await self.char_list(self.p2)
+        await interaction.channel.send(f"@{interaction.user.id} please select char",view=CharSelectView(char1,interaction.user.id))
+        #await interaction.channel.send(f"@{.p2_id} please select char",view=CharSelectView(char2, self.p2))  
     
     @nextcord.ui.button(label= "GGs",emoji = None, style= nextcord.ButtonStyle.secondary, custom_id= "endMatch01")
     async def endMatch_button(self, button, interaction):        
@@ -308,19 +334,27 @@ class MatchComplete(nextcord.ui.View):
 #
 #
 class CharSelectDropdown(nextcord.ui.Select):
-    def __init__(self, options):
+    def __init__(self, options, player):
         super().__init__(placeholder = "choose a character", min_values=1, max_values =1, options=options)
-            
+        self.player = player
+    
     async def callback(self, interaction):
-        #Find Character used
-        #Find Enemy character that fought against
-        #update score (W,L)
-        #[char,[char_enemy,(W,L)]]
-        selected_value = self.values[0]
-        self.clear()
-        await interaction.response.send_message("updated your character win/losses")
+        if self.interaction_check(self.player):
+            player_char = self.values[0]
+            for player in mongodb.battle_collection.find():
+                if player["p1"] == self.player:
+                    update_char = {"$set": {"p1_char": player_char}}
+                elif player["p2"] == self.player:
+                    update_char = {"$set": {"p2_char": player_char}}
+            
+            mongodb.battle_collection.update_one(self.player,update_char)
+            # can change to embed later
+            await interaction.response.send_message("updated your character win/losses")
+        else:
+            await interaction.response.send_message(f"sorry, @{interaction.user.id} isn't valid to press the button")
 
 class CharSelectView(nextcord.ui.View):
-    def __init__(self,options):
+    def __init__(self,options,player):
         super().__init__(timeout=None)
-        self.add_item(CharSelectDropdown(options))
+        self.player = player
+        self.add_item(CharSelectDropdown(options, player))
