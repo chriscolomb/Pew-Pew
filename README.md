@@ -1,2 +1,2 @@
-# pewpew
-Ranking bot for TeamDuck nextcord Server.
+# Pew Pew
+Discord Bot for Ranked Matchmaking with ELO Rating and Leaderboards
